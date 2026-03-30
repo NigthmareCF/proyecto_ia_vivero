@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Intercepts ALL exceptions and converts them into consistent ApiResponse objects.
- * No controller needs try-catch — this handler covers all of them.
+ * Intercepta las excepciones del sistema y las transforma en respuestas ApiResponse consistentes.
+ * Los controllers no deben manejar errores con try-catch manual.
  */
 @Slf4j
 @RestControllerAdvice
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
-        log.warn("Resource not found: {}", ex.getMessage());
+        log.warn("Recurso no encontrado: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.error(ex.getMessage(), "NOT_FOUND"));
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.<Map<String, String>>builder()
                         .success(false)
-                        .message("Validation error")
+                        .message("Error de validación")
                         .error("VALIDATION_ERROR")
                         .data(errors)
                         .build());
@@ -56,21 +56,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("Invalid credentials", "INVALID_CREDENTIALS"));
+                .body(ApiResponse.error("Credenciales inválidas", "INVALID_CREDENTIALS"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error("You do not have permission for this operation", "ACCESS_DENIED"));
+                .body(ApiResponse.error("No tienes permiso para esta operación", "ACCESS_DENIED"));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiResponse<Void>> handleFileSize(MaxUploadSizeExceededException ex) {
         return ResponseEntity
                 .status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .body(ApiResponse.error("File exceeds maximum allowed size", "FILE_TOO_LARGE"));
+                .body(ApiResponse.error("El archivo excede el tamaño máximo permitido", "FILE_TOO_LARGE"));
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -82,9 +82,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
-        log.error("Unhandled internal error: ", ex);
+        log.error("Error interno no controlado: ", ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Internal server error", "INTERNAL_ERROR"));
+                .body(ApiResponse.error("Error interno del servidor", "INTERNAL_ERROR"));
     }
 }

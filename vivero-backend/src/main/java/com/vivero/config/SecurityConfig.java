@@ -35,7 +35,6 @@ import java.util.List;
  *
  * Rutas públicas (sin token):
  *   POST /auth/login
- *   POST /auth/register
  *   POST /auth/refresh
  *   GET  /actuator/health
  *   WS   /ws/**
@@ -50,6 +49,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
+    private final AppProperties appProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,7 +64,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth/login",
-                    "/auth/register",
                     "/auth/refresh",
                     "/actuator/health",
                     "/actuator/info",
@@ -113,8 +112,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Orígenes permitidos — ajustar en producción con dominio real
-        config.setAllowedOriginPatterns(List.of("*"));
+        // Orígenes permitidos — configurable por variable de entorno para dev/demo
+        config.setAllowedOriginPatterns(appProperties.getCors().getAllowedOriginPatterns());
 
         // Métodos HTTP permitidos
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

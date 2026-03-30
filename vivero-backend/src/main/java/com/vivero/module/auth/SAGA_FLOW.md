@@ -73,7 +73,7 @@ Body: ApiResponse { success: true, data: AuthResponseDto }
 
 ---
 
-## 3. Flujo: Request autenticado (JwtAuthFilter)
+## 3. Flujo: petición autenticada (JwtAuthFilter)
 
 ```
 Cliente envía cualquier request protegido

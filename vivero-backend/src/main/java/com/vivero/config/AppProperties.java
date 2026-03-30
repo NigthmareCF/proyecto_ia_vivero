@@ -20,6 +20,7 @@ public class AppProperties {
     private final Jwt jwt = new Jwt();
     private final Storage storage = new Storage();
     private final Notification notification = new Notification();
+    private final Cors cors = new Cors();
 
     @Getter
     @Setter
@@ -67,5 +68,15 @@ public class AppProperties {
             private String botToken;
             private String botUsername;
         }
+    }
+
+    @Getter
+    @Setter
+    public static class Cors {
+        /**
+         * Lista de orígenes permitidos para CORS.
+         * Spring puede enlazar una lista separada por comas desde variables de entorno.
+         */
+        private java.util.List<String> allowedOriginPatterns = java.util.List.of("http://localhost:3000");
     }
 }

@@ -9,7 +9,7 @@ spring:
     name: vivero-backend
 
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   jpa:
     hibernate:
@@ -36,9 +36,9 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:postgresql://db:5432/vivero_db
-    username: vivero_user
-    password: vivero_pass
+    url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:vivero_db}
+    username: ${DB_USERNAME:vivero_user}
+    password: ${DB_PASSWORD:vivero_pass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -75,7 +75,7 @@ spring:
 # SERVER
 # ══════════════════════════════════════════════════════
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /api
 
@@ -85,11 +85,14 @@ server:
 app:
   jwt:
     secret: ${JWT_SECRET:vivero-secret-key-2026-agrotech-robot-greenhouse-monitoring}
-    expiration-ms: 86400000           # 24 hours
-    refresh-expiration-ms: 604800000  # 7 days
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}           # 24 horas
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}  # 7 días
 
   storage:
     images-path: ${IMAGES_PATH:/app/images}
+
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
 
   notification:
     email:

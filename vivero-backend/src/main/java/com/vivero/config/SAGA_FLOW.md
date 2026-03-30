@@ -1,4 +1,4 @@
-# SAGA FLOW — Config
+# SAGA FLOW — Configuración
 ## Versión 1.0 | Spring Boot 3.2 | Marzo 2026
 
 ---
@@ -16,7 +16,7 @@ config/
 
 ---
 
-## 2. Orden de carga de Spring al arrancar
+## 2. Orden de carga de Spring al iniciar
 
 ```
 1. Spring Boot arranca
@@ -54,10 +54,10 @@ config/
 
 ---
 
-## 3. Flujo de un request HTTP a través de los filtros
+## 3. Flujo de una petición HTTP a través de los filtros
 
 ```
-Request HTTP entrante
+Petición HTTP entrante
     │
     ▼
 CORS Filter (configurado en SecurityConfig)

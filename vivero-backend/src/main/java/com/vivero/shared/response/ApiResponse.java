@@ -7,10 +7,10 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 /**
- * Wraps ALL REST responses in the system.
- * Guarantees a consistent format for both success and error cases.
+ * Envuelve todas las respuestas REST del sistema.
+ * Garantiza un formato consistente tanto en éxito como en error.
  *
- * Success example:
+ * Ejemplo de éxito:
  * {
  *   "success": true,
  *   "message": "Plant found",
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  *   "timestamp": "2026-03-18T14:30:00"
  * }
  *
- * Error example:
+ * Ejemplo de error:
  * {
  *   "success": false,
  *   "message": "Plant not found",
@@ -39,7 +39,7 @@ public class ApiResponse<T> {
     @Builder.Default
     private final LocalDateTime timestamp = LocalDateTime.now();
 
-    // -- Factory methods for quick use in controllers --
+    // Métodos de fábrica para uso rápido desde controllers.
 
     public static <T> ApiResponse<T> ok(String message, T data) {
         return ApiResponse.<T>builder()
