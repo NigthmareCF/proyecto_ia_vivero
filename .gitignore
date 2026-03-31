@@ -1,0 +1,16 @@
+# Archivos de compilación
+vivero-backend/target/
+vivero-backend/.mvn/
+
+# IDEs y configuración local
+.idea/
+.vscode/
+*.iml
+
+# Variables locales
+.env
+
+# Archivos del sistema
+Thumbs.db
+.DS_Store
+
