@@ -10,9 +10,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * Base class for all system entities.
- * Provides auto-managed id and audit timestamps.
- * All entities extend this — never repeat these fields.
+ * Clase base para todas las entidades persistentes del sistema.
+ * Provee el identificador y las marcas de auditoría administradas por Spring Data JPA.
+ * Todas las entidades deben extender esta clase para evitar duplicar estos campos.
  */
 @Getter
 @Setter

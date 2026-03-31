@@ -7,12 +7,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Application entry point — Autonomous Greenhouse Monitoring System.
+ * Punto de entrada principal de la aplicación.
  *
- * @EnableAsync       — notifications (email, WhatsApp, Telegram) run on
- *                      separate threads to avoid blocking REST responses
- * @EnableScheduling  — scheduled tasks for automatic reports and alerts
- * @EnableJpaAuditing — activates @CreatedDate / @LastModifiedDate on BaseEntity
+ * @EnableAsync       ejecuta tareas asíncronas como notificaciones sin bloquear
+ *                    la respuesta HTTP principal.
+ * @EnableScheduling  habilita tareas programadas para reportes y alertas futuras.
+ * @EnableJpaAuditing activa @CreatedDate y @LastModifiedDate en BaseEntity.
  */
 @SpringBootApplication
 @EnableAsync
