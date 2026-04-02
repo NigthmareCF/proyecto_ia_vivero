@@ -10,6 +10,7 @@ import com.vivero.module.users.service.UserService;
 import com.vivero.shared.enums.UserRole;
 import com.vivero.shared.exception.BusinessException;
 import com.vivero.shared.exception.ResourceNotFoundException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementación del módulo administrativo de usuarios.
@@ -74,14 +76,16 @@ public class UserServiceImpl implements UserService {
             );
         }
 
-        User user = User.builder()
-                .firstName(request.getFirstName().trim())
-                .lastName(request.getLastName().trim())
-                .email(normalizedEmail)
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .active(Boolean.TRUE.equals(request.getActive()))
-                .build();
+        User user = Objects.requireNonNull(
+                User.builder()
+                        .firstName(request.getFirstName().trim())
+                        .lastName(request.getLastName().trim())
+                        .email(normalizedEmail)
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .active(Boolean.TRUE.equals(request.getActive()))
+                        .build()
+        );
 
         userRepository.save(user);
         log.info("Usuario creado desde módulo users: {}", user.getEmail());
@@ -156,7 +160,7 @@ public class UserServiceImpl implements UserService {
         log.info("Usuario eliminado: {}", user.getEmail());
     }
 
-    private User findUserOrThrow(Long id) {
+    private @NonNull User findUserOrThrow(@NonNull Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
@@ -167,7 +171,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean isCurrentUser(User user, String currentUserEmail) {
+    private boolean isCurrentUser(@NonNull User user, String currentUserEmail) {
         return user.getEmail().equalsIgnoreCase(currentUserEmail);
     }
 

@@ -1,6 +1,7 @@
 package com.vivero.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -28,7 +29,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
+    public void configureMessageBroker(@NonNull MessageBrokerRegistry registry) {
         // Prefijo para topics a los que se suscriben los clientes (frontend)
         registry.enableSimpleBroker("/topic", "/queue");
 
@@ -37,8 +38,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Endpoint de conexión WebSocket — el frontend conecta aquí
+    public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
+        // Endpoint de conexión WebSocket, el frontend conecta aquí
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")  // ajustar en producción con dominio real
                 .withSockJS();                  // fallback para navegadores sin WS nativo

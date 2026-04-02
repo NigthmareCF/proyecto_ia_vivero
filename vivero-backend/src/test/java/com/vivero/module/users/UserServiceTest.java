@@ -17,11 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,14 +55,14 @@ class UserServiceTest {
 
         when(userRepository.existsByEmail("ana@vivero.com")).thenReturn(false);
         when(passwordEncoder.encode("Password123")).thenReturn("encoded-password");
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.save(argThat(Objects::nonNull))).thenAnswer(invocation -> invocation.getArgument(0, User.class));
 
         UserResponseDto response = userService.createUser(request);
 
         assertEquals("ana@vivero.com", response.getEmail());
         assertEquals(UserRole.OPERATOR, response.getRole());
         verify(passwordEncoder).encode("Password123");
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).save(argThat(Objects::nonNull));
     }
 
     @Test

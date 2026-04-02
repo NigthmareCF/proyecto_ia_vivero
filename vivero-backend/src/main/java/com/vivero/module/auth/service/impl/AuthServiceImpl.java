@@ -10,6 +10,7 @@ import com.vivero.module.auth.service.AuthService;
 import com.vivero.module.auth.util.JwtUtil;
 import com.vivero.shared.exception.BusinessException;
 import com.vivero.shared.exception.ResourceNotFoundException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 /**
  * Implementación del servicio de autenticación.
@@ -44,8 +47,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDto login(LoginRequestDto request) {
-        // AuthenticationManager lanza BadCredentialsException si las credenciales son incorrectas
-        // GlobalExceptionHandler la convierte en HTTP 401
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -65,7 +66,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponseDto register(RegisterRequestDto request) {
-        // Verificar que el email no esté ya registrado
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessException(
                     "Email already registered: " + request.getEmail(),
@@ -73,14 +73,16 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .active(true)
-                .build();
+        User user = Objects.requireNonNull(
+                User.builder()
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(request.getRole())
+                        .active(true)
+                        .build()
+        );
 
         userRepository.save(user);
         log.info("Nuevo usuario registrado: {} con rol {}", user.getEmail(), user.getRole());
@@ -92,7 +94,6 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponseDto refresh(RefreshTokenRequestDto request) {
         final String refreshToken = request.getRefreshToken();
 
-        // Extraer email del refresh token
         final String email;
         try {
             email = jwtUtil.extractEmail(refreshToken);
@@ -100,7 +101,6 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException("Invalid refresh token", "INVALID_REFRESH_TOKEN");
         }
 
-        // Verificar que el token no esté expirado
         if (jwtUtil.isTokenExpired(refreshToken)) {
             throw new BusinessException(
                     "Refresh token expired, please login again",
@@ -111,7 +111,6 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + email));
 
-        // Generar nuevo access token — el refresh token se reutiliza hasta que expire
         String newAccessToken = jwtUtil.generateAccessToken(user);
 
         return AuthResponseDto.builder()
@@ -124,9 +123,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    // ── Método auxiliar ───────────────────────────────────────────────────────
-
-    private AuthResponseDto buildAuthResponse(User user) {
+    private AuthResponseDto buildAuthResponse(@NonNull User user) {
         return AuthResponseDto.builder()
                 .accessToken(jwtUtil.generateAccessToken(user))
                 .refreshToken(jwtUtil.generateRefreshToken(user))
