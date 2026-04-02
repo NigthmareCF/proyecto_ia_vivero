@@ -15,13 +15,16 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // Búsqueda por email — usada por Spring Security en el login
+    // Búsqueda por email, usada por Spring Security en el login
     Optional<User> findByEmail(String email);
 
     // Verificación de email único antes de registrar un nuevo usuario
     boolean existsByEmail(String email);
 
-    // Filtrar usuarios por rol — usado en la pantalla de gestión de usuarios
+    // Verificación de email único ignorando el usuario actual
+    boolean existsByEmailAndIdNot(String email, Long id);
+
+    // Filtrar usuarios por rol, usado en la pantalla de gestión de usuarios
     List<User> findByRole(UserRole role);
 
     // Filtrar usuarios activos/inactivos
