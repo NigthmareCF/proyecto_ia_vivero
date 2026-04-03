@@ -64,10 +64,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth/login",
+                    "/api/auth/login",
                     "/auth/refresh",
+                    "/api/auth/refresh",
                     "/actuator/health",
+                    "/api/actuator/health",
                     "/actuator/info",
-                    "/ws/**"          // WebSocket — autenticación propia vía token en handshake
+                    "/api/actuator/info",
+                    "/ws/**",
+                    "/api/ws/**"      // WebSocket — autenticación propia vía token en handshake
                 ).permitAll()
                 .anyRequest().authenticated()
             )
