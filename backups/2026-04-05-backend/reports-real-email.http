@@ -1,0 +1,113 @@
+@baseUrl = http://localhost:8080/api
+@json = application/json
+
+### Arranque recomendado del backend en PowerShell
+#
+# $env:SPRING_PROFILES_ACTIVE="dev"
+# $env:DB_HOST="localhost"
+# $env:DB_PORT="5432"
+# $env:DB_NAME="vivero_db"
+# $env:DB_USERNAME="vivero_user"
+# $env:DB_PASSWORD="vivero_pass"
+# $env:MAIL_HOST="smtp.gmail.com"
+# $env:MAIL_PORT="587"
+# $env:MAIL_USERNAME="ferchocastfun15@gmail.com"
+# $env:MAIL_PASSWORD="WhiteFang1907"
+# $env:MAIL_FROM="ferchocastfun15@gmail.com"
+# $env:SERVER_PORT="8080"
+# mvn --% spring-boot:run -Dspring-boot.run.jvmArguments=-Dspring.devtools.restart.enabled=false
+#
+# Si 8080 esta ocupado:
+# $env:SERVER_PORT="8081"
+# y cambiar @baseUrl a http://localhost:8081/api
+
+### 1. Login
+POST {{baseUrl}}/auth/login
+Content-Type: {{json}}
+
+{
+  "email": "admin@vivero.com",
+  "password": "Admin2026!"
+}
+
+### Copiar el access token devuelto y pegarlo aqui
+@token = REPLACE_WITH_JWT
+
+### 2. Canales soportados
+GET {{baseUrl}}/reports/notifications/channels
+Authorization: Bearer {{token}}
+
+### 3. Configuracion actual
+GET {{baseUrl}}/reports/notifications/config
+Authorization: Bearer {{token}}
+
+### 4. Guardar EMAIL real temporal
+PUT {{baseUrl}}/reports/notifications/config/EMAIL
+Authorization: Bearer {{token}}
+Content-Type: {{json}}
+
+{
+  "contactValue": "ferchocastfun15@gmail.com",
+  "active": true
+}
+
+### 5. Crear reporte temporal nuevo
+POST {{baseUrl}}/reports
+Authorization: Bearer {{token}}
+Content-Type: {{json}}
+
+{
+  "patrolId": 3001,
+  "title": "Real email delivery validation",
+  "summary": "Temporary report created to validate real email delivery.",
+  "observationsCount": 4,
+  "healthyCount": 1,
+  "attentionCount": 2,
+  "dangerCount": 1
+}
+
+### 6. Consultar reporte creado
+### Reemplazar 1 por el id real devuelto en la prueba anterior
+GET {{baseUrl}}/reports/1
+Authorization: Bearer {{token}}
+
+### 7. Descargar PDF del reporte creado
+### Reemplazar 1 por el id real devuelto en la prueba anterior
+GET {{baseUrl}}/reports/1/pdf
+Authorization: Bearer {{token}}
+
+### 8. Enviar notificacion real por EMAIL
+### Reemplazar 1 por el id real devuelto en la prueba anterior
+POST {{baseUrl}}/reports/notify
+Authorization: Bearer {{token}}
+Content-Type: {{json}}
+
+{
+  "reportId": 1,
+  "channels": ["EMAIL"]
+}
+
+### 9. Validacion negativa: email invalido
+PUT {{baseUrl}}/reports/notifications/config/EMAIL
+Authorization: Bearer {{token}}
+Content-Type: {{json}}
+
+{
+  "contactValue": "correo-invalido",
+  "active": true
+}
+
+### 10. Validacion negativa: conteos inconsistentes
+POST {{baseUrl}}/reports
+Authorization: Bearer {{token}}
+Content-Type: {{json}}
+
+{
+  "patrolId": 3002,
+  "title": "Broken report",
+  "summary": "Should fail.",
+  "observationsCount": 4,
+  "healthyCount": 1,
+  "attentionCount": 1,
+  "dangerCount": 1
+}
