@@ -7,9 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Mapea todas las propiedades del bloque 'app.*' en application.yml.
- * Centraliza la configuración de JWT, almacenamiento y notificaciones.
- *
- * Se inyecta con @Autowired o constructor en cualquier clase que lo necesite.
+ * Centraliza la configuracion de JWT, almacenamiento, notificaciones y OAuth.
  */
 @Getter
 @Setter
@@ -21,22 +19,19 @@ public class AppProperties {
     private final Storage storage = new Storage();
     private final Notification notification = new Notification();
     private final Cors cors = new Cors();
+    private final Oauth oauth = new Oauth();
 
     @Getter
     @Setter
     public static class Jwt {
-        // Clave secreta para firmar tokens — viene de variable de entorno JWT_SECRET
         private String secret;
-        // Tiempo de expiración del access token en milisegundos (default: 24h)
         private long expirationMs;
-        // Tiempo de expiración del refresh token en milisegundos (default: 7 días)
         private long refreshExpirationMs;
     }
 
     @Getter
     @Setter
     public static class Storage {
-        // Ruta base donde se guardan las imágenes del robot — volumen Docker
         private String imagesPath;
     }
 
@@ -73,10 +68,21 @@ public class AppProperties {
     @Getter
     @Setter
     public static class Cors {
-        /**
-         * Lista de orígenes permitidos para CORS.
-         * Spring puede enlazar una lista separada por comas desde variables de entorno.
-         */
         private java.util.List<String> allowedOriginPatterns = java.util.List.of("http://localhost:3000");
+    }
+
+    @Getter
+    @Setter
+    public static class Oauth {
+        private final Provider google = new Provider();
+        private final Provider apple = new Provider();
+
+        @Getter
+        @Setter
+        public static class Provider {
+            private String clientId;
+            private String issuer;
+            private String jwksUri;
+        }
     }
 }
