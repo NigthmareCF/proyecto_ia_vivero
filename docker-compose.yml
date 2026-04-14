@@ -69,6 +69,23 @@ services:
     networks:
       - vivero_network
 
+  frontend:
+    build:
+      context: ./vivero-frontend
+      dockerfile: Dockerfile
+    container_name: vivero_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+      VITE_WS_URL: ${VITE_WS_URL:-http://localhost:8080/api}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - vivero_network
+
 volumes:
   postgres_data:
     driver: local
