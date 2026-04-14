@@ -150,7 +150,7 @@ public class ExternalVisionApiClient implements VisionApiClient {
         return objectMapper.readTree(response.body());
     }
 
-    VisionDiagnosis parseDiagnosis(String rawJson, String modelName) throws Exception {
+    public VisionDiagnosis parseDiagnosis(String rawJson, String modelName) throws Exception {
         JsonNode diagnosis = objectMapper.readTree(stripMarkdownFence(rawJson));
 
         String estadoGeneral = uppercaseOrDefault(diagnosis.path("estadoGeneral").asText(null), "UNKNOWN");
