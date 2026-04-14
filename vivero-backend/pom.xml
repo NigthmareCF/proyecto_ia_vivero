@@ -25,6 +25,7 @@
         <jjwt.version>0.12.5</jjwt.version>
         <itext.version>8.0.3</itext.version>
         <twilio.version>9.14.0</twilio.version>
+        <nimbus.version>9.37.3</nimbus.version>
     </properties>
 
     <dependencies>
@@ -143,6 +144,12 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>${nimbus.version}</version>
         </dependency>
 
         <!-- ══════════════════════════════════════════
