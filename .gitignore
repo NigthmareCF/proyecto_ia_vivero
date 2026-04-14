@@ -9,6 +9,9 @@ vivero-backend/.mvn/
 
 # Variables locales
 .env
+robot-pi/__pycache__/
+robot-pi/src/__pycache__/
+robot-pi/.venv/
 
 # Archivos del sistema
 Thumbs.db
