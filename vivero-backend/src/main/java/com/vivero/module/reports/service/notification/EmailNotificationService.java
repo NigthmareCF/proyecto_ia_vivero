@@ -9,13 +9,13 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-/**
- * Notificación por correo electrónico con el PDF adjunto.
- */
 @Service
 @RequiredArgsConstructor
 public class EmailNotificationService implements NotificationService {
@@ -37,12 +37,30 @@ public class EmailNotificationService implements NotificationService {
             helper.setFrom(appProperties.getNotification().getEmail().getFrom());
             helper.setTo(config.getContactValue());
             helper.setSubject("Vivero report generated: " + report.getTitle());
-            helper.setText(buildBody(report));
+            helper.setText(buildBody(report), false);
             helper.addAttachment("report-" + report.getId() + ".pdf", new ByteArrayResource(pdfContent));
 
             mailSender.send(message);
+        } catch (MailAuthenticationException ex) {
+            throw new BusinessException(
+                    "Email provider rejected the configured credentials",
+                    "EMAIL_PROVIDER_AUTH_FAILED"
+            );
+        } catch (MailSendException ex) {
+            throw new BusinessException(
+                    "Email provider accepted the request but could not deliver the message",
+                    "EMAIL_PROVIDER_SEND_FAILED"
+            );
         } catch (MessagingException ex) {
-            throw new BusinessException("Failed to send email notification", "EMAIL_NOTIFICATION_ERROR");
+            throw new BusinessException(
+                    "Email message could not be built correctly",
+                    "EMAIL_MESSAGE_BUILD_FAILED"
+            );
+        } catch (MailException ex) {
+            throw new BusinessException(
+                    "Email notification could not be sent by the configured provider",
+                    "EMAIL_NOTIFICATION_ERROR"
+            );
         }
     }
 
