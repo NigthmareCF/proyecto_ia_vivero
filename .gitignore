@@ -9,6 +9,9 @@ vivero-backend/.mvn/
 
 # Variables locales
 .env
+robot-bridge/.venv/
+robot-bridge/__pycache__/
+robot-bridge/src/__pycache__/
 
 # Archivos del sistema
 Thumbs.db

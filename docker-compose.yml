@@ -69,6 +69,26 @@ services:
     networks:
       - vivero_network
 
+  robot-bridge:
+    build:
+      context: ./robot-bridge
+      dockerfile: Dockerfile
+    container_name: vivero_robot_bridge
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      BACKEND_BASE_URL: ${BACKEND_BASE_URL:-http://backend:8080/api}
+      ROBOT_BRIDGE_HOST: 0.0.0.0
+      ROBOT_BRIDGE_PORT: 5000
+      BRIDGE_RETRY_QUEUE_LIMIT: ${BRIDGE_RETRY_QUEUE_LIMIT:-200}
+      BRIDGE_REQUEST_TIMEOUT_SECONDS: ${BRIDGE_REQUEST_TIMEOUT_SECONDS:-8}
+    ports:
+      - "${ROBOT_BRIDGE_PORT:-5000}:5000"
+    networks:
+      - vivero_network
+
 volumes:
   postgres_data:
     driver: local
