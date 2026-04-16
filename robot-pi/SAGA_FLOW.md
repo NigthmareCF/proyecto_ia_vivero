@@ -1,7 +1,7 @@
 # Robot PI
 
-1. El runtime captura imagenes desde camara real o simulada.
-2. El clasificador TFLite evalua la planta localmente.
-3. El lector QR identifica la planta observada.
-4. El controlador envia heartbeat y observacion al robot-bridge.
-5. Si no hay hardware o librerias nativas, el sistema cae en modo simulacion.
+1. El runtime carga configuracion, perifericos y modelo TFLite al iniciar.
+2. Un listener WebSocket recibe comandos del backend en hilo separado.
+3. El loop principal sigue linea, detecta QR con la camara frontal, captura imagenes izquierda/frontal/derecha y clasifica localmente.
+4. Los resultados y el estado del robot se envian al bridge por HTTP.
+5. En modo manual se activa el stream y los motores responden en tiempo real.

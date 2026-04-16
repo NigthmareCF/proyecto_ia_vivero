@@ -1,19 +1,11 @@
-# Archivos de compilación
-vivero-backend/target/
-vivero-backend/.mvn/
-
-# IDEs y configuración local
-.idea/
-.vscode/
-*.iml
-
-# Variables locales
 .env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
 robot-pi/__pycache__/
 robot-pi/src/__pycache__/
-robot-pi/.venv/
-
-# Archivos del sistema
-Thumbs.db
-.DS_Store
-
+robot-pi/models/modelo_vivero.tflite
+robot-pi/models/*.log
