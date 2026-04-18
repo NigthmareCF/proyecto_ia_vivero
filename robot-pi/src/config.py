@@ -7,31 +7,32 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
+# Pinout alineado a la documentacion de circuito local.
+# El L298N queda controlado por IN1..IN4; ENA/ENB deben permanecer
+# puenteados en el modulo si se usa este mapeo.
 MOTOR_LEFT_IN1 = 17
-MOTOR_LEFT_IN2 = 18
-MOTOR_LEFT_ENA = 12
+MOTOR_LEFT_IN2 = 27
 MOTOR_RIGHT_IN3 = 22
 MOTOR_RIGHT_IN4 = 23
-MOTOR_RIGHT_ENB = 13
 
-LINE_SENSOR_LEFT = 5
-LINE_SENSOR_CENTER = 6
+LINE_SENSOR_LEFT = 13
+LINE_SENSOR_CENTER = 19
 LINE_SENSOR_RIGHT = 26
 
-ULTRASONIC_TRIG = 20
-ULTRASONIC_ECHO = 21
+ULTRASONIC_TRIG = 5
+ULTRASONIC_ECHO = 6
 
-IR_LEFT = 19
-IR_RIGHT = 16
+IR_LEFT = 16
+IR_RIGHT = 20
 
 LCD_SDA = 2
 LCD_SCL = 3
 
-LED_GREEN = 24
-LED_YELLOW = 25
-LED_RED = 8
+LED_GREEN = 12
+LED_YELLOW = 24
+LED_RED = 25
 
-BUZZER = 7
+BUZZER = 21
 
 CLASSES = ["atencion", "peligro", "sano"]
 PWM_FREQUENCY_HZ = 1000
