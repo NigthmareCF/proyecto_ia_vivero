@@ -27,6 +27,10 @@ import java.time.LocalDateTime;
 @Table(name = "robot_status")
 public class RobotStatus extends BaseEntity {
 
+    @Column(name = "robot_id", nullable = false, length = 80)
+    @Builder.Default
+    private String robotId = "ROBOT-001";
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
@@ -38,9 +42,48 @@ public class RobotStatus extends BaseEntity {
     @Column(name = "current_plant_qr", length = 120)
     private String currentPlantQr;
 
+    @Column(name = "current_patrol_id", length = 80)
+    private String currentPatrolId;
+
     @Column(name = "is_connected", nullable = false)
     @Builder.Default
     private boolean connected = false;
+
+    @Column(name = "temperature_celsius")
+    private Double temperatureCelsius;
+
+    @Column(name = "cpu_usage_percent")
+    private Double cpuUsagePercent;
+
+    @Column(name = "connection_quality", length = 40)
+    private String connectionQuality;
+
+    @Column(name = "obstacle_detected", nullable = false)
+    @Builder.Default
+    private boolean obstacleDetected = false;
+
+    @Column(name = "is_blocked", nullable = false)
+    @Builder.Default
+    private boolean blocked = false;
+
+    @Column(name = "stream_active", nullable = false)
+    @Builder.Default
+    private boolean streamActive = false;
+
+    @Column(name = "queue_depth")
+    private Integer queueDepth;
+
+    @Column(name = "status_summary", length = 255)
+    private String statusSummary;
+
+    @Column(name = "active_camera", length = 40)
+    private String activeCamera;
+
+    @Column(name = "control_profile", length = 40)
+    private String controlProfile;
+
+    @Column(name = "speed_profile", length = 40)
+    private String speedProfile;
 
     @Column(name = "last_seen_at", nullable = false)
     private LocalDateTime lastSeenAt;

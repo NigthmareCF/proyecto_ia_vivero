@@ -14,10 +14,23 @@ import java.time.LocalDateTime;
 public class RobotStatusResponseDto {
 
     private Long id;
+    private String robotId;
     private RobotMode mode;
     private Integer batteryLevel;
+    private Double temperatureCelsius;
+    private Double cpuUsagePercent;
+    private String connectionQuality;
     private String currentPlantQr;
+    private String currentPatrolId;
     private boolean connected;
+    private boolean obstacleDetected;
+    private boolean blocked;
+    private boolean streamActive;
+    private Integer queueDepth;
+    private String statusSummary;
+    private String activeCamera;
+    private String controlProfile;
+    private String speedProfile;
     private LocalDateTime lastSeenAt;
     private String lastCommand;
 }

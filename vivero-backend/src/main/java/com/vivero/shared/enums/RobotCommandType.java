@@ -9,5 +9,8 @@ public enum RobotCommandType {
     GOTO_PLANT,
     SET_MODE,
     MANUAL_MOVE,
-    HEARTBEAT
+    HEARTBEAT,
+    SWITCH_CAMERA,
+    SET_SPEED_PROFILE,
+    RUN_ACRO
 }

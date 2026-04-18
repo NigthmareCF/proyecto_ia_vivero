@@ -1,13 +1,20 @@
 package com.vivero.module.robot.controller;
 
 import com.vivero.module.robot.dto.RobotCommandDto;
+import com.vivero.module.robot.dto.RobotHeartbeatRequestDto;
+import com.vivero.module.robot.dto.RobotObservationRequestDto;
+import com.vivero.module.robot.dto.RobotObservationResponseDto;
 import com.vivero.module.robot.dto.RobotStatusResponseDto;
 import com.vivero.module.robot.service.RobotService;
 import com.vivero.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,9 +37,29 @@ public class RobotController {
         return ResponseEntity.ok(ApiResponse.ok("Robot command processed successfully", robotService.sendCommand(command)));
     }
 
+    @PostMapping("/heartbeat")
+    public ResponseEntity<ApiResponse<RobotStatusResponseDto>> processHeartbeat(@Valid @RequestBody RobotHeartbeatRequestDto heartbeat) {
+        return ResponseEntity.ok(ApiResponse.ok("Robot heartbeat processed successfully", robotService.processHeartbeat(heartbeat)));
+    }
+
+    @PostMapping("/observations")
+    public ResponseEntity<ApiResponse<RobotObservationResponseDto>> registerObservation(@Valid @RequestBody RobotObservationRequestDto observation) {
+        return ResponseEntity.ok(ApiResponse.ok("Robot observation stored successfully", robotService.registerObservation(observation)));
+    }
+
     @GetMapping("/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
     public ResponseEntity<ApiResponse<RobotStatusResponseDto>> getStatus() {
         return ResponseEntity.ok(ApiResponse.ok("Robot status retrieved successfully", robotService.getCurrentStatus()));
+    }
+
+    @GetMapping("/observations/images/{imageId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    public ResponseEntity<Resource> getObservationImage(@PathVariable Long imageId) {
+        Resource image = robotService.loadObservationImage(imageId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CACHE_CONTROL, "no-cache")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(image);
     }
 }

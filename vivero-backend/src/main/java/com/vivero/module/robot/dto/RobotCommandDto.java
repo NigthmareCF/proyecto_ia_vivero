@@ -30,4 +30,13 @@ public class RobotCommandDto {
     @Min(value = 0, message = "Speed must be at least 0")
     @Max(value = 100, message = "Speed must be at most 100")
     private Integer speed;
+
+    @Size(max = 40, message = "Camera name must not exceed 40 characters")
+    private String cameraName;
+
+    @Size(max = 40, message = "Speed profile must not exceed 40 characters")
+    private String speedProfile;
+
+    @Size(max = 80, message = "Sequence name must not exceed 80 characters")
+    private String sequenceName;
 }
