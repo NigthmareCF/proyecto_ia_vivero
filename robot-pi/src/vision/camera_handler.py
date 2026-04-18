@@ -59,7 +59,7 @@ class CameraHandler:
             frame = self.capture_frame("front")
             return [frame] if frame is not None else []
         triplet = self.capture_triplet()
-        ordered = [triplet["left"], triplet["front"], triplet["right"]]
+        ordered = [triplet["front"], triplet["left"], triplet["right"]]
         return [frame for frame in ordered if frame is not None][:n]
 
     def frame_to_base64(self, frame: np.ndarray) -> str:

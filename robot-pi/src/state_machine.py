@@ -51,6 +51,7 @@ class RobotStateMachine:
     def stop(self) -> None:
         with self._lock:
             self._state = RobotState.IDLE
+            self._patrol_id = None
             self._current_plant_qr = None
             self._manual_direction = "stop"
             self._manual_speed = 0

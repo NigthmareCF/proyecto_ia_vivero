@@ -42,6 +42,8 @@ N_CAPTURES = 3
 class Settings:
     bridge_url: str
     backend_ws_url: str
+    heartbeat_path: str
+    observation_path: str
     camera_type: str
     camera_front_index: int
     camera_left_index: int
@@ -59,6 +61,11 @@ class Settings:
     manual_default_speed: int
     stream_fps: int
     stream_quality: int
+    capture_count: int
+    observation_retry_count: int
+    local_ai_enabled: bool
+    cpu_temp_path: str
+    battery_capacity_path: str | None
     lcd_enabled: bool
     led_enabled: bool
     buzzer_enabled: bool
@@ -70,8 +77,10 @@ class Settings:
         if env_path.exists():
             load_dotenv(env_path)
         return cls(
-            bridge_url=os.getenv("BRIDGE_URL", "http://localhost:5000"),
+            bridge_url=os.getenv("BRIDGE_URL", "http://localhost:8080"),
             backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/ws"),
+            heartbeat_path=os.getenv("HEARTBEAT_PATH", "/api/robot/heartbeat"),
+            observation_path=os.getenv("OBSERVATION_PATH", "/api/robot/observations"),
             camera_type=os.getenv("CAMERA_TYPE", "usb").lower(),
             camera_front_index=int(os.getenv("CAMERA_FRONT_INDEX", "0")),
             camera_left_index=int(os.getenv("CAMERA_LEFT_INDEX", "1")),
@@ -89,6 +98,11 @@ class Settings:
             manual_default_speed=int(os.getenv("MANUAL_DEFAULT_SPEED", "35")),
             stream_fps=int(os.getenv("STREAM_FPS", "10")),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
+            capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
+            observation_retry_count=int(os.getenv("OBSERVATION_RETRY_COUNT", "3")),
+            local_ai_enabled=os.getenv("LOCAL_AI_ENABLED", "false").lower() == "true",
+            cpu_temp_path=os.getenv("CPU_TEMP_PATH", "/sys/class/thermal/thermal_zone0/temp"),
+            battery_capacity_path=os.getenv("BATTERY_CAPACITY_PATH"),
             lcd_enabled=os.getenv("LCD_ENABLED", "true").lower() == "true",
             led_enabled=os.getenv("LED_ENABLED", "true").lower() == "true",
             buzzer_enabled=os.getenv("BUZZER_ENABLED", "true").lower() == "true",
