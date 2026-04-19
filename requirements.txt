@@ -1,0 +1,6 @@
+# Dependencias base del pipeline de dataset/preprocesado.
+# Para entrenamiento usa: pip install -r requirements-ml.txt
+Pillow
+imagehash
+scikit-learn
+numpy

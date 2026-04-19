@@ -1,0 +1,8 @@
+# Entorno dedicado para entrenamiento del modelo
+numpy
+tensorflow
+
+# Utilidades del pipeline de dataset ya usadas en el repo
+Pillow
+imagehash
+scikit-learn
