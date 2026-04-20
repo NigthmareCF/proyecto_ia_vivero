@@ -25,18 +25,18 @@ class BackendClient:
     def _post(self, path: str, payload: dict) -> bool:
         try:
             response = requests.post(
-                f"{self.settings.bridge_url.rstrip('/')}{path}",
+                f"{self.settings.backend_base_url.rstrip('/')}{path}",
                 json=payload,
                 timeout=10,
             )
             if not response.ok:
                 LOGGER.warning(
-                    "Bridge POST failed for %s: status=%s body=%s",
+                    "Backend POST failed for %s: status=%s body=%s",
                     path,
                     response.status_code,
                     response.text[:250],
                 )
             return response.ok
         except requests.RequestException as exc:
-            LOGGER.warning("Bridge POST failed for %s: %s", path, exc)
+            LOGGER.warning("Backend POST failed for %s: %s", path, exc)
             return False

@@ -1,48 +1,66 @@
 # SAGA FLOW - Robot Pi
 
+Flujo vigente del runtime del robot.
+
+## 1. Flujo implementado hoy
+
+```text
 INICIO
-  main.py carga config, GPIO, modelo TFLite
+  main.py carga config, perifericos y modelo opcional
   command_listener inicia en hilo separado
   status_sender inicia en hilo separado
-  LCD muestra "AgroTech Ready"
-  LED verde ON
+  LCD muestra estado inicial
   estado: IDLE
 
 IDLE
-  espera comando START_PATROL del backend
-  envia status cada 10s
+  espera comandos
+  envia heartbeat
 
 FOLLOW_LINE
-  lee sensores de linea y ajusta motores
-  verifica sensor ultrasonico en cada ciclo
-  si hay obstaculo: stop, espera, intenta correccion
-  captura frame y busca QR valido
+  sigue linea
+  revisa obstaculos
+  captura frame frontal para QR en el flujo actual
   si detecta QR -> QR_DETECTED
 
 QR_DETECTED
-  detiene motores
-  guarda el plant_qr actual
-  LCD muestra el QR
-  LED amarillo ON
+  detiene el robot
+  guarda plant_qr
+  muestra estado
   -> CAPTURING
 
 CAPTURING
-  captura 3 fotos simultaneas: izquierda, frontal y derecha
-  LCD muestra "Analizando..."
-  -> CLASSIFYING
+  toma rafaga de imagenes
+  -> CLASSIFYING opcional o SENDING
 
 CLASSIFYING
-  ejecuta inferencia local TFLite
-  consolida clase final y confianza
+  ejecuta IA local si esta habilitada
   -> SENDING
 
 SENDING
-  codifica imagenes a base64
-  POST al bridge con patrol_id, plant_qr y resultado
-  si el resultado es peligro: LED rojo + buzzer
+  envia observacion al backend
   -> FOLLOW_LINE
 
 MANUAL
-  activa stream de camara
-  responde a comandos MOVE en tiempo real
-  espera AUTO o STOP
+  responde a comandos de movimiento
+  puede activar stream
+```
+
+## 2. Flujo objetivo posterior
+
+```text
+AUTO_LINE continuo
+  QR detectado por lateral
+  rafaga sin detener
+  backend recibe observacion
+  robot continua
+```
+
+Estado:
+
+- acordado
+- documentado
+- no implementado aun
+
+## 3. Regla operativa
+
+No implementar automaticamente el flujo objetivo hasta confirmacion del usuario.

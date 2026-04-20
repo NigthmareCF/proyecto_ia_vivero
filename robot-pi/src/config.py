@@ -41,7 +41,7 @@ N_CAPTURES = 3
 
 @dataclass(slots=True)
 class Settings:
-    bridge_url: str
+    backend_base_url: str
     backend_ws_url: str
     heartbeat_path: str
     observation_path: str
@@ -77,11 +77,12 @@ class Settings:
         env_path = Path(__file__).resolve().parents[2] / ".env"
         if env_path.exists():
             load_dotenv(env_path)
+        backend_base_url = os.getenv("BACKEND_BASE_URL") or os.getenv("BRIDGE_URL") or "http://localhost:8080/api"
         return cls(
-            bridge_url=os.getenv("BRIDGE_URL", "http://localhost:8080"),
-            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/ws"),
-            heartbeat_path=os.getenv("HEARTBEAT_PATH", "/api/robot/heartbeat"),
-            observation_path=os.getenv("OBSERVATION_PATH", "/api/robot/observations"),
+            backend_base_url=backend_base_url,
+            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/api/ws"),
+            heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
+            observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
             camera_type=os.getenv("CAMERA_TYPE", "usb").lower(),
             camera_front_index=int(os.getenv("CAMERA_FRONT_INDEX", "0")),
             camera_left_index=int(os.getenv("CAMERA_LEFT_INDEX", "1")),
