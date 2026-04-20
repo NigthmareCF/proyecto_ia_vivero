@@ -13,7 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
  *
  * 1. Control manual del robot (frontend → backend → robot)
  *    Frontend publica en: /app/robot/control
- *    Backend reenvía al robot bridge
+ *    Backend publica el estado y sirve como punto central de coordinacion
  *
  * 2. Stream de cámara en tiempo real (robot → backend → frontend)
  *    Backend publica en: /topic/robot/stream

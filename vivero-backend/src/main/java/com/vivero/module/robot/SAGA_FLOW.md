@@ -9,7 +9,7 @@ Permite consultar el estado, enviar comandos de control y relanzar el stream de 
 
 1. El frontend consulta `/api/robot/status`
 2. El backend devuelve el ultimo `RobotStatus` persistido
-3. El frontend o bridge envian comandos a `/api/robot/command` o `/app/robot/control`
+3. El frontend o el runtime del robot envian comandos o eventos a `/api/robot/command` o `/app/robot/control`
 4. `RobotServiceImpl` actualiza el estado y registra el ultimo comando
 5. `RobotWebSocketController` publica eventos a `/topic/robot/control` y `/topic/robot/stream`
 
