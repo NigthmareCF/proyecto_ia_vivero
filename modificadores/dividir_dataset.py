@@ -21,7 +21,7 @@ from pathlib import Path
 
 # ─── Configuración ───────────────────────────────────────────────────────────
 
-ORIGEN  = Path("dataset/raw")
+ORIGEN  = Path("C:/Proyecto_IA_Vivero/dataset/raw")
 DESTINO = Path("dataset")
 CLASES  = ["sano", "atencion", "peligro"]
 

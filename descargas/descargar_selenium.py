@@ -26,7 +26,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-BASE_DIR        = "dataset/raw"
+BASE_DIR        = "C:/Proyecto_IA_Vivero/dataset/raw"
 MAX_POR_BUSQUEDA = 250
 MAX_SCROLLES    = 40
 PAUSA_SCROLL    = 1.5
@@ -34,66 +34,81 @@ PAUSA_SCROLL    = 1.5
 
 # ─── Términos de búsqueda ────────────────────────────────────────────────────
 
-#busquedas_sano = [
-#    "healthy bell pepper plant real photo",
-#    "healthy capsicum annuum plant real photo",
-#    "healthy sweet pepper leaves real photo",
-#    "healthy bell pepper greenhouse real photo",
-#    "healthy capsicum annuum leaves close up",
-#    "healthy sweet pepper plant field",
-#    "healthy bell pepper foliage crop",
-#    "planta de pimiento sana foto real",
-#    "chile pimiento sano hojas verdes foto",
-#    "pimiento morron sano invernadero foto",
-#    "capsicum annuum planta sana foto",
-#    "hojas verdes sanas pimiento foto real",
-#   "planta de pimentao saudavel foto",
-#    "folhas saudaveis pimentao foto",
-#    "capsicum annuum nathalie healthy plant",
-#    "nathalie bell pepper healthy",
-#] 
+busquedas_sano = [
+    "healthy pepper plant real photo",
+    "healthy chili plant real photo",
+    "healthy capsicum plant real photo",
+    "deep green pepper leaf close up",
+    "healthy green leaf veins pepper",
+    "shiny waxy pepper leaf",
+    "perfectly symmetrical pepper leaf",
+    "healthy pepper foliage field",
+    "vigorous chili plant leaves",
+    "firm green pepper fruit on plant",
+    "hoja de chile verde intenso",
+    "hoja de chile sin deformidad",
+    "hoja de chile brillante textura",
+    "nervaduras verdes chile",
+    "planta de chile saludable foto real",
+    "hojas verdes sanas de chile foto real",
+    "folha de pimenta verde escura",
+    "folha de pimenta simetrica",
+    "folha de pimenta brilhante",
+    "nervuras foliares saudaveis pimenta",
+    "planta de pimenta saudavel foto real",
+    "fruto de pimentao firme",
+]
 
 
 busquedas_atencion = [
-    "bell pepper yellow leaves real photo",
-    "capsicum nutrient deficiency real photo",
-    "pepper leaf chlorosis real photo",
-    "sweet pepper leaf stress real photo",
-    "bell pepper wilting leaves photo",
-    "pepper iron deficiency yellow leaves",
-    "capsicum magnesium deficiency plant",
-    "pimiento hojas amarillas foto real",
-    "clorosis en pimiento foto real",
-    "deficiencia nutricional pimiento foto",
-    "hojas enrolladas pimiento foto real",
-    "estres hidrico pimiento foto real",
-    "pimentao folhas amarelas foto",
-    "clorose em pimentao foto real",
-    "nathalie pepper yellow leaves",
-    "pimiento nathalie clorosis foto",
+    "interveinal chlorosis pepper leaf",
+    "leaf edge yellowing pepper",
+    "initial insect bites pepper leaf",
+    "mildew spots pepper leaf",
+    "magnesium deficiency pepper",
+    "early nutrient deficiency chili plant",
+    "pepper leaf pale spots early",
+    "mild pepper leaf curling stress",
+    "pepper plant early wilting symptoms",
+    "capsicum leaf yellow patches",
+    "nervaduras amarillas hoja chile",
+    "bordes de hoja amarillos chile",
+    "hojas de chile con mordidas",
+    "manchas claras inicio hongo chile",
+    "deficiencia de magnesio chile",
+    "clorosis leve hoja de chile foto real",
+    "estres inicial planta de chile",
+    "clorose intervinal pimentao",
+    "bordas das folhas amarelas pimenta",
+    "folhas de pimenta mordidas",
+    "manchas brancas pimentao",
+    "deficiencia de magnesio pimenta",
 ]
 
-#busquedas_peligro = [
-#    "bell pepper leaf disease real photo",
-#    "capsicum bacterial spot real photo",
-#    "pepper powdery mildew real photo",
-#    "bell pepper aphids infestation photo",
-#    "pepper whitefly damage real photo",
-#    "capsicum fungal leaf disease photo",
-#    "pepper leaf blight real photo",
-#    "pepper thrips damage leaves photo",
-#    "bell pepper mosaic virus photo",
-#    "enfermedad hoja pimiento foto real",
-#    "plaga en pimiento foto real",
-#    "mancha bacteriana pimiento foto real",
-#    "afidos en pimiento foto real",
-#    "mosca blanca pimiento foto real",
-#    "hongo en pimiento foto real",
-#    "tizon en pimiento foto real",
-#    "doenca folha pimentao foto real",
-#    "praga em pimentao foto real",
-#    "nathalie pepper disease photo",
-#]
+busquedas_peligro = [
+    "heavily perforated pepper leaf",
+    "leaf curl virus pepper",
+    "dead necrotic tissue pepper leaf",
+    "aphid colony under pepper leaf",
+    "severely wilting pepper plant",
+    "severe whitefly infestation pepper",
+    "pepper bacterial leaf spot severe",
+    "pepper blight severe leaves",
+    "pepper plant advanced fungal disease",
+    "capsicum severe pest damage",
+    "hoja de chile muy agujereada",
+    "hoja de chile contraida deformada",
+    "tejido necrotico seco chile",
+    "colonia pulgon enves chile",
+    "marchitamiento severo chile",
+    "plaga severa en planta de chile",
+    "enfermedad avanzada hoja de chile",
+    "folha de pimenta perfurada",
+    "folha de pimenta enrolada",
+    "tecido necrotico pimentao",
+    "colonia de pulgao pimentao",
+    "planta de pimenta murcha",
+]
 
 
 # ─── Utilidades ──────────────────────────────────────────────────────────────
@@ -282,9 +297,9 @@ def main():
     driver = obtener_driver()
 
     try:
-        #descargar_clase(driver, "sano",     busquedas_sano)
+        descargar_clase(driver, "sano",     busquedas_sano)
         descargar_clase(driver, "atencion", busquedas_atencion)
-        #descargar_clase(driver, "peligro",  busquedas_peligro)
+        descargar_clase(driver, "peligro",  busquedas_peligro)
     finally:
         driver.quit()
 

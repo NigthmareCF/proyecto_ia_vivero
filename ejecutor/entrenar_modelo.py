@@ -9,16 +9,37 @@ Cambios respecto a v2:
   - Eliminado guardado .h5 (incompatible con Keras 3+)
   - Se mantiene optimización CPU con todos los núcleos
 
-Requisitos:
-    pip install tensorflow numpy
+Dependencias:
+    pip install -r requirements-ml.txt
 """
 
 import os
-import numpy as np
+import sys
 from pathlib import Path
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+
+try:
+    import numpy as np
+except ModuleNotFoundError as exc:
+    raise SystemExit(
+        "Falta la dependencia 'numpy'. Instala el entorno de ML con: "
+        "python -m pip install -r requirements-ml.txt"
+    ) from exc
+
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+    from tensorflow.keras import layers
+except ModuleNotFoundError as exc:
+    raise SystemExit(
+        "Falta la dependencia 'tensorflow'. Ejecuta este script dentro de un "
+        "entorno de ML dedicado e instala: "
+        "python -m pip install -r requirements-ml.txt"
+    ) from exc
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+os.chdir(ROOT_DIR)
+print(f"Usando Python: {sys.executable}")
+print(f"Directorio de trabajo: {ROOT_DIR}")
 
 # ─── Optimización CPU ────────────────────────────────────────────────────────
 

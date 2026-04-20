@@ -23,7 +23,7 @@ from tqdm import tqdm
 
 # ─── Configuración ───────────────────────────────────────────────────────────
 
-BASE_DIR    = Path("dataset/raw")
+BASE_DIR    = Path("C:/Proyecto_IA_Vivero/dataset/raw")
 CLASES      = ["sano", "atencion", "peligro"]
 
 MIN_WIDTH      = 180    # píxeles mínimos de ancho
