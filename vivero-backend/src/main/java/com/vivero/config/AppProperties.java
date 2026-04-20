@@ -21,6 +21,7 @@ public class AppProperties {
     private final Storage storage = new Storage();
     private final Notification notification = new Notification();
     private final Cors cors = new Cors();
+    private String publicBaseUrl;
 
     @Getter
     @Setter
@@ -45,7 +46,6 @@ public class AppProperties {
     public static class Notification {
         private final Email email = new Email();
         private final Twilio twilio = new Twilio();
-        private final Telegram telegram = new Telegram();
 
         @Getter
         @Setter
@@ -58,16 +58,11 @@ public class AppProperties {
         public static class Twilio {
             private String accountSid;
             private String authToken;
+            private String messagingServiceSid;
             private String fromWhatsapp;
             private String fromSms;
         }
 
-        @Getter
-        @Setter
-        public static class Telegram {
-            private String botToken;
-            private String botUsername;
-        }
     }
 
     @Getter

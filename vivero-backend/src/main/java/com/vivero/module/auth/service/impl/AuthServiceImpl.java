@@ -77,6 +77,7 @@ public class AuthServiceImpl implements AuthService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
+                .phoneNumber(normalizePhone(request.getPhoneNumber()))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .active(true)
@@ -120,6 +121,7 @@ public class AuthServiceImpl implements AuthService {
                 .userId(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
                 .build();
     }
@@ -133,7 +135,15 @@ public class AuthServiceImpl implements AuthService {
                 .userId(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
                 .build();
+    }
+
+    private String normalizePhone(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return value.trim();
     }
 }

@@ -101,6 +101,7 @@ public class AuthController {
                 .userId(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
                 .build();
 

@@ -7,7 +7,7 @@
 -- Password: Admin2026! (encriptado con BCrypt factor 12)
 -- CAMBIAR en producción antes de desplegar
 INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
-VALUES (
+SELECT
     'System',
     'Admin',
     'admin@vivero.com',
@@ -16,7 +16,11 @@ VALUES (
     true,
     NOW(),
     NOW()
-) ON CONFLICT (email) DO NOTHING;
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM users
+    WHERE email = 'admin@vivero.com'
+);
 
 -- Configuración base de notificación para pruebas manuales del módulo reports
 INSERT INTO notification_config (user_id, channel, contact_value, active, created_at, updated_at)

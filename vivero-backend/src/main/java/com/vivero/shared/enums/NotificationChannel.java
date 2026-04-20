@@ -7,6 +7,5 @@ package com.vivero.shared.enums;
 public enum NotificationChannel {
     EMAIL,
     WHATSAPP,
-    TELEGRAM,
     SMS
 }

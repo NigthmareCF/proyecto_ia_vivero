@@ -46,8 +46,6 @@ public class ReportServiceImpl implements ReportService {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+?[1-9]\\d{7,14}$");
-    private static final Pattern TELEGRAM_PATTERN = Pattern.compile("^(@?[A-Za-z0-9_]{5,64}|-?\\d{6,20})$");
-
     private final ReportRepository reportRepository;
     private final NotificationConfigRepository notificationConfigRepository;
     private final UserRepository userRepository;
@@ -173,6 +171,9 @@ public class ReportServiceImpl implements ReportService {
             String currentUserEmail
     ) {
         User currentUser = findUserOrThrow(currentUserEmail);
+        if (active && requiresProfilePhone(channel)) {
+            validateProfilePhone(currentUser, channel.name());
+        }
         NotificationConfig config = notificationConfigRepository.findByUserIdAndChannel(currentUser.getId(), channel)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification config not found for channel: " + channel));
 
@@ -258,7 +259,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private NotificationConfig upsertConfig(User currentUser, NotificationConfigDto configDto) {
-        validateNotificationConfig(configDto);
+        validateNotificationConfig(configDto, currentUser);
 
         NotificationConfig config = notificationConfigRepository
                 .findByUserIdAndChannel(currentUser.getId(), configDto.getChannel())
@@ -267,27 +268,28 @@ public class ReportServiceImpl implements ReportService {
                         .channel(configDto.getChannel())
                         .build());
 
-        config.setContactValue(configDto.getContactValue().trim());
+        config.setContactValue(resolveStoredContactValue(currentUser, configDto));
         config.setActive(Boolean.TRUE.equals(configDto.getActive()));
 
         return notificationConfigRepository.save(config);
     }
 
-    private void validateNotificationConfig(NotificationConfigDto configDto) {
+    private void validateNotificationConfig(NotificationConfigDto configDto, User currentUser) {
         if (configDto.getChannel() == null) {
             throw new BusinessException("Notification channel is required", "CHANNEL_REQUIRED");
         }
 
         String contactValue = configDto.getContactValue() == null ? null : configDto.getContactValue().trim();
-        if (contactValue == null || contactValue.isEmpty()) {
-            throw new BusinessException("Contact value is required", "CONTACT_VALUE_REQUIRED");
-        }
 
         switch (configDto.getChannel()) {
-            case EMAIL -> validateEmail(contactValue);
-            case SMS -> validatePhone(contactValue, "SMS");
-            case WHATSAPP -> validatePhone(stripWhatsappPrefix(contactValue), "WHATSAPP");
-            case TELEGRAM -> validateTelegram(contactValue);
+            case EMAIL -> {
+                if (contactValue == null || contactValue.isEmpty()) {
+                    throw new BusinessException("Contact value is required", "CONTACT_VALUE_REQUIRED");
+                }
+                validateEmail(contactValue);
+            }
+            case SMS -> validateProfilePhone(currentUser, "SMS");
+            case WHATSAPP -> validateProfilePhone(currentUser, "WHATSAPP");
         }
     }
 
@@ -303,14 +305,26 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private void validateTelegram(String contactValue) {
-        if (!TELEGRAM_PATTERN.matcher(contactValue).matches()) {
-            throw new BusinessException("Invalid Telegram contact format", "INVALID_TELEGRAM_CONTACT");
+    private void validateProfilePhone(User user, String channel) {
+        if (user.getPhoneNumber() == null || user.getPhoneNumber().isBlank()) {
+            throw new BusinessException("User profile phone number is required for " + channel, "PROFILE_PHONE_REQUIRED");
         }
+        validatePhone(user.getPhoneNumber().trim(), channel);
     }
 
     private String stripWhatsappPrefix(String value) {
         return value.startsWith("whatsapp:") ? value.substring("whatsapp:".length()) : value;
+    }
+
+    private boolean requiresProfilePhone(NotificationChannel channel) {
+        return channel == NotificationChannel.SMS || channel == NotificationChannel.WHATSAPP;
+    }
+
+    private String resolveStoredContactValue(User currentUser, NotificationConfigDto configDto) {
+        return switch (configDto.getChannel()) {
+            case EMAIL -> configDto.getContactValue() == null ? null : configDto.getContactValue().trim();
+            case SMS, WHATSAPP -> currentUser.getPhoneNumber() == null ? null : currentUser.getPhoneNumber().trim();
+        };
     }
 
     private @NonNull Report findReportOrThrow(@NonNull Long id) {

@@ -57,6 +57,8 @@ app:
   storage:
     images-path: ${IMAGES_PATH:/app/images}
 
+  public-base-url: ${PUBLIC_BASE_URL:http://localhost:8080/api}
+
   cors:
     allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
 
@@ -64,13 +66,11 @@ app:
     email:
       from: ${MAIL_FROM:noreply@vivero.com}
     twilio:
-      account-sid: ${TWILIO_ACCOUNT_SID:}
-      auth-token: ${TWILIO_AUTH_TOKEN:}
+      account-sid: ${TWILIO_ACCOUNT_SID:${twilio.account-sid:}}
+      auth-token: ${TWILIO_AUTH_TOKEN:${twilio.auth-token:}}
+      messaging-service-sid: ${TWILIO_MESSAGING_SERVICE_SID:${twilio.messaging-service-sid:}}
       from-whatsapp: ${TWILIO_WHATSAPP_FROM:whatsapp:+14155238886}
-      from-sms: ${TWILIO_SMS_FROM:}
-    telegram:
-      bot-token: ${TELEGRAM_BOT_TOKEN:}
-      bot-username: ${TELEGRAM_BOT_USERNAME:ViveroBot}
+      from-sms: ${TWILIO_SMS_FROM:${twilio.phone-number:}}
 
 logging:
   level:

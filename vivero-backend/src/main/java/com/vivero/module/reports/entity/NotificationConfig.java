@@ -43,10 +43,10 @@ public class NotificationConfig extends BaseEntity {
     @Column(nullable = false, length = 20)
     private NotificationChannel channel;
 
-    @Column(name = "contact_value", nullable = false, length = 255)
+    @Column(name = "contact_value", length = 255)
     private String contactValue;
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean active = true;
+    private boolean active = false;
 }
