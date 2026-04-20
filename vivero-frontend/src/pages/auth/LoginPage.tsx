@@ -8,7 +8,7 @@ export function LoginPage() {
           <p className="text-sm uppercase tracking-[0.24em] text-sand/70">Plataforma V3</p>
           <h1 className="mt-4 font-display text-6xl leading-none">Vivero inteligente con robotica e IA</h1>
           <p className="mt-6 max-w-xl text-lg text-sand/80">
-            Backend Spring Boot, bridge FastAPI, robot PI y flujo de analisis avanzado con Vision API.
+            Backend Spring Boot, robot Pi y flujo de analisis avanzado con Vision API.
           </p>
         </section>
         <LoginForm />
