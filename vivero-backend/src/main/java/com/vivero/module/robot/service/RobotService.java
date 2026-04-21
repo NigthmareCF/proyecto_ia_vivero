@@ -6,6 +6,7 @@ import com.vivero.module.robot.dto.RobotCommandDto;
 import com.vivero.module.robot.dto.RobotHeartbeatRequestDto;
 import com.vivero.module.robot.dto.RobotObservationRequestDto;
 import com.vivero.module.robot.dto.RobotObservationResponseDto;
+import com.vivero.module.robot.dto.RobotPatrolAnalysisResponseDto;
 import com.vivero.module.robot.dto.RobotQueuedCommandResponseDto;
 import com.vivero.module.robot.dto.RobotStatusResponseDto;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,10 @@ public interface RobotService {
     RobotStatusResponseDto processHeartbeat(RobotHeartbeatRequestDto heartbeat);
 
     RobotObservationResponseDto registerObservation(RobotObservationRequestDto observation);
+
+    RobotPatrolAnalysisResponseDto finalizePatrolAnalysis(String patrolId, String robotId);
+
+    RobotPatrolAnalysisResponseDto getPatrolAnalysis(String patrolId);
 
     RobotQueuedCommandResponseDto pollNextCommand(String robotId);
 

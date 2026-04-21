@@ -33,6 +33,12 @@ public class RobotObservation extends BaseEntity {
     @Column(name = "plant_qr", nullable = false, length = 120)
     private String plantQr;
 
+    @Column(name = "plant_group_code", length = 120)
+    private String plantGroupCode;
+
+    @Column(name = "plant_side", length = 20)
+    private String plantSide;
+
     @Column(name = "capture_reason", length = 80)
     private String captureReason;
 
@@ -50,4 +56,10 @@ public class RobotObservation extends BaseEntity {
 
     @Column(name = "analysis_status", nullable = false, length = 40)
     private String analysisStatus;
+
+    @Column(name = "final_state", length = 40)
+    private String finalState;
+
+    @Column(name = "analysis_notes", length = 1000)
+    private String analysisNotes;
 }

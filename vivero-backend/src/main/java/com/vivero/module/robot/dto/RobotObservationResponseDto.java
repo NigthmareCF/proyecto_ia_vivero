@@ -17,9 +17,13 @@ public class RobotObservationResponseDto {
     private String robotId;
     private String patrolId;
     private String plantQr;
+    private String plantGroupCode;
+    private String plantSide;
     private String captureReason;
     private String statusHint;
     private String analysisStatus;
+    private String finalState;
+    private String analysisNotes;
     private LocalDateTime observedAt;
     private List<RobotObservationImageResponseDto> images;
 }

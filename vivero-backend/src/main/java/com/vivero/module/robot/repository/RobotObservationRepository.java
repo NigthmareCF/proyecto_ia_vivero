@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RobotObservationRepository extends JpaRepository<RobotObservation, Long> {
+    java.util.List<RobotObservation> findByPatrolIdOrderByObservedAtAsc(String patrolId);
 }
