@@ -1,0 +1,12 @@
+.env
+!.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+robot-pi/__pycache__/
+robot-pi/src/__pycache__/
+robot-pi/models/modelo_vivero.tflite
+robot-pi/models/*.log
