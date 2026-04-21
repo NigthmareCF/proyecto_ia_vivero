@@ -63,9 +63,10 @@ class ReportServiceTest {
                 reportRepository,
                 notificationConfigRepository,
                 userRepository,
-                new ReportMapper(),
+                new ReportMapper(new com.fasterxml.jackson.databind.ObjectMapper()),
                 pdfReportGenerator,
-                List.of(emailNotificationService)
+                List.of(emailNotificationService),
+                new com.fasterxml.jackson.databind.ObjectMapper()
         );
 
         user = User.builder()
@@ -89,6 +90,8 @@ class ReportServiceTest {
         request.setHealthyCount(1);
         request.setAttentionCount(1);
         request.setDangerCount(1);
+        request.setManualReviewCount(0);
+        request.setInconclusiveCount(0);
 
         when(userRepository.findByEmail("admin@vivero.com")).thenReturn(Optional.of(user));
         when(reportRepository.save(any(Report.class))).thenAnswer(invocation -> {
@@ -184,6 +187,8 @@ class ReportServiceTest {
                 .healthyCount(1)
                 .attentionCount(0)
                 .dangerCount(0)
+                .manualReviewCount(0)
+                .inconclusiveCount(0)
                 .pdfPath("/tmp/report.pdf")
                 .build();
         report.setId(10L);

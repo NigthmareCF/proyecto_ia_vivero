@@ -2,12 +2,15 @@ package com.vivero.module.reports;
 
 import com.vivero.config.AppProperties;
 import com.vivero.module.auth.entity.User;
+import com.vivero.module.reports.dto.ReportFindingDto;
+import com.vivero.module.reports.dto.ReportPlantDetailDto;
 import com.vivero.module.reports.entity.NotificationConfig;
 import com.vivero.module.reports.entity.Report;
 import com.vivero.module.reports.pdf.PdfReportGenerator;
 import com.vivero.module.reports.service.notification.EmailNotificationService;
 import com.vivero.shared.enums.NotificationChannel;
 import com.vivero.shared.enums.UserRole;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -34,7 +37,7 @@ class ManualEmailRelaySmokeTest {
         properties.getStorage().setImagesPath("target/manual-mail-artifacts");
         properties.getNotification().getEmail().setFrom(mailFrom);
 
-        PdfReportGenerator pdfReportGenerator = new PdfReportGenerator(properties);
+        PdfReportGenerator pdfReportGenerator = new PdfReportGenerator(properties, new ObjectMapper());
         Report report = buildReport();
         report.setPdfPath(pdfReportGenerator.generateAndStore(report));
 
@@ -74,6 +77,9 @@ class ManualEmailRelaySmokeTest {
                 .healthyCount(3)
                 .attentionCount(2)
                 .dangerCount(1)
+                .manualReviewCount(0)
+                .inconclusiveCount(0)
+                .plantDetailsJson(buildPlantDetailsJson())
                 .build();
 
         report.setId(20260420L);
@@ -88,6 +94,24 @@ class ManualEmailRelaySmokeTest {
                 .contactValue(mailTo)
                 .active(true)
                 .build();
+    }
+
+    private String buildPlantDetailsJson() {
+        try {
+            ReportFindingDto finding = new ReportFindingDto();
+            finding.setSide("DR");
+            finding.setNote("Se observaron hojas con manchas leves y evidencia lateral.");
+
+            ReportPlantDetailDto detail = new ReportPlantDetailDto();
+            detail.setPlantGroupCode("PLA_1_M_15");
+            detail.setFinalState("ATENCION");
+            detail.setSummary("La planta presenta signos leves que requieren seguimiento.");
+            detail.setFindings(java.util.List.of(finding));
+
+            return new ObjectMapper().writeValueAsString(java.util.List.of(detail));
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not build manual mail report details", ex);
+        }
     }
 
     private String required(String key, String fallback) {

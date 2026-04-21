@@ -6,6 +6,7 @@ import com.vivero.module.reports.dto.GenerateReportRequestDto;
 import com.vivero.module.reports.dto.NotificationChannelConfigRequestDto;
 import com.vivero.module.reports.dto.NotificationConfigDto;
 import com.vivero.module.reports.dto.NotifyReportRequestDto;
+import com.vivero.module.reports.dto.ReportPlantDetailDto;
 import com.vivero.module.reports.dto.ReportResponseDto;
 import com.vivero.module.reports.entity.NotificationConfig;
 import com.vivero.module.reports.entity.Report;
@@ -18,6 +19,7 @@ import com.vivero.module.reports.service.notification.NotificationService;
 import com.vivero.shared.enums.NotificationChannel;
 import com.vivero.shared.exception.BusinessException;
 import com.vivero.shared.exception.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +54,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReportMapper reportMapper;
     private final PdfReportGenerator pdfReportGenerator;
     private final List<NotificationService> notificationServices;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -84,6 +87,9 @@ public class ReportServiceImpl implements ReportService {
                         .healthyCount(request.getHealthyCount())
                         .attentionCount(request.getAttentionCount())
                         .dangerCount(request.getDangerCount())
+                        .manualReviewCount(request.getManualReviewCount())
+                        .inconclusiveCount(request.getInconclusiveCount())
+                        .plantDetailsJson(writePlantDetails(request.getPlantDetails()))
                         .publicShareToken(generatePublicShareToken())
                         .build()
         );
@@ -235,7 +241,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private void validateCounts(GenerateReportRequestDto request) {
-        int total = request.getHealthyCount() + request.getAttentionCount() + request.getDangerCount();
+        int total = request.getHealthyCount()
+                + request.getAttentionCount()
+                + request.getDangerCount()
+                + request.getManualReviewCount()
+                + request.getInconclusiveCount();
         if (total != request.getObservationsCount()) {
             throw new BusinessException(
                     "State counts must match total observations",
@@ -330,5 +340,13 @@ public class ReportServiceImpl implements ReportService {
             return null;
         }
         return value.trim();
+    }
+
+    private String writePlantDetails(List<ReportPlantDetailDto> plantDetails) {
+        try {
+            return objectMapper.writeValueAsString(plantDetails == null ? List.of() : plantDetails);
+        } catch (Exception ex) {
+            throw new BusinessException("Could not serialize report plant details", "REPORT_DETAILS_SERIALIZATION_ERROR");
+        }
     }
 }

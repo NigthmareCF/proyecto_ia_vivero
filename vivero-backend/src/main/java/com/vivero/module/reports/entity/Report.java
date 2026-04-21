@@ -52,6 +52,15 @@ public class Report extends BaseEntity {
     @Column(name = "danger_count", nullable = false)
     private Integer dangerCount;
 
+    @Column(name = "manual_review_count", nullable = false)
+    private Integer manualReviewCount;
+
+    @Column(name = "inconclusive_count", nullable = false)
+    private Integer inconclusiveCount;
+
+    @Column(name = "plant_details_json", length = 20000)
+    private String plantDetailsJson;
+
     @Column(name = "pdf_path", length = 500)
     private String pdfPath;
 

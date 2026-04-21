@@ -23,6 +23,9 @@ public class ReportResponseDto {
     private Integer healthyCount;
     private Integer attentionCount;
     private Integer dangerCount;
+    private Integer manualReviewCount;
+    private Integer inconclusiveCount;
+    private java.util.List<ReportPlantDetailDto> plantDetails;
     private String pdfPath;
     private LocalDateTime createdAt;
 }

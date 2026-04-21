@@ -1,7 +1,6 @@
 package com.vivero.module.auth.controller;
 
 import com.vivero.module.auth.dto.AuthResponseDto;
-import com.vivero.module.auth.dto.GoogleLoginRequestDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  *   POST /api/auth/refresh  — renovar access token
  *
  * Endpoints protegidos:
- *   POST /api/auth/register — registrar usuario (solo ADMIN)
+ *   POST /api/auth/register — registrar usuario
  *   GET  /api/auth/me       — datos del usuario autenticado
  *
  * El controlador NO tiene lógica de negocio — solo recibe, valida y delega a AuthService.
@@ -51,25 +50,14 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.ok("Login successful", response));
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<ApiResponse<AuthResponseDto>> googleLogin(
-            @Valid @RequestBody GoogleLoginRequestDto request) {
-
-        AuthResponseDto response = authService.loginWithGoogle(request);
-        return ResponseEntity.ok(ApiResponse.ok("Google login successful", response));
-    }
-
     /**
      * Registra un nuevo usuario en el sistema.
-     * Solo un usuario con rol ADMIN puede ejecutar este endpoint.
      *
      * POST /api/auth/register
-     * Header: Authorization: Bearer <admin_token>
      * Body: { "firstName": "Ana", "lastName": "García", "email": "ana@vivero.com",
-     *         "password": "password123", "role": "OPERATOR" }
+     *         "password": "password123", "role": "CONTROLLER" }
      */
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<AuthResponseDto>> register(
             @Valid @RequestBody RegisterRequestDto request) {
 

@@ -1,7 +1,6 @@
 package com.vivero.module.auth.service;
 
 import com.vivero.module.auth.dto.AuthResponseDto;
-import com.vivero.module.auth.dto.GoogleLoginRequestDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
@@ -23,11 +22,8 @@ public interface AuthService {
      */
     AuthResponseDto login(LoginRequestDto request);
 
-    AuthResponseDto loginWithGoogle(GoogleLoginRequestDto request);
-
     /**
      * Registra un nuevo usuario en el sistema.
-     * Solo puede ser llamado por un usuario con rol ADMIN.
      * Devuelve los tokens para que el admin pueda ver la cuenta creada.
      */
     AuthResponseDto register(RegisterRequestDto request);

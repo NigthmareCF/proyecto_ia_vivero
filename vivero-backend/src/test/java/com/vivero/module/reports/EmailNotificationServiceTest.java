@@ -74,6 +74,8 @@ class EmailNotificationServiceTest {
                 .healthyCount(1)
                 .attentionCount(0)
                 .dangerCount(0)
+                .manualReviewCount(0)
+                .inconclusiveCount(0)
                 .pdfPath("/tmp/report.pdf")
                 .build();
         report.setId(99L);

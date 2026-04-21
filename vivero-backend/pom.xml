@@ -24,7 +24,6 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jjwt.version>0.12.5</jjwt.version>
         <itext.version>8.0.3</itext.version>
-        <google.api.client.version>2.7.2</google.api.client.version>
     </properties>
 
     <dependencies>
@@ -143,13 +142,6 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Google ID token verification for frontend OAuth login -->
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>${google.api.client.version}</version>
         </dependency>
 
         <!-- ══════════════════════════════════════════

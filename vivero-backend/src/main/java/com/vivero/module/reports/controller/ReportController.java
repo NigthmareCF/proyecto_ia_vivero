@@ -20,8 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,9 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Controlador REST del módulo reports.
- */
 @RestController
 @RequestMapping("/reports")
 @RequiredArgsConstructor
@@ -41,19 +38,19 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<List<ReportResponseDto>>> getAllReports() {
         return ResponseEntity.ok(ApiResponse.ok("Reports retrieved", reportService.getAllReports()));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<ReportResponseDto>> getReportById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Report retrieved", reportService.getReportById(id)));
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
     public ResponseEntity<ApiResponse<ReportResponseDto>> generateReport(
             @Valid @RequestBody GenerateReportRequestDto request,
             Authentication authentication
@@ -66,7 +63,7 @@ public class ReportController {
     }
 
     @GetMapping("/{id}/pdf")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
         byte[] pdfContent = reportService.getReportPdf(id);
         HttpHeaders headers = new HttpHeaders();
@@ -85,7 +82,7 @@ public class ReportController {
     }
 
     @GetMapping("/notifications/config")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<List<NotificationConfigDto>>> getNotificationConfigs(
             Authentication authentication
     ) {
@@ -96,7 +93,7 @@ public class ReportController {
     }
 
     @GetMapping("/notifications/channels")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<List<NotificationChannel>>> getSupportedChannels() {
         return ResponseEntity.ok(
                 ApiResponse.ok("Supported notification channels retrieved", reportService.getSupportedNotificationChannels())
@@ -104,7 +101,7 @@ public class ReportController {
     }
 
     @PutMapping("/notifications/config")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<List<NotificationConfigDto>>> saveNotificationConfigs(
             @Valid @RequestBody List<NotificationConfigDto> request,
             Authentication authentication
@@ -115,7 +112,7 @@ public class ReportController {
     }
 
     @PutMapping("/notifications/config/{channel}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<NotificationConfigDto>> saveNotificationConfig(
             @PathVariable NotificationChannel channel,
             @Valid @RequestBody NotificationChannelConfigRequestDto request,
@@ -127,7 +124,7 @@ public class ReportController {
     }
 
     @PatchMapping("/notifications/config/{channel}/toggle")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
     public ResponseEntity<ApiResponse<NotificationConfigDto>> toggleNotificationChannel(
             @PathVariable NotificationChannel channel,
             @Valid @RequestBody ToggleNotificationChannelRequestDto request,
@@ -139,7 +136,7 @@ public class ReportController {
     }
 
     @PostMapping("/notify")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
     public ResponseEntity<ApiResponse<String>> notifyReport(
             @Valid @RequestBody NotifyReportRequestDto request,
             Authentication authentication
@@ -148,5 +145,4 @@ public class ReportController {
         int sentCount = reportService.notifyReport(request, user.getEmail());
         return ResponseEntity.ok(ApiResponse.ok("Report notified successfully", "Sent channels: " + sentCount));
     }
-
 }
