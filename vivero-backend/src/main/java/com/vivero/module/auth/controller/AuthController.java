@@ -10,22 +10,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controlador REST del módulo de autenticación.
- *
- * Endpoints públicos (sin token):
- *   POST /api/auth/login    — iniciar sesión
- *   POST /api/auth/refresh  — renovar access token
- *
- * Endpoints protegidos:
- *   POST /api/auth/register — registrar usuario (solo ADMIN)
- *   GET  /api/auth/me       — datos del usuario autenticado
- *
- * El controlador NO tiene lógica de negocio — solo recibe, valida y delega a AuthService.
- */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -33,67 +23,30 @@ public class AuthController {
 
     private final AuthService authService;
 
-    /**
-     * Inicia sesión con email y contraseña.
-     * Devuelve access token (24h) y refresh token (7 días).
-     *
-     * POST /api/auth/login
-     * Body: { "email": "admin@vivero.com", "password": "password123" }
-     */
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponseDto>> login(
-            @Valid @RequestBody LoginRequestDto request) {
-
+    public ResponseEntity<ApiResponse<AuthResponseDto>> login(@Valid @RequestBody LoginRequestDto request) {
         AuthResponseDto response = authService.login(request);
         return ResponseEntity.ok(ApiResponse.ok("Login successful", response));
     }
 
-    /**
-     * Registra un nuevo usuario en el sistema.
-     * Solo un usuario con rol ADMIN puede ejecutar este endpoint.
-     *
-     * POST /api/auth/register
-     * Header: Authorization: Bearer <admin_token>
-     * Body: { "firstName": "Ana", "lastName": "García", "email": "ana@vivero.com",
-     *         "password": "password123", "role": "OPERATOR" }
-     */
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<AuthResponseDto>> register(
-            @Valid @RequestBody RegisterRequestDto request) {
-
+    public ResponseEntity<ApiResponse<AuthResponseDto>> register(@Valid @RequestBody RegisterRequestDto request) {
         AuthResponseDto response = authService.register(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("User registered successfully", response));
     }
 
-    /**
-     * Renueva el access token usando el refresh token.
-     * Si el refresh token expiró, el usuario debe hacer login nuevamente.
-     *
-     * POST /api/auth/refresh
-     * Body: { "refreshToken": "<refresh_token>" }
-     */
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<AuthResponseDto>> refresh(
-            @Valid @RequestBody RefreshTokenRequestDto request) {
-
+    public ResponseEntity<ApiResponse<AuthResponseDto>> refresh(@Valid @RequestBody RefreshTokenRequestDto request) {
         AuthResponseDto response = authService.refresh(request);
         return ResponseEntity.ok(ApiResponse.ok("Token refreshed successfully", response));
     }
 
-    /**
-     * Devuelve los datos del usuario autenticado actualmente.
-     * El frontend usa esto para mostrar nombre y rol en la barra de navegación.
-     *
-     * GET /api/auth/me
-     * Header: Authorization: Bearer <token>
-     */
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<AuthResponseDto>> me(
-            org.springframework.security.core.Authentication authentication) {
-
+            org.springframework.security.core.Authentication authentication
+    ) {
         com.vivero.module.auth.entity.User user =
                 (com.vivero.module.auth.entity.User) authentication.getPrincipal();
 

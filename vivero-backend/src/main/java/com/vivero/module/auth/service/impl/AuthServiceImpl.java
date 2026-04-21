@@ -8,6 +8,7 @@ import com.vivero.module.auth.entity.User;
 import com.vivero.module.auth.repository.UserRepository;
 import com.vivero.module.auth.service.AuthService;
 import com.vivero.module.auth.util.JwtUtil;
+import com.vivero.shared.enums.UserRole;
 import com.vivero.shared.exception.BusinessException;
 import com.vivero.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -78,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(normalizePublicRole(request.getRole()))
                 .active(true)
                 .build();
 
@@ -135,5 +136,15 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
+    }
+
+    private UserRole normalizePublicRole(UserRole role) {
+        if (role == null) {
+            throw new BusinessException("Role is required", "ROLE_REQUIRED");
+        }
+        if (role == UserRole.CONTROLLER || role == UserRole.VIEWER) {
+            return role;
+        }
+        throw new BusinessException("Only CONTROLLER or VIEWER roles are allowed for self-registration", "INVALID_PUBLIC_ROLE");
     }
 }
