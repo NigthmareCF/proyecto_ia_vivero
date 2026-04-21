@@ -1,16 +1,34 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
-const links = [
-  ["/dashboard", "Dashboard"],
-  ["/plants", "Plantas"],
-  ["/patrols", "Patrullajes"],
-  ["/robot", "Robot"],
-  ["/reports", "Reportes"],
-  ["/analisis", "Analisis"],
-  ["/users", "Usuarios"],
-];
+type Role = "ADMIN" | "CONTROLLER" | "VIEWER";
+
+const linksByRole: Record<Role, Array<[string, string]>> = {
+  ADMIN: [
+    ["/dashboard", "Dashboard"],
+    ["/plants", "Plantas"],
+    ["/patrols", "Patrullajes"],
+    ["/robot", "Robot"],
+    ["/reports", "Reportes"],
+    ["/analisis", "Analisis"],
+    ["/users", "Usuarios"],
+  ],
+  CONTROLLER: [
+    ["/patrols", "Patrullajes"],
+    ["/robot", "Robot"],
+    ["/reports", "Reportes"],
+  ],
+  VIEWER: [
+    ["/patrols", "Patrullajes"],
+    ["/reports", "Reportes"],
+  ],
+};
 
 export function Sidebar() {
+  const { role } = useAuth();
+  const activeRole = (role ?? "VIEWER") as Role;
+  const links = linksByRole[activeRole] ?? linksByRole.VIEWER;
+
   return (
     <aside className="w-full max-w-60 rounded-3xl bg-ink p-5 text-sand shadow-xl">
       <p className="font-display text-2xl">Vivero IA</p>
