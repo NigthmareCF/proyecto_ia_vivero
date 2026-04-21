@@ -24,7 +24,6 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jjwt.version>0.12.5</jjwt.version>
         <itext.version>8.0.3</itext.version>
-        <twilio.version>9.14.0</twilio.version>
     </properties>
 
     <dependencies>
@@ -149,12 +148,7 @@
              NOTIFICATIONS
         ══════════════════════════════════════════ -->
 
-        <!-- WhatsApp Business API + SMS via Twilio -->
-        <dependency>
-            <groupId>com.twilio.sdk</groupId>
-            <artifactId>twilio</artifactId>
-            <version>${twilio.version}</version>
-        </dependency>
+        <!-- Email notifications -->
 
         <!-- ══════════════════════════════════════════
              PDF GENERATION

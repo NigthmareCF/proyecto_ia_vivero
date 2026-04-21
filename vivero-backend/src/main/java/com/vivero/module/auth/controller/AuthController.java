@@ -4,6 +4,8 @@ import com.vivero.module.auth.dto.AuthResponseDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
+import com.vivero.module.auth.dto.UpdateProfileRequestDto;
+import com.vivero.module.auth.entity.User;
 import com.vivero.module.auth.service.AuthService;
 import com.vivero.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  *   POST /api/auth/refresh  — renovar access token
  *
  * Endpoints protegidos:
- *   POST /api/auth/register — registrar usuario (solo ADMIN)
+ *   POST /api/auth/register — registrar usuario
  *   GET  /api/auth/me       — datos del usuario autenticado
  *
  * El controlador NO tiene lógica de negocio — solo recibe, valida y delega a AuthService.
@@ -50,15 +52,12 @@ public class AuthController {
 
     /**
      * Registra un nuevo usuario en el sistema.
-     * Solo un usuario con rol ADMIN puede ejecutar este endpoint.
      *
      * POST /api/auth/register
-     * Header: Authorization: Bearer <admin_token>
      * Body: { "firstName": "Ana", "lastName": "García", "email": "ana@vivero.com",
-     *         "password": "password123", "role": "OPERATOR" }
+     *         "password": "password123", "role": "CONTROLLER" }
      */
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<AuthResponseDto>> register(
             @Valid @RequestBody RegisterRequestDto request) {
 
@@ -94,16 +93,26 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponseDto>> me(
             org.springframework.security.core.Authentication authentication) {
 
-        com.vivero.module.auth.entity.User user =
-                (com.vivero.module.auth.entity.User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         AuthResponseDto response = AuthResponseDto.builder()
                 .userId(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
                 .build();
 
         return ResponseEntity.ok(ApiResponse.ok("User data retrieved", response));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<ApiResponse<AuthResponseDto>> updateProfile(
+            @Valid @RequestBody UpdateProfileRequestDto request,
+            org.springframework.security.core.Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+        AuthResponseDto response = authService.updateProfile(user.getEmail(), request);
+        return ResponseEntity.ok(ApiResponse.ok("User profile updated", response));
     }
 }

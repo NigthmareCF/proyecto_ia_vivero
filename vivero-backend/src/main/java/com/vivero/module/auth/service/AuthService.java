@@ -4,6 +4,7 @@ import com.vivero.module.auth.dto.AuthResponseDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
+import com.vivero.module.auth.dto.UpdateProfileRequestDto;
 
 /**
  * Contrato del servicio de autenticación.
@@ -23,7 +24,6 @@ public interface AuthService {
 
     /**
      * Registra un nuevo usuario en el sistema.
-     * Solo puede ser llamado por un usuario con rol ADMIN.
      * Devuelve los tokens para que el admin pueda ver la cuenta creada.
      */
     AuthResponseDto register(RegisterRequestDto request);
@@ -33,4 +33,6 @@ public interface AuthService {
      * Si el refresh token expiró, el usuario debe volver a hacer login.
      */
     AuthResponseDto refresh(RefreshTokenRequestDto request);
+
+    AuthResponseDto updateProfile(String currentUserEmail, UpdateProfileRequestDto request);
 }

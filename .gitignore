@@ -9,6 +9,7 @@ vivero-backend/.mvn/
 
 # Variables locales
 .env
+!.env
 
 # Archivos del sistema
 Thumbs.db
