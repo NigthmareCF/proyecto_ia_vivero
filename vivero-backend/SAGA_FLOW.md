@@ -18,7 +18,7 @@ BACKEND (Spring Boot :8080)
         │
         ├──► PostgreSQL  (structured data + image paths)
         ├──► Docker Volume /app/images  (image files)
-        └──► Notification Service  (Email / WhatsApp / Telegram / SMS)
+        └──► Notification Service  (Email)
         ▲
         │  HTTP REST + WebSocket
 FRONTEND (React :3000)
@@ -184,10 +184,7 @@ USER (operator / admin / viewer — browser)
         ▼
 4. Backend reads NotificationConfig for the user
         │
-        ├── email     → JavaMailSender → sends PDF as attachment
-        ├── whatsapp  → Twilio API     → sends message + PDF link
-        ├── telegram  → Bot API        → sends message + PDF file
-        └── sms       → Twilio SMS     → sends text summary
+        └── email     → JavaMailSender → sends PDF as attachment
         │
         ▼
 5. Frontend → GET /api/reports/{id}/pdf → downloads PDF
@@ -270,7 +267,7 @@ Phase 4 — Robot operation
   [ ] robot module (commands + WebSocket + camera stream)
 
 Phase 5 — Reports and notifications
-  [ ] reports module (PDF + email + WhatsApp + Telegram)
+  [ ] reports module (PDF + email)
 
 Phase 6 — Frontend
   [ ] React + Tailwind + shadcn/ui

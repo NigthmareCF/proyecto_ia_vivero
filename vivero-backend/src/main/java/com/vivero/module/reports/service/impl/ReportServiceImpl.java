@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,7 +46,6 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+?[1-9]\\d{7,14}$");
     private final ReportRepository reportRepository;
     private final NotificationConfigRepository notificationConfigRepository;
     private final UserRepository userRepository;
@@ -84,6 +84,7 @@ public class ReportServiceImpl implements ReportService {
                         .healthyCount(request.getHealthyCount())
                         .attentionCount(request.getAttentionCount())
                         .dangerCount(request.getDangerCount())
+                        .publicShareToken(generatePublicShareToken())
                         .build()
         );
 
@@ -98,15 +99,15 @@ public class ReportServiceImpl implements ReportService {
     @Transactional(readOnly = true)
     public byte[] getReportPdf(Long id) {
         Report report = findReportOrThrow(id);
-        if (report.getPdfPath() == null || report.getPdfPath().isBlank()) {
-            throw new ResourceNotFoundException("PDF not found for report id: " + id);
-        }
+        return readPdfBytes(report, "report id: " + id);
+    }
 
-        try {
-            return Files.readAllBytes(Path.of(report.getPdfPath()));
-        } catch (Exception ex) {
-            throw new ResourceNotFoundException("PDF file is missing for report id: " + id);
-        }
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] getPublicReportPdf(String publicShareToken) {
+        Report report = reportRepository.findByPublicShareToken(publicShareToken)
+                .orElseThrow(() -> new ResourceNotFoundException("Public report not found"));
+        return readPdfBytes(report, "public report token");
     }
 
     @Override
@@ -171,9 +172,6 @@ public class ReportServiceImpl implements ReportService {
             String currentUserEmail
     ) {
         User currentUser = findUserOrThrow(currentUserEmail);
-        if (active && requiresProfilePhone(channel)) {
-            validateProfilePhone(currentUser, channel.name());
-        }
         NotificationConfig config = notificationConfigRepository.findByUserIdAndChannel(currentUser.getId(), channel)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification config not found for channel: " + channel));
 
@@ -288,8 +286,6 @@ public class ReportServiceImpl implements ReportService {
                 }
                 validateEmail(contactValue);
             }
-            case SMS -> validateProfilePhone(currentUser, "SMS");
-            case WHATSAPP -> validateProfilePhone(currentUser, "WHATSAPP");
         }
     }
 
@@ -299,37 +295,29 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private void validatePhone(String contactValue, String channel) {
-        if (!PHONE_PATTERN.matcher(contactValue).matches()) {
-            throw new BusinessException("Invalid phone format for " + channel, "INVALID_PHONE_CONTACT");
-        }
-    }
-
-    private void validateProfilePhone(User user, String channel) {
-        if (user.getPhoneNumber() == null || user.getPhoneNumber().isBlank()) {
-            throw new BusinessException("User profile phone number is required for " + channel, "PROFILE_PHONE_REQUIRED");
-        }
-        validatePhone(user.getPhoneNumber().trim(), channel);
-    }
-
-    private String stripWhatsappPrefix(String value) {
-        return value.startsWith("whatsapp:") ? value.substring("whatsapp:".length()) : value;
-    }
-
-    private boolean requiresProfilePhone(NotificationChannel channel) {
-        return channel == NotificationChannel.SMS || channel == NotificationChannel.WHATSAPP;
-    }
-
     private String resolveStoredContactValue(User currentUser, NotificationConfigDto configDto) {
-        return switch (configDto.getChannel()) {
-            case EMAIL -> configDto.getContactValue() == null ? null : configDto.getContactValue().trim();
-            case SMS, WHATSAPP -> currentUser.getPhoneNumber() == null ? null : currentUser.getPhoneNumber().trim();
-        };
+        return configDto.getContactValue() == null ? null : configDto.getContactValue().trim();
     }
 
     private @NonNull Report findReportOrThrow(@NonNull Long id) {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Report not found with id: " + id));
+    }
+
+    private byte[] readPdfBytes(Report report, String reference) {
+        if (report.getPdfPath() == null || report.getPdfPath().isBlank()) {
+            throw new ResourceNotFoundException("PDF not found for " + reference);
+        }
+
+        try {
+            return Files.readAllBytes(Path.of(report.getPdfPath()));
+        } catch (Exception ex) {
+            throw new ResourceNotFoundException("PDF file is missing for " + reference);
+        }
+    }
+
+    private String generatePublicShareToken() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     private @NonNull User findUserOrThrow(@NonNull String email) {

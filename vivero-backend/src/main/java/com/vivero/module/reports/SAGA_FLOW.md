@@ -19,7 +19,7 @@ Centralizar la generacion de reportes PDF y la configuracion/envio de notificaci
 2. solicita `POST /api/reports/notify`
 3. el backend filtra configuraciones activas del usuario
 4. cada proveedor envia un mensaje con referencia al reporte
-5. email adjunta el PDF; SMS y WhatsApp envian resumen y ruta
+5. email adjunta el PDF
 
 ## Nota de integracion futura
 

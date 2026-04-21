@@ -31,14 +31,10 @@ public class ReportMapper {
     }
 
     public NotificationConfigDto toConfigDto(NotificationConfig config) {
-        String contactValue = switch (config.getChannel()) {
-            case SMS, WHATSAPP -> config.getUser() == null ? null : config.getUser().getPhoneNumber();
-            case EMAIL -> config.getContactValue();
-        };
         return NotificationConfigDto.builder()
                 .id(config.getId())
                 .channel(config.getChannel())
-                .contactValue(contactValue)
+                .contactValue(config.getContactValue())
                 .active(config.isActive())
                 .build();
     }

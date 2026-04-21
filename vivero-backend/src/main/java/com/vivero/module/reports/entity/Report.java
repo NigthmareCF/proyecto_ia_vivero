@@ -54,4 +54,7 @@ public class Report extends BaseEntity {
 
     @Column(name = "pdf_path", length = 500)
     private String pdfPath;
+
+    @Column(name = "public_share_token", unique = true, length = 64)
+    private String publicShareToken;
 }

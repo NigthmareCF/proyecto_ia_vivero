@@ -65,8 +65,12 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/login",
                     "/api/auth/login",
+                    "/auth/google",
+                    "/api/auth/google",
                     "/auth/refresh",
                     "/api/auth/refresh",
+                    "/reports/public/*/pdf",
+                    "/api/reports/public/*/pdf",
                     "/actuator/health",
                     "/api/actuator/health",
                     "/actuator/info",

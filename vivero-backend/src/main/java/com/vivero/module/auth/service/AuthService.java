@@ -1,9 +1,11 @@
 package com.vivero.module.auth.service;
 
 import com.vivero.module.auth.dto.AuthResponseDto;
+import com.vivero.module.auth.dto.GoogleLoginRequestDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
+import com.vivero.module.auth.dto.UpdateProfileRequestDto;
 
 /**
  * Contrato del servicio de autenticación.
@@ -21,6 +23,8 @@ public interface AuthService {
      */
     AuthResponseDto login(LoginRequestDto request);
 
+    AuthResponseDto loginWithGoogle(GoogleLoginRequestDto request);
+
     /**
      * Registra un nuevo usuario en el sistema.
      * Solo puede ser llamado por un usuario con rol ADMIN.
@@ -33,4 +37,6 @@ public interface AuthService {
      * Si el refresh token expiró, el usuario debe volver a hacer login.
      */
     AuthResponseDto refresh(RefreshTokenRequestDto request);
+
+    AuthResponseDto updateProfile(String currentUserEmail, UpdateProfileRequestDto request);
 }

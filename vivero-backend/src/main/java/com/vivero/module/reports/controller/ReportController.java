@@ -75,6 +75,15 @@ public class ReportController {
         return ResponseEntity.ok().headers(headers).body(pdfContent);
     }
 
+    @GetMapping("/public/{token}/pdf")
+    public ResponseEntity<byte[]> downloadPublicPdf(@PathVariable String token) {
+        byte[] pdfContent = reportService.getPublicReportPdf(token);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline().filename("shared-report.pdf").build());
+        return ResponseEntity.ok().headers(headers).body(pdfContent);
+    }
+
     @GetMapping("/notifications/config")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'VIEWER')")
     public ResponseEntity<ApiResponse<List<NotificationConfigDto>>> getNotificationConfigs(
@@ -139,4 +148,5 @@ public class ReportController {
         int sentCount = reportService.notifyReport(request, user.getEmail());
         return ResponseEntity.ok(ApiResponse.ok("Report notified successfully", "Sent channels: " + sentCount));
     }
+
 }

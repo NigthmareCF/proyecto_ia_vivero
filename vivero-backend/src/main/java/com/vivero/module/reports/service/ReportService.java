@@ -22,6 +22,8 @@ public interface ReportService {
 
     byte[] getReportPdf(Long id);
 
+    byte[] getPublicReportPdf(String publicShareToken);
+
     List<NotificationConfigDto> getNotificationConfigs(String currentUserEmail);
 
     List<NotificationConfigDto> saveNotificationConfigs(List<NotificationConfigDto> request, String currentUserEmail);

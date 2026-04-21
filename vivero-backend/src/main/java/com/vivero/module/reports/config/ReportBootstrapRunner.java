@@ -10,6 +10,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * Completa artefactos faltantes de reportes seed al iniciar la aplicación.
  */
@@ -25,6 +27,10 @@ public class ReportBootstrapRunner implements ApplicationRunner {
     @Transactional
     public void run(ApplicationArguments args) {
         for (Report report : reportRepository.findAllByOrderByCreatedAtDesc()) {
+            if (report.getPublicShareToken() == null || report.getPublicShareToken().isBlank()) {
+                report.setPublicShareToken(UUID.randomUUID().toString().replace("-", ""));
+                log.info("Token publico generado para reporte seed {}", report.getId());
+            }
             if (report.getPdfPath() == null || report.getPdfPath().isBlank()) {
                 report.setPdfPath(pdfReportGenerator.generateAndStore(report));
                 log.info("PDF generado para reporte seed {}", report.getId());

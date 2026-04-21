@@ -1,9 +1,12 @@
 package com.vivero.module.auth.controller;
 
 import com.vivero.module.auth.dto.AuthResponseDto;
+import com.vivero.module.auth.dto.GoogleLoginRequestDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
+import com.vivero.module.auth.dto.UpdateProfileRequestDto;
+import com.vivero.module.auth.entity.User;
 import com.vivero.module.auth.service.AuthService;
 import com.vivero.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -46,6 +49,14 @@ public class AuthController {
 
         AuthResponseDto response = authService.login(request);
         return ResponseEntity.ok(ApiResponse.ok("Login successful", response));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<ApiResponse<AuthResponseDto>> googleLogin(
+            @Valid @RequestBody GoogleLoginRequestDto request) {
+
+        AuthResponseDto response = authService.loginWithGoogle(request);
+        return ResponseEntity.ok(ApiResponse.ok("Google login successful", response));
     }
 
     /**
@@ -94,8 +105,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponseDto>> me(
             org.springframework.security.core.Authentication authentication) {
 
-        com.vivero.module.auth.entity.User user =
-                (com.vivero.module.auth.entity.User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         AuthResponseDto response = AuthResponseDto.builder()
                 .userId(user.getId())
@@ -106,5 +116,15 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok(ApiResponse.ok("User data retrieved", response));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<ApiResponse<AuthResponseDto>> updateProfile(
+            @Valid @RequestBody UpdateProfileRequestDto request,
+            org.springframework.security.core.Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+        AuthResponseDto response = authService.updateProfile(user.getEmail(), request);
+        return ResponseEntity.ok(ApiResponse.ok("User profile updated", response));
     }
 }

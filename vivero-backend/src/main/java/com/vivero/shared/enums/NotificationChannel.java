@@ -5,7 +5,5 @@ package com.vivero.shared.enums;
  * El usuario puede activar uno o varios simultáneamente desde la interfaz.
  */
 public enum NotificationChannel {
-    EMAIL,
-    WHATSAPP,
-    SMS
+    EMAIL
 }

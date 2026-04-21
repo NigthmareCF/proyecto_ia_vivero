@@ -17,11 +17,24 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
 
+    private final Auth auth = new Auth();
     private final Jwt jwt = new Jwt();
     private final Storage storage = new Storage();
     private final Notification notification = new Notification();
     private final Cors cors = new Cors();
     private String publicBaseUrl;
+
+    @Getter
+    @Setter
+    public static class Auth {
+        private final Google google = new Google();
+
+        @Getter
+        @Setter
+        public static class Google {
+            private String clientId;
+        }
+    }
 
     @Getter
     @Setter
@@ -45,24 +58,12 @@ public class AppProperties {
     @Setter
     public static class Notification {
         private final Email email = new Email();
-        private final Twilio twilio = new Twilio();
 
         @Getter
         @Setter
         public static class Email {
             private String from;
         }
-
-        @Getter
-        @Setter
-        public static class Twilio {
-            private String accountSid;
-            private String authToken;
-            private String messagingServiceSid;
-            private String fromWhatsapp;
-            private String fromSms;
-        }
-
     }
 
     @Getter
