@@ -1,5 +1,6 @@
 package com.vivero.module.robot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vivero.module.robot.dto.ManualControlDto;
 import com.vivero.module.robot.dto.RobotHeartbeatRequestDto;
 import com.vivero.module.robot.dto.RobotCommandDto;
@@ -8,6 +9,7 @@ import com.vivero.module.robot.entity.RobotStatus;
 import com.vivero.module.robot.mapper.RobotMapper;
 import com.vivero.module.robot.repository.RobotObservationImageRepository;
 import com.vivero.module.robot.repository.RobotObservationRepository;
+import com.vivero.module.robot.repository.RobotQueuedCommandRepository;
 import com.vivero.module.robot.repository.RobotStatusRepository;
 import com.vivero.module.robot.service.impl.RobotServiceImpl;
 import com.vivero.module.robot.service.support.RobotImageStorageService;
@@ -40,6 +42,8 @@ class RobotServiceTest {
     @Mock
     private RobotObservationImageRepository robotObservationImageRepository;
     @Mock
+    private RobotQueuedCommandRepository robotQueuedCommandRepository;
+    @Mock
     private RobotImageStorageService robotImageStorageService;
     @Mock
     private SimpMessagingTemplate messagingTemplate;
@@ -53,9 +57,11 @@ class RobotServiceTest {
                 robotStatusRepository,
                 robotObservationRepository,
                 robotObservationImageRepository,
+                robotQueuedCommandRepository,
                 robotMapper,
                 robotImageStorageService,
-                messagingTemplate
+                messagingTemplate,
+                new ObjectMapper()
         );
     }
 

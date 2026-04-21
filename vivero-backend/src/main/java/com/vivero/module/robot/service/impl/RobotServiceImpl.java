@@ -1,23 +1,30 @@
 package com.vivero.module.robot.service.impl;
 
 import com.vivero.module.robot.dto.ManualControlDto;
+import com.vivero.module.robot.dto.RobotCommandAckRequestDto;
 import com.vivero.module.robot.dto.RobotCommandDto;
 import com.vivero.module.robot.dto.RobotHeartbeatRequestDto;
 import com.vivero.module.robot.dto.RobotObservationImageResponseDto;
 import com.vivero.module.robot.dto.RobotObservationRequestDto;
 import com.vivero.module.robot.dto.RobotObservationResponseDto;
+import com.vivero.module.robot.dto.RobotQueuedCommandResponseDto;
 import com.vivero.module.robot.dto.RobotStatusResponseDto;
 import com.vivero.module.robot.entity.RobotObservation;
 import com.vivero.module.robot.entity.RobotObservationImage;
+import com.vivero.module.robot.entity.RobotQueuedCommand;
 import com.vivero.module.robot.entity.RobotStatus;
 import com.vivero.module.robot.mapper.RobotMapper;
 import com.vivero.module.robot.repository.RobotObservationImageRepository;
 import com.vivero.module.robot.repository.RobotObservationRepository;
+import com.vivero.module.robot.repository.RobotQueuedCommandRepository;
 import com.vivero.module.robot.repository.RobotStatusRepository;
 import com.vivero.module.robot.service.RobotService;
 import com.vivero.module.robot.service.support.RobotImageStorageService;
 import com.vivero.shared.enums.RobotMode;
+import com.vivero.shared.enums.RobotCommandType;
 import com.vivero.shared.exception.ResourceNotFoundException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -28,7 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -42,9 +51,11 @@ public class RobotServiceImpl implements RobotService {
     private final RobotStatusRepository robotStatusRepository;
     private final RobotObservationRepository robotObservationRepository;
     private final RobotObservationImageRepository robotObservationImageRepository;
+    private final RobotQueuedCommandRepository robotQueuedCommandRepository;
     private final RobotMapper robotMapper;
     private final RobotImageStorageService robotImageStorageService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -96,6 +107,7 @@ public class RobotServiceImpl implements RobotService {
         status.setLastSeenAt(LocalDateTime.now());
         status.setLastCommand(command.getCommandType().name());
 
+        enqueueCommand(status.getRobotId(), command);
         robotStatusRepository.save(status);
         log.info("Comando robot procesado: {}", command.getCommandType());
         return publishStatus(status);
@@ -198,6 +210,27 @@ public class RobotServiceImpl implements RobotService {
 
     @Override
     @Transactional(readOnly = true)
+    public RobotQueuedCommandResponseDto pollNextCommand(String robotId) {
+        return robotQueuedCommandRepository.findTopByRobotIdAndAcknowledgedFalseOrderByCreatedAtAsc(robotId.trim())
+                .map(this::toQueuedCommandResponse)
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public void acknowledgeCommand(Long commandId, RobotCommandAckRequestDto request) {
+        RobotQueuedCommand command = robotQueuedCommandRepository.findById(commandId)
+                .orElseThrow(() -> new ResourceNotFoundException("Robot queued command " + commandId + " not found"));
+        if (!command.getRobotId().equalsIgnoreCase(request.getRobotId().trim())) {
+            throw new ResourceNotFoundException("Robot queued command " + commandId + " does not belong to robot " + request.getRobotId());
+        }
+        command.setAcknowledged(true);
+        command.setAcknowledgedAt(LocalDateTime.now());
+        robotQueuedCommandRepository.save(command);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Resource loadObservationImage(Long imageId) {
         RobotObservationImage image = robotObservationImageRepository.findById(imageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Robot observation image " + imageId + " not found"));
@@ -271,5 +304,78 @@ public class RobotServiceImpl implements RobotService {
             case GOTO -> "GOTO";
             case IDLE -> "IDLE";
         };
+    }
+
+    private void enqueueCommand(String robotId, RobotCommandDto command) {
+        try {
+            RobotQueuedCommand queuedCommand = RobotQueuedCommand.builder()
+                    .robotId(robotId)
+                    .commandName(resolveRobotCommandName(command))
+                    .payloadJson(objectMapper.writeValueAsString(resolveRobotCommandPayload(command)))
+                    .build();
+            robotQueuedCommandRepository.save(queuedCommand);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not serialize robot command", ex);
+        }
+    }
+
+    private String resolveRobotCommandName(RobotCommandDto command) {
+        return switch (command.getCommandType()) {
+            case START_PATROL -> "START_PATROL";
+            case STOP_PATROL -> "STOP";
+            case GOTO_PLANT -> "GOTO_PLANT";
+            case SET_MODE -> resolveModeCommand(command.getTargetMode());
+            case MANUAL_MOVE -> "MOVE";
+            case SWITCH_CAMERA -> "CAMERA_SELECT";
+            case SET_SPEED_PROFILE -> "SPEED_PROFILE";
+            case RUN_ACRO -> "ACRO";
+            case HEARTBEAT -> "HEARTBEAT";
+        };
+    }
+
+    private Map<String, Object> resolveRobotCommandPayload(RobotCommandDto command) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        RobotCommandType commandType = command.getCommandType();
+        if (commandType == RobotCommandType.MANUAL_MOVE) {
+            payload.put("direction", command.getDirection() == null ? "stop" : command.getDirection().name().toLowerCase());
+            payload.put("speed", command.getSpeed() == null ? 0 : command.getSpeed());
+        } else if (commandType == RobotCommandType.GOTO_PLANT) {
+            payload.put("plantQr", normalizeQr(command.getTargetPlantQr()));
+        } else if (commandType == RobotCommandType.SWITCH_CAMERA) {
+            payload.put("camera", normalizeBlank(command.getCameraName()));
+        } else if (commandType == RobotCommandType.SET_SPEED_PROFILE) {
+            payload.put("profile", normalizeToken(command.getSpeedProfile(), "MEDIUM"));
+        } else if (commandType == RobotCommandType.RUN_ACRO) {
+            payload.put("sequence", normalizeToken(command.getSequenceName(), "SPIN"));
+        }
+        return payload;
+    }
+
+    private String resolveModeCommand(RobotMode targetMode) {
+        if (targetMode == null) {
+            return "AUTO";
+        }
+        return switch (targetMode) {
+            case AUTO -> "AUTO";
+            case MANUAL -> "MANUAL_CONTROL";
+            case GOTO -> "GOTO_PLANT";
+            case IDLE -> "STOP";
+        };
+    }
+
+    private RobotQueuedCommandResponseDto toQueuedCommandResponse(RobotQueuedCommand command) {
+        try {
+            return RobotQueuedCommandResponseDto.builder()
+                    .id(command.getId())
+                    .robotId(command.getRobotId())
+                    .command(command.getCommandName())
+                    .data(command.getPayloadJson() == null || command.getPayloadJson().isBlank()
+                            ? Map.of()
+                            : objectMapper.readValue(command.getPayloadJson(), new TypeReference<Map<String, Object>>() {}))
+                    .createdAt(command.getCreatedAt())
+                    .build();
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not deserialize robot command payload", ex);
+        }
     }
 }

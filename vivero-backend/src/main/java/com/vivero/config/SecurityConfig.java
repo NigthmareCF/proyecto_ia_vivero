@@ -69,6 +69,8 @@ public class SecurityConfig {
                     "/actuator/info",
                     "/robot/heartbeat",
                     "/robot/observations",
+                    "/robot/commands/next",
+                    "/robot/commands/*/ack",
                     "/ws/**"          // WebSocket — autenticación propia vía token en handshake
                 ).permitAll()
                 .anyRequest().authenticated()
