@@ -42,8 +42,6 @@ def main() -> None:
     camera = CameraHandler(settings)
     offline_queue = OfflineObservationQueue(settings.offline_queue_dir)
     observation_events: queue.Queue[dict[str, Any]] = queue.Queue()
-    stream_sender = StreamSender(settings, lambda: camera.capture_frame(str(runtime_context["active_camera"])))
-
     interpreter = None
     input_details = None
     output_details = None
@@ -70,6 +68,11 @@ def main() -> None:
         "target_plant_qr": None,
         "awaiting_patrol_approval": False,
     }
+    stream_sender = StreamSender(
+        settings,
+        lambda: camera.capture_frame(str(runtime_context["active_camera"])),
+        lambda: str(runtime_context["active_camera"]),
+    )
 
     if settings.local_ai_enabled and not local_ai_available:
         LOGGER.warning("Clasificacion local habilitada pero el modelo no esta disponible; se enviaran solo observaciones")

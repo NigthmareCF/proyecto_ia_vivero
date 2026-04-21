@@ -75,6 +75,8 @@ class Settings:
     qr_detection_cooldown_seconds: float
     local_ai_enabled: bool
     offline_queue_dir: str
+    wifi_ssid: str
+    wifi_password: str
     cpu_temp_path: str
     battery_capacity_path: str | None
     lcd_enabled: bool
@@ -90,7 +92,7 @@ class Settings:
         backend_base_url = os.getenv("BACKEND_BASE_URL") or os.getenv("BRIDGE_URL") or "http://localhost:8080/api"
         return cls(
             backend_base_url=backend_base_url,
-            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/api/ws"),
+            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/api/ws/robot-stream"),
             heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
             observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
             command_next_path=os.getenv("COMMAND_NEXT_PATH", "/robot/commands/next"),
@@ -123,6 +125,8 @@ class Settings:
             qr_detection_cooldown_seconds=float(os.getenv("QR_DETECTION_COOLDOWN_SECONDS", "12.0")),
             local_ai_enabled=os.getenv("LOCAL_AI_ENABLED", "false").lower() == "true",
             offline_queue_dir=os.getenv("OFFLINE_QUEUE_DIR", "/app/data/offline-queue"),
+            wifi_ssid=os.getenv("WIFI_SSID", "Redmi Note 14"),
+            wifi_password=os.getenv("WIFI_PASSWORD", "tashycora"),
             cpu_temp_path=os.getenv("CPU_TEMP_PATH", "/sys/class/thermal/thermal_zone0/temp"),
             battery_capacity_path=os.getenv("BATTERY_CAPACITY_PATH"),
             lcd_enabled=os.getenv("LCD_ENABLED", "true").lower() == "true",

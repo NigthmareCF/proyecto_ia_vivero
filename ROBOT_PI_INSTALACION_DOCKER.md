@@ -1,14 +1,14 @@
 # Robot Pi: Instalacion y Ejecucion con Docker
 
-Guia actualizada para levantar el runtime del `robot-pi` en Raspberry Pi 5.
+Guia actualizada para levantar el runtime de `robot-pi` en Raspberry Pi 5 usando CLI y Docker.
 
 ## 1. Requisitos previos
 
 - Raspberry Pi OS 64-bit.
-- Docker y Docker Compose instalados.
+- Docker Engine y Docker Compose Plugin.
 - I2C habilitado si usas LCD.
-- Camaras detectadas por Linux.
-- Sensores y GPIO conectados segun la documentacion de circuito.
+- Camaras visibles en `/dev/video*`.
+- Sensores y GPIO cableados segun la documentacion del circuito.
 
 ## 2. Instalar Docker
 
@@ -31,116 +31,61 @@ Activar:
 - `Interface Options -> I2C -> Enable`
 - `Interface Options -> Camera -> Enable` si usas CSI
 
-## 4. Verificar dispositivos
-
-```bash
-ls /dev/video*
-ls /dev/i2c-1
-```
-
-## 5. Preparar variables de entorno
-
-Si existe `.env.example`, copialo:
+## 4. Preparar variables de entorno
 
 ```bash
 cp .env.example .env
 nano .env
 ```
 
-Valores importantes:
+Variables clave:
 
-- `BACKEND_BASE_URL=http://IP_DEL_BACKEND:8080/api`
-- `BACKEND_WS_URL=ws://IP_DEL_BACKEND:8080/api/ws`
-- `HEARTBEAT_PATH=/robot/heartbeat`
-- `OBSERVATION_PATH=/robot/observations`
-- `CAMERA_FRONT_INDEX=0`
-- `CAMERA_LEFT_INDEX=1`
-- `CAMERA_RIGHT_INDEX=2`
+- `BACKEND_BASE_URL=http://IP_O_DOMINIO_BACKEND:8080/api`
+- `BACKEND_WS_URL=ws://IP_O_DOMINIO_BACKEND:8080/api/ws/robot-stream`
 - `ROBOT_ID=ROBOT-001`
+- `WIFI_SSID=Redmi Note 14`
+- `WIFI_PASSWORD=tashycora`
 
-Compatibilidad:
+## 5. Verificar hardware
 
-- si ya existia `BRIDGE_URL`, el runtime la sigue aceptando como fallback
-- para configuraciones nuevas, usar `BACKEND_BASE_URL`
+```bash
+ls /dev/video*
+ls /dev/i2c-1
+```
 
-## 6. Modelos opcionales
-
-Si usaras IA local, coloca en `robot-pi/models/`:
-
-- `modelo_vivero.tflite`
-- `labels.txt`
-
-Si no usaras IA local, el runtime puede levantarse igual.
-
-## 7. Levantar el contenedor
+## 6. Levantar el runtime
 
 ```bash
 docker compose up --build -d
 ```
 
-## 8. Logs
+## 7. Ver logs
 
 ```bash
 docker compose logs -f robot
 ```
 
-## 9. Detener o reiniciar
+## 8. Reinicio o apagado
 
 ```bash
 docker compose restart robot
 docker compose down
 ```
 
-## 10. Comportamiento esperado al iniciar
+## 9. Comportamiento esperado
 
-Al arrancar correctamente:
+Al iniciar correctamente, el runtime:
 
-- inicializa GPIO
-- inicializa camaras
-- inicializa LCD/LED/buzzer si estan habilitados
+- inicializa GPIO, LCD, LED y buzzer
+- abre las camaras
 - entra en `IDLE`
 - comienza a enviar `heartbeat`
-- queda listo para recibir comandos
+- queda listo para recibir comandos REST del backend
+- envia el stream por WebSocket raw al endpoint `/api/ws/robot-stream`
 
-## 11. Limitaciones actuales
+## 10. Notas de operacion
 
-El runtime actual:
-
-- no hace todavia captura en movimiento sin detenerse
-- no ofrece aun streaming real completo de tres camaras
-- no debe considerarse la implementacion final de concurrencia
-
-## 12. Problemas comunes
-
-### No detecta camaras
-
-```bash
-ls /dev/video*
-v4l2-ctl --list-devices
-```
-
-Ajusta luego:
-
-- `CAMERA_FRONT_INDEX`
-- `CAMERA_LEFT_INDEX`
-- `CAMERA_RIGHT_INDEX`
-
-### No conecta al backend
-
-Revisa:
-
-- `BACKEND_BASE_URL`
-- `BACKEND_WS_URL`
-- rutas `HEARTBEAT_PATH` y `OBSERVATION_PATH`
-- puerto `8080`
-- firewall
-
-### Falla por permisos de hardware
-
-Revisa que `docker-compose.yml` incluya:
-
-- `privileged: true`
-- `network_mode: host`
-- acceso a `/dev`
-- dispositivos de video
-- `/dev/i2c-1` si usas LCD
+- La camara frontal queda dedicada al stream.
+- Las camaras laterales se usan para QR y rafaga de fotos.
+- El backend puede cambiar la camara activa de stream con el comando `SWITCH_CAMERA`.
+- Si el backend cae, las observaciones se quedan en cola local y se reintentan despues.

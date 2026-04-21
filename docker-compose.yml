@@ -13,6 +13,7 @@ services:
       - .env
     volumes:
       - ./robot-pi/models:/app/models
+      - ./robot-pi-data:/app/data
       - /dev:/dev
     devices:
       - /dev/video0:/dev/video0
