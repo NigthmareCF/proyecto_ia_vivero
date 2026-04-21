@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroTech Robotics | Vision Frontend</title>
+  <style>
+    :root {
+      --bg: #f3efe5;
+      --panel: rgba(255, 252, 246, 0.82);
+      --panel-strong: #fffaf0;
+      --ink: #17211c;
+      --muted: #5f6c62;
+      --line: rgba(23, 33, 28, 0.12);
+      --green: #2f7d4a;
+      --green-soft: #dcefdc;
+      --amber: #db8b22;
+      --amber-soft: #fff0d6;
+      --red: #b53a33;
+      --red-soft: #fde0dc;
+      --blue: #225f80;
+      --blue-soft: #d7edf6;
+      --shadow: 0 18px 45px rgba(36, 42, 32, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(111, 167, 116, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(221, 142, 55, 0.18), transparent 22%),
+        linear-gradient(180deg, #fbf7ef 0%, #f1eadb 100%);
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: rgba(255, 248, 238, 0.72);
+      backdrop-filter: blur(18px);
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      padding: 12px 10px 26px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.05;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .nav {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: var(--ink);
+      padding: 14px 16px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+      font-weight: 600;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: var(--panel-strong);
+      border-color: var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-footer {
+      position: absolute;
+      bottom: 22px;
+      left: 20px;
+      right: 20px;
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .sidebar-footer small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .content {
+      padding: 28px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-main {
+      padding: 30px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.74), rgba(255, 248, 232, 0.9)),
+        linear-gradient(135deg, #f4ffef, #fff3de);
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .hero-main h2 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3.6rem);
+      line-height: 0.95;
+      max-width: 10ch;
+    }
+
+    .hero-main p {
+      color: var(--muted);
+      max-width: 56ch;
+      line-height: 1.55;
+      margin: 18px 0 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .btn {
+      border: 0;
+      padding: 13px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn.soft {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .hero-side {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(34, 95, 128, 0.08), rgba(47, 125, 74, 0.04)),
+        var(--panel);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .metric {
+      padding: 20px;
+    }
+
+    .metric small {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 0.75rem;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 2rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+    }
+
+    .stream {
+      min-height: 380px;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(21, 26, 24, 0.06), rgba(21, 26, 24, 0.2)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'%3E%3Crect width='640' height='360' fill='%23c6dbc2'/%3E%3Crect x='70' y='120' width='500' height='100' rx='16' fill='%2387aa7f' opacity='.55'/%3E%3Ccircle cx='125' cy='168' r='38' fill='%234d6d4a'/%3E%3Ccircle cx='235' cy='175' r='42' fill='%23557c4e'/%3E%3Ccircle cx='355' cy='165' r='50' fill='%234d7247'/%3E%3Ccircle cx='500' cy='175' r='44' fill='%23597d56'/%3E%3Crect x='0' y='280' width='640' height='80' fill='%238d744f'/%3E%3Cpath d='M0 312 Q140 280 260 312 T640 312' fill='none' stroke='%23f4e7cf' stroke-width='8' stroke-linecap='round'/%3E%3C/svg%3E") center/cover no-repeat;
+    }
+
+    .stream-overlay {
+      position: absolute;
+      inset: 0;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .stream-top,
+    .stream-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .glass {
+      background: rgba(19, 27, 24, 0.42);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 16px;
+      padding: 10px 12px;
+      backdrop-filter: blur(14px);
+    }
+
+    .telemetry {
+      display: grid;
+      gap: 12px;
+    }
+
+    .telemetry-row,
+    .report-row,
+    .plant-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .telemetry-row:first-of-type,
+    .report-row:first-of-type,
+    .plant-row:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .tag.green { background: var(--green-soft); color: var(--green); }
+    .tag.amber { background: var(--amber-soft); color: var(--amber); }
+    .tag.red { background: var(--red-soft); color: var(--red); }
+    .tag.blue { background: var(--blue-soft); color: var(--blue); }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .report-highlight {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(248,241,228,0.95));
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .mini-stat {
+      padding: 12px;
+      border-radius: 14px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.1rem;
+    }
+
+    .cta-banner {
+      padding: 24px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background:
+        linear-gradient(120deg, rgba(37, 93, 59, 0.12), rgba(178, 101, 25, 0.12)),
+        var(--panel);
+    }
+
+    .cta-banner h3 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+    }
+
+    .cta-banner p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1180px) {
+      .shell,
+      .hero,
+      .dashboard-grid,
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+      }
+
+      .sidebar-footer {
+        position: static;
+        margin-top: 18px;
+      }
+
+      .metrics,
+      .mini-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .content {
+        padding: 16px;
+      }
+
+      .sidebar {
+        padding: 18px 14px;
+      }
+
+      .metrics,
+      .mini-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-main,
+      .panel,
+      .metric,
+      .cta-banner {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>AgroTech<br />Robotics</h1>
+        <p>Centro de control del vivero inteligente y operación del robot patrullero.</p>
+      </div>
+
+      <nav class="nav">
+        <a class="active" href="#">Dashboard <span>01</span></a>
+        <a href="#">Control del Robot <span>02</span></a>
+        <a href="#">Patrullajes <span>03</span></a>
+        <a href="#">Plantas <span>04</span></a>
+        <a href="#">Reportes <span>05</span></a>
+        <a href="#">Usuarios <span>06</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <small>Sesión activa</small>
+        <strong>Fer Castillo</strong><br />
+        <span style="color: var(--muted);">Rol: CONTROLLER</span>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <article class="hero-main card">
+          <div>
+            <div class="eyebrow">Sistema Principal • Vivero IA</div>
+            <h2>Una sola vista para operar, vigilar y decidir.</h2>
+            <p>
+              El frontend debe verse como un centro de misión: control del robot, stream en tiempo real,
+              telemetría visible, estados por planta, reportes documentados y un acceso rápido a patrullajes.
+            </p>
+            <div class="hero-actions">
+              <button class="btn primary">Iniciar Patrullaje</button>
+              <button class="btn soft">Ir a Planta</button>
+              <button class="btn soft">Descargar Último Reporte</button>
+            </div>
+          </div>
+          <div class="status-pill">Robot conectado • Backend en línea • Cola estable</div>
+        </article>
+
+        <aside class="hero-side card">
+          <div class="status-pill">Patrullaje No. 24</div>
+          <div class="report-highlight">
+            <small style="color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;">Resumen operativo</small>
+            <h3 style="margin: 8px 0 10px;">Vivero con 1 foco crítico y 3 plantas en atención</h3>
+            <p style="margin: 0; color: var(--muted); line-height: 1.5;">
+              La interfaz debe priorizar información de decisión rápida: qué detectó el robot,
+              dónde lo detectó y qué evidencia respalda cada resultado.
+            </p>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat"><span>Sano</span><strong>42</strong></div>
+            <div class="mini-stat"><span>Atención</span><strong>03</strong></div>
+            <div class="mini-stat"><span>Peligro</span><strong>01</strong></div>
+            <div class="mini-stat"><span>Manual</span><strong>02</strong></div>
+            <div class="mini-stat"><span>NC</span><strong>01</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="metrics">
+        <article class="metric card">
+          <small>Robot</small>
+          <strong>Activo</strong>
+        </article>
+        <article class="metric card">
+          <small>Batería</small>
+          <strong>87%</strong>
+        </article>
+        <article class="metric card">
+          <small>Temperatura</small>
+          <strong>53°C</strong>
+        </article>
+        <article class="metric card">
+          <small>Heartbeat</small>
+          <strong>2s</strong>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel card">
+          <h3>Recorrido en Vivo</h3>
+          <div class="stream card" style="border-radius: 24px;">
+            <div class="stream-overlay">
+              <div class="stream-top">
+                <div class="glass">Camara actual: Frontal</div>
+                <div class="glass">Velocidad: Media</div>
+                <div class="glass">Modo: Seguidor de linea</div>
+              </div>
+              <div class="stream-bottom">
+                <div class="glass">Batería 87%</div>
+                <div class="glass">Temp 53°C</div>
+                <div class="glass">Latencia WS 180 ms</div>
+                <div class="glass">QR actual PLA_1_M_15_DR</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+            <span class="tag blue">Tecla 1: Frontal</span>
+            <span class="tag blue">Tecla 2: Izquierda</span>
+            <span class="tag blue">Tecla 3: Derecha</span>
+            <span class="tag green">Stream por WebSocket</span>
+          </div>
+        </article>
+
+        <aside class="panel card">
+          <h3>Telemetría y Control</h3>
+          <div class="telemetry">
+            <div class="telemetry-row">
+              <div>
+                <strong>Perfil de manejo</strong><br />
+                <span style="color: var(--muted);">AUTO_LINE / MANUAL_FREE / GOTO / ACRO</span>
+              </div>
+              <span class="tag blue">AUTO_LINE</span>
+            </div>
+            <div class="telemetry-row">
+              <div>
+                <strong>Estado de conexión</strong><br />
+                <span style="color: var(--muted);">Heartbeat, cola offline y conectividad</span>
+              </div>
+              <span class="tag green">Estable</span>
+            </div>
+            <div class="telemetry-row">
+              <div>
+                <strong>Obstáculos</strong><br />
+                <span style="color: var(--muted);">El buzzer debe reservarse para bloqueo/obstrucción</span>
+              </div>
+              <span class="tag amber">1 evento</span>
+            </div>
+            <div class="telemetry-row">
+              <div>
+                <strong>Último análisis</strong><br />
+                <span style="color: var(--muted);">Resultados finales llegan después del recorrido</span>
+              </div>
+              <span class="tag red">Peligro</span>
+            </div>
+            <div class="telemetry-row">
+              <div>
+                <strong>Comandos rápidos</strong><br />
+                <span style="color: var(--muted);">Manual libre, volver a línea, ir a planta</span>
+              </div>
+              <button class="btn primary">Panel de control</button>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-grid">
+        <article class="panel card">
+          <h3>Plantas Prioritarias</h3>
+          <div class="plant-row">
+            <div>
+              <strong>PLA_1_M_15</strong><br />
+              <span style="color: var(--muted);">Hallazgo lateral derecho con manchas y bordes irregulares</span>
+            </div>
+            <span class="tag red">PELIGRO</span>
+          </div>
+          <div class="plant-row">
+            <div>
+              <strong>PLA_2_M_07</strong><br />
+              <span style="color: var(--muted);">Seguimiento sugerido por cambio de tonalidad</span>
+            </div>
+            <span class="tag amber">ATENCION</span>
+          </div>
+          <div class="plant-row">
+            <div>
+              <strong>PLA_5_M_02</strong><br />
+              <span style="color: var(--muted);">Captura insuficiente, revisión humana recomendada</span>
+            </div>
+            <span class="tag blue">MANUAL</span>
+          </div>
+        </article>
+
+        <article class="panel card">
+          <h3>Reportes Documentados</h3>
+          <div class="report-row">
+            <div>
+              <strong>Reporte No. 024</strong><br />
+              <span style="color: var(--muted);">Resumen PDF con evidencias agrupadas por PLA_X_M_X</span>
+            </div>
+            <button class="btn soft">Ver PDF</button>
+          </div>
+          <div class="report-row">
+            <div>
+              <strong>Envío por correo</strong><br />
+              <span style="color: var(--muted);">Canal único activo para notificaciones</span>
+            </div>
+            <span class="tag green">EMAIL</span>
+          </div>
+          <div class="report-row">
+            <div>
+              <strong>Estado del envío</strong><br />
+              <span style="color: var(--muted);">Habilitado solo si el usuario lo activa en perfil</span>
+            </div>
+            <span class="tag blue">Configurable</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="cta-banner card">
+        <div>
+          <h3>Dirección visual sugerida para el frontend real</h3>
+          <p>
+            Limpio pero técnico, con sensación de sala de operaciones agrícola. Nada genérico:
+            prioridad al stream, estados del robot, hallazgos por planta y acceso inmediato a evidencias.
+          </p>
+        </div>
+        <button class="btn primary">Usar como referencia</button>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

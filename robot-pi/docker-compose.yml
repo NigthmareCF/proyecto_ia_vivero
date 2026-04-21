@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  robot:
+    build:
+      context: ./robot-pi
+      dockerfile: Dockerfile
+    container_name: agrotech-robot
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    env_file:
+      - .env
+    volumes:
+      - ./robot-pi/models:/app/models
+      - ./robot-pi-data:/app/data
+      - /dev:/dev
+    devices:
+      - /dev/video0:/dev/video0
+      - /dev/video1:/dev/video1
+      - /dev/video2:/dev/video2
+      - /dev/i2c-1:/dev/i2c-1

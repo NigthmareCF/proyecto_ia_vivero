@@ -10,7 +10,7 @@ import java.util.concurrent.Executor;
 /**
  * Configura el pool de hilos para tareas asíncronas (@Async).
  *
- * Las notificaciones (email, WhatsApp, Telegram) se ejecutan en este pool
+ * Las notificaciones por email se ejecutan en este pool
  * para no bloquear el hilo principal de la petición REST.
  * Si el envío de un email tarda 3 segundos, el usuario no espera esos 3 segundos.
  */

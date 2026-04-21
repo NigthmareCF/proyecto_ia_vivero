@@ -1,8 +1,8 @@
-# ══════════════════════════════════════════════════════
-# application.yml — Vivero Backend
-# Active profile: dev  (PostgreSQL via Docker)
-# Test profile:   test (H2 in-memory, no disk writes)
-# ══════════════════════════════════════════════════════
+# ========================================================
+# application.yml - Vivero Backend
+# Active profile: dev  (PostgreSQL)
+# Test profile:   test (H2 in-memory)
+# ========================================================
 
 spring:
   application:
@@ -11,7 +11,12 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
+  sql:
+    init:
+      mode: always
+
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
     show-sql: false
@@ -26,9 +31,56 @@ spring:
       max-file-size: 10MB
       max-request-size: 50MB
 
-# ══════════════════════════════════════════════════════
-# PROFILE: dev — PostgreSQL via Docker Compose
-# ══════════════════════════════════════════════════════
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:vivero-secret-key-2026-agrotech-robot-greenhouse-monitoring}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
+
+  storage:
+    images-path: ${IMAGES_PATH:/app/images}
+
+  public-base-url: ${PUBLIC_BASE_URL:http://localhost:8080/api}
+
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+
+  notification:
+    email:
+      from: ${MAIL_FROM:noreply@vivero.com}
+
+logging:
+  level:
+    com.vivero: DEBUG
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
 ---
 spring:
   config:
@@ -45,9 +97,6 @@ spring:
     hibernate:
       ddl-auto: update
 
-# ══════════════════════════════════════════════════════
-# PROFILE: test — H2 in-memory for unit tests
-# ══════════════════════════════════════════════════════
 ---
 spring:
   config:
@@ -70,75 +119,3 @@ spring:
   h2:
     console:
       enabled: true
-
-# ══════════════════════════════════════════════════════
-# SERVER
-# ══════════════════════════════════════════════════════
-server:
-  port: ${SERVER_PORT:8080}
-  servlet:
-    context-path: /api
-
-# ══════════════════════════════════════════════════════
-# APPLICATION PROPERTIES
-# ══════════════════════════════════════════════════════
-app:
-  jwt:
-    secret: ${JWT_SECRET:vivero-secret-key-2026-agrotech-robot-greenhouse-monitoring}
-    expiration-ms: ${JWT_EXPIRATION_MS:86400000}           # 24 horas
-    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}  # 7 días
-
-  storage:
-    images-path: ${IMAGES_PATH:/app/images}
-
-  cors:
-    allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
-
-  notification:
-    email:
-      from: ${MAIL_FROM:noreply@vivero.com}
-    twilio:
-      account-sid: ${TWILIO_ACCOUNT_SID:}
-      auth-token: ${TWILIO_AUTH_TOKEN:}
-      from-whatsapp: ${TWILIO_WHATSAPP_FROM:whatsapp:+14155238886}
-      from-sms: ${TWILIO_SMS_FROM:}
-    telegram:
-      bot-token: ${TELEGRAM_BOT_TOKEN:}
-      bot-username: ${TELEGRAM_BOT_USERNAME:ViveroBot}
-
-# ══════════════════════════════════════════════════════
-# SPRING MAIL
-# ══════════════════════════════════════════════════════
-spring:
-  mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-# ══════════════════════════════════════════════════════
-# LOGGING
-# ══════════════════════════════════════════════════════
-logging:
-  level:
-    com.vivero: DEBUG
-    org.springframework.security: WARN
-    org.hibernate.SQL: WARN
-
-# ══════════════════════════════════════════════════════
-# ACTUATOR (Docker healthcheck)
-# ══════════════════════════════════════════════════════
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: never
