@@ -73,3 +73,11 @@ def is_line_lost() -> bool:
     if _settings is None:
         return False
     return (time.monotonic() - _last_line_seen) > _settings.line_lost_timeout
+
+
+def is_all_white() -> bool:
+    return read_sensors() == (0, 0, 0)
+
+
+def has_black_detected() -> bool:
+    return any(value == 1 for value in read_sensors())

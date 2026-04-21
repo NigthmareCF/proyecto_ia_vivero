@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import logging
+import threading
+import time
 from typing import Any
 
 import cv2
@@ -17,6 +19,7 @@ class CameraHandler:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self._captures: dict[str, Any] = {}
+        self._lock = threading.Lock()
 
     def _open_camera(self, index: int) -> Any:
         if self.settings.camera_type == "csi":
@@ -41,11 +44,12 @@ class CameraHandler:
         return np.zeros((self.settings.camera_height, self.settings.camera_width, 3), dtype=np.uint8)
 
     def capture_frame(self, position: str = "front") -> np.ndarray | None:
-        capture = self._captures.get(position)
-        if capture is None:
-            return self._simulated_frame()
-        ok, frame = capture.read()
-        return frame if ok else self._simulated_frame()
+        with self._lock:
+            capture = self._captures.get(position)
+            if capture is None:
+                return self._simulated_frame()
+            ok, frame = capture.read()
+            return frame if ok else self._simulated_frame()
 
     def capture_triplet(self) -> dict[str, np.ndarray]:
         return {
@@ -56,11 +60,24 @@ class CameraHandler:
 
     def capture_burst(self, n: int) -> list[np.ndarray]:
         if n <= 1:
-            frame = self.capture_frame("front")
+            frame = self.capture_frame("left")
             return [frame] if frame is not None else []
         triplet = self.capture_triplet()
-        ordered = [triplet["front"], triplet["left"], triplet["right"]]
+        ordered = [triplet["left"], triplet["right"], triplet["front"]]
         return [frame for frame in ordered if frame is not None][:n]
+
+    def capture_side_burst(self, n: int, interval_seconds: float) -> list[np.ndarray]:
+        frames: list[np.ndarray] = []
+        if n <= 0:
+            return frames
+        positions = ["left", "right"]
+        for index in range(n):
+            frame = self.capture_frame(positions[index % 2])
+            if frame is not None:
+                frames.append(frame)
+            if index < n - 1:
+                time.sleep(max(interval_seconds, 0.01))
+        return frames
 
     def frame_to_base64(self, frame: np.ndarray) -> str:
         ok, encoded = cv2.imencode(

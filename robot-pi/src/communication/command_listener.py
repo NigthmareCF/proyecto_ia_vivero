@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import json
 import logging
 import threading
 import time
 from collections.abc import Callable
 
-from websocket import WebSocketApp
+import requests
 
 from src.config import Settings
 
@@ -36,31 +35,36 @@ class CommandListener:
         self.shutdown_event.set()
 
     def _run(self) -> None:
-        backoff = 2
         while not self.shutdown_event.is_set():
-            ws = WebSocketApp(
-                self.settings.backend_ws_url,
-                on_message=self._on_message,
-                on_error=self._on_error,
-            )
             try:
-                ws.run_forever()
+                command = self._fetch_next_command()
+                if command is not None:
+                    self.callback(command["command"], command.get("data") or {})
+                    self._ack_command(int(command["id"]))
+                else:
+                    self.shutdown_event.wait(self.settings.command_poll_interval_seconds)
             except Exception as exc:
-                LOGGER.warning("Command listener error: %s", exc)
-            if self.shutdown_event.is_set():
-                return
-            time.sleep(backoff)
-            backoff = min(backoff * 2, 30)
+                LOGGER.warning("Command polling failed: %s", exc)
+                self.shutdown_event.wait(self.settings.command_poll_interval_seconds)
 
-    def _on_message(self, _ws: WebSocketApp, message: str) -> None:
-        try:
-            payload = json.loads(message)
-        except json.JSONDecodeError:
-            LOGGER.warning("Ignoring non-JSON command: %s", message)
-            return
-        command = str(payload.get("command", "")).upper()
-        data = payload.get("data") or {}
-        self.callback(command, data)
+    def _fetch_next_command(self) -> dict | None:
+        response = requests.get(
+            f"{self.settings.backend_base_url.rstrip('/')}{self.settings.command_next_path}",
+            params={"robotId": self.settings.robot_id},
+            timeout=10,
+        )
+        if response.status_code == 204:
+            return None
+        response.raise_for_status()
+        payload = response.json()
+        data = payload.get("data") if isinstance(payload, dict) else None
+        return data if isinstance(data, dict) else None
 
-    def _on_error(self, _ws: WebSocketApp, error: object) -> None:
-        LOGGER.warning("WS command listener error: %s", error)
+    def _ack_command(self, command_id: int) -> None:
+        path = self.settings.command_ack_path_template.format(commandId=command_id)
+        response = requests.post(
+            f"{self.settings.backend_base_url.rstrip('/')}{path}",
+            json={"robotId": self.settings.robot_id},
+            timeout=10,
+        )
+        response.raise_for_status()

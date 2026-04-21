@@ -36,7 +36,7 @@ BUZZER = 21
 
 CLASSES = ["atencion", "peligro", "sano"]
 PWM_FREQUENCY_HZ = 1000
-N_CAPTURES = 3
+N_CAPTURES = 6
 
 
 @dataclass(slots=True)
@@ -45,6 +45,8 @@ class Settings:
     backend_ws_url: str
     heartbeat_path: str
     observation_path: str
+    command_next_path: str
+    command_ack_path_template: str
     camera_type: str
     camera_front_index: int
     camera_left_index: int
@@ -63,8 +65,16 @@ class Settings:
     stream_fps: int
     stream_quality: int
     capture_count: int
+    qr_capture_speed: int
+    burst_frame_interval_seconds: float
+    end_row_forward_seconds: float
+    end_row_turn_seconds: float
     observation_retry_count: int
+    command_poll_interval_seconds: float
+    observation_flush_interval_seconds: float
+    qr_detection_cooldown_seconds: float
     local_ai_enabled: bool
+    offline_queue_dir: str
     cpu_temp_path: str
     battery_capacity_path: str | None
     lcd_enabled: bool
@@ -83,6 +93,8 @@ class Settings:
             backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/api/ws"),
             heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
             observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
+            command_next_path=os.getenv("COMMAND_NEXT_PATH", "/robot/commands/next"),
+            command_ack_path_template=os.getenv("COMMAND_ACK_PATH_TEMPLATE", "/robot/commands/{commandId}/ack"),
             camera_type=os.getenv("CAMERA_TYPE", "usb").lower(),
             camera_front_index=int(os.getenv("CAMERA_FRONT_INDEX", "0")),
             camera_left_index=int(os.getenv("CAMERA_LEFT_INDEX", "1")),
@@ -101,8 +113,16 @@ class Settings:
             stream_fps=int(os.getenv("STREAM_FPS", "10")),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
             capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
+            qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "22")),
+            burst_frame_interval_seconds=float(os.getenv("BURST_FRAME_INTERVAL_SECONDS", "0.08")),
+            end_row_forward_seconds=float(os.getenv("END_ROW_FORWARD_SECONDS", "5.0")),
+            end_row_turn_seconds=float(os.getenv("END_ROW_TURN_SECONDS", "1.0")),
             observation_retry_count=int(os.getenv("OBSERVATION_RETRY_COUNT", "3")),
+            command_poll_interval_seconds=float(os.getenv("COMMAND_POLL_INTERVAL_SECONDS", "1.0")),
+            observation_flush_interval_seconds=float(os.getenv("OBSERVATION_FLUSH_INTERVAL_SECONDS", "5.0")),
+            qr_detection_cooldown_seconds=float(os.getenv("QR_DETECTION_COOLDOWN_SECONDS", "12.0")),
             local_ai_enabled=os.getenv("LOCAL_AI_ENABLED", "false").lower() == "true",
+            offline_queue_dir=os.getenv("OFFLINE_QUEUE_DIR", "/app/data/offline-queue"),
             cpu_temp_path=os.getenv("CPU_TEMP_PATH", "/sys/class/thermal/thermal_zone0/temp"),
             battery_capacity_path=os.getenv("BATTERY_CAPACITY_PATH"),
             lcd_enabled=os.getenv("LCD_ENABLED", "true").lower() == "true",
