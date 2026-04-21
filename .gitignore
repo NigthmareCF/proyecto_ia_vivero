@@ -10,6 +10,9 @@ vivero-backend/.mvn/
 # Variables locales
 .env
 !.env
+vivero-frontend/node_modules/
+vivero-frontend/dist/
+*.tsbuildinfo
 
 # Archivos del sistema
 Thumbs.db
