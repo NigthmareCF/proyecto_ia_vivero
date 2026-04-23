@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ProtectedRoute } from "./components/layout/ProtectedRoute";
 import { Sidebar } from "./components/layout/Sidebar";
 import { Navbar } from "./components/layout/Navbar";
 import { useAuth } from "./hooks/useAuth";
@@ -27,14 +26,17 @@ function hasAccess(role: Role, allowedRoles: Role[]) {
   return allowedRoles.includes(role);
 }
 
-function Shell() {
-  const { isAuthenticated, role } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Routes><Route path="*" element={<LoginPage />} /></Routes>;
+function normalizeRole(role: string | null): Role {
+  if (role === "ADMIN" || role === "CONTROLLER" || role === "VIEWER") {
+    return role;
   }
+  return "VIEWER";
+}
 
-  const activeRole = (role ?? "VIEWER") as Role;
+function Shell() {
+  const { role } = useAuth();
+
+  const activeRole = normalizeRole(role);
   const fallbackRoute = defaultRouteByRole[activeRole] ?? "/reports";
 
   return (
@@ -91,12 +93,15 @@ function Shell() {
 }
 
 export default function App() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="*" element={<Shell />} />
-      </Route>
+      <Route path="*" element={<Shell />} />
     </Routes>
   );
 }

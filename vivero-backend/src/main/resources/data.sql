@@ -50,7 +50,11 @@ INSERT INTO reports (
     healthy_count,
     attention_count,
     danger_count,
+    manual_review_count,
+    inconclusive_count,
+    plant_details_json,
     pdf_path,
+    public_share_token,
     created_at,
     updated_at
 )
@@ -63,6 +67,10 @@ SELECT
     1,
     1,
     1,
+    0,
+    0,
+    NULL,
+    NULL,
     NULL,
     NOW(),
     NOW()
