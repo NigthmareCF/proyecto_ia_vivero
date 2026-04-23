@@ -13,14 +13,8 @@ type AuthState = {
 
 const persisted = (() => {
   try {
-    const value = JSON.parse(localStorage.getItem("vivero-auth") ?? "{}");
-    if (!value || typeof value !== "object") {
-      localStorage.removeItem("vivero-auth");
-      return {};
-    }
-    return value;
+    return JSON.parse(localStorage.getItem("vivero-auth") ?? "{}");
   } catch {
-    localStorage.removeItem("vivero-auth");
     return {};
   }
 })();
