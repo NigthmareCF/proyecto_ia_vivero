@@ -1,4 +1,4 @@
-RPi.GPIO==0.7.1
+rpi-lgpio
 tflite-runtime==2.14.0
 opencv-python-headless==4.9.0.80
 numpy==1.26.4
