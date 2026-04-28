@@ -6,7 +6,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
-    liblgpio1 \
     libgpiod2 \
     libatlas-base-dev \
     libopenjp2-7 \
