@@ -25,13 +25,20 @@ No implementado aun:
 
 ## Arquitectura vigente
 
-La referencia actual ya no es `Pi -> bridge -> backend` como camino obligatorio. La direccion principal es:
+La referencia vigente es comunicacion directa desde la Raspberry Pi al backend local y de ahi al frontend:
 
 ```text
 Pi -> backend -> frontend
 ```
 
-La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` para WebSocket. El runtime conserva compatibilidad con `BRIDGE_URL` solo como fallback legado.
+La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` para WebSocket. En la red local actual el backend debe exponerse en:
+
+```text
+BACKEND_BASE_URL=http://192.168.1.27:8080/api
+BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream
+```
+
+`BRIDGE_URL` queda solo como fallback legado y no debe usarse para la operacion normal.
 
 ## Roles de camaras acordados
 
@@ -82,8 +89,8 @@ Indicadores
 
 ## Instalacion
 
-Consulta la guia rapida en [ROBOT_PI_INSTALACION_DOCKER.md](C:/Proyecto_IA_Vivero/worktrees/robot-pi/ROBOT_PI_INSTALACION_DOCKER.md).
+Consulta la guia rapida en [ROBOT_PI_INSTALACION_DOCKER.md](ROBOT_PI_INSTALACION_DOCKER.md).
 
 ## Flujo vigente
 
-Consulta el flujo operativo vigente en [SAGA_FLOW.md](C:/Proyecto_IA_Vivero/worktrees/robot-pi/SAGA_FLOW.md).
+Consulta el flujo operativo vigente en [SAGA_FLOW.md](SAGA_FLOW.md).

@@ -43,6 +43,7 @@ SENDING
 MANUAL
   responde a comandos de movimiento
   puede activar stream
+  puede cambiar camara activa con CAMERA_SELECT o SWITCH_CAMERA
 ```
 
 ## 2. Flujo objetivo posterior
@@ -64,3 +65,18 @@ Estado:
 ## 3. Regla operativa
 
 No implementar automaticamente el flujo objetivo hasta confirmacion del usuario.
+
+## 4. Cambio de camara
+
+El backend cambia la camara activa del stream enviando el comando `CAMERA_SELECT`. Por compatibilidad con integraciones que lo nombren como switch de camara, el runtime tambien acepta `SWITCH_CAMERA`.
+
+Payloads validos:
+
+```json
+{ "camera": "front" }
+{ "camera": "left" }
+{ "camera": "right" }
+{ "activeCamera": "front" }
+```
+
+El runtime normaliza valores invalidos a `front`.

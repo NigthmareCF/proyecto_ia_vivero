@@ -10,11 +10,7 @@ ROBOT (Raspberry Pi / Python)
         │
         │  HTTP REST + WebSocket
         ▼
-ROBOT BRIDGE (Python FastAPI :5000)
-        │
-        │  HTTP REST internal
-        ▼
-BACKEND (Spring Boot :8080)
+BACKEND LOCAL (Spring Boot :8080)
         │
         ├──► PostgreSQL  (structured data + image paths)
         ├──► Docker Volume /app/images  (image files)
@@ -52,7 +48,7 @@ USER (operator / admin / viewer — browser)
         │
         ▼
 3. Backend creates Patrol record in DB  (status: IN_PROGRESS)
-   Backend → Robot Bridge → Robot: START_PATROL command
+   Backend → Robot: START_PATROL command
         │
         ▼
 4. Robot follows line → detects QR code of Plant #001
@@ -112,7 +108,7 @@ USER (operator / admin / viewer — browser)
    { "action": "SET_MODE", "mode": "MANUAL" }
         │
         ▼
-3. Backend → Robot Bridge → Robot: disable line follower
+3. Backend → Robot: disable line follower
         │
         ▼
 4. USER presses key (WASD / arrows) or uses on-screen joystick
@@ -122,7 +118,7 @@ USER (operator / admin / viewer — browser)
    { "direction": "FORWARD", "speed": 50 }
         │
         ▼
-6. Backend relays → Robot Bridge → Robot: move motors
+6. Backend relays → Robot: move motors
         │
         ▼
 7. Robot sends position/status every 500ms → WebSocket → Frontend

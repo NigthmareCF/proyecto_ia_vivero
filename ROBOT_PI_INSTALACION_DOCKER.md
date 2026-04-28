@@ -38,13 +38,15 @@ cp .env.example .env
 nano .env
 ```
 
-Variables clave:
+Variables clave para trabajo local en la red actual:
 
-- `BACKEND_BASE_URL=http://IP_O_DOMINIO_BACKEND:8080/api`
-- `BACKEND_WS_URL=ws://IP_O_DOMINIO_BACKEND:8080/api/ws/robot-stream`
+- `BACKEND_BASE_URL=http://192.168.1.27:8080/api`
+- `BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream`
 - `ROBOT_ID=ROBOT-001`
 - `WIFI_SSID=Redmi Note 14`
 - `WIFI_PASSWORD=tashycora`
+
+La configuracion WiFi de la Raspberry Pi ya fue creada con NetworkManager para priorizar el hotspot `Redmi Note 14` como red oculta. No hace falta recrearla para levantar el runtime; estas variables quedan como referencia operativa del robot.
 
 ## 5. Verificar hardware
 
@@ -87,5 +89,7 @@ Al iniciar correctamente, el runtime:
 
 - La camara frontal queda dedicada al stream.
 - Las camaras laterales se usan para QR y rafaga de fotos.
-- El backend puede cambiar la camara activa de stream con el comando `SWITCH_CAMERA`.
+- El backend puede cambiar la camara activa de stream enviando el comando `CAMERA_SELECT`.
+- Por compatibilidad, el runtime tambien acepta `SWITCH_CAMERA`.
+- El payload esperado es `{ "camera": "front" }`, `{ "camera": "left" }` o `{ "camera": "right" }`.
 - Si el backend cae, las observaciones se quedan en cola local y se reintentan despues.

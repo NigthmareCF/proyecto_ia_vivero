@@ -367,8 +367,8 @@ def main() -> None:
             )
             if state_machine.snapshot().state == RobotState.MANUAL:
                 apply_manual_move(state_machine.snapshot().manual_direction, state_machine.snapshot().manual_speed)
-        elif command == "CAMERA_SELECT":
-            requested_camera = str(data.get("camera", "front")).lower()
+        elif command in {"CAMERA_SELECT", "SWITCH_CAMERA"}:
+            requested_camera = str(data.get("camera") or data.get("activeCamera") or "front").lower()
             runtime_context["active_camera"] = requested_camera if requested_camera in {"front", "left", "right"} else "front"
         elif command == "SPEED_PROFILE":
             runtime_context["speed_profile"] = str(data.get("profile", "MEDIUM")).upper()

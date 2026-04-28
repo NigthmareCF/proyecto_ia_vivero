@@ -1,26 +1,32 @@
-# Robot Pi: Autostart, WiFi y Arranque Forzado
+# Robot Pi: Autostart y Arranque del Runtime
 
 Esta guia deja la Raspberry Pi 5 lista para:
 
-- conectarse al hotspot `Redmi Note 14`
-- usar la clave `tashycora`
+- usar la conexion WiFi ya configurada en NetworkManager
 - levantar `robot-pi` automaticamente al encender
+- comunicarse con el backend local en `192.168.1.27:8080`
 
-## 1. Crear la conexion WiFi
+## 1. Estado de la conexion WiFi
 
-Si usas NetworkManager:
-
-```bash
-sudo nmcli dev wifi connect "Redmi Note 14" password "tashycora" name agrotech-hotspot
-sudo nmcli connection modify agrotech-hotspot connection.autoconnect yes
-sudo nmcli connection modify agrotech-hotspot connection.autoconnect-priority 100
-```
-
-Verifica:
+La conexion WiFi ya fue creada en la Raspberry Pi como red oculta:
 
 ```bash
 nmcli connection show
 nmcli connection show --active
+```
+
+Si se necesita recrearla desde cero, usar:
+
+```bash
+sudo nmcli connection add type wifi ifname "*" con-name "Redmi Note 14" ssid "Redmi Note 14"
+sudo nmcli connection modify "Redmi Note 14" \
+  802-11-wireless.hidden yes \
+  802-11-wireless-security.key-mgmt wpa-psk \
+  802-11-wireless-security.psk "tashycora" \
+  connection.autoconnect yes \
+  connection.autoconnect-priority 100 \
+  connection.autoconnect-retries 0
+sudo nmcli connection up "Redmi Note 14"
 ```
 
 ## 2. Crear el servicio systemd para Docker Compose
@@ -42,7 +48,7 @@ Wants=network-online.target docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/pi/proyecto_ia_vivero/worktrees/robot-pi
+WorkingDirectory=/home/fer-dev/ROBOT-PI-EJECUTION
 ExecStart=/usr/bin/docker compose up -d --build
 ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0
@@ -78,7 +84,9 @@ docker compose logs -f robot
 
 Al encenderse la Pi:
 
-- se conecta automaticamente a `Redmi Note 14`
+- usa la conexion WiFi ya configurada
 - arranca Docker
 - ejecuta `docker compose up -d --build`
-- levanta el runtime del robot sin intervención manual
+- levanta el runtime del robot sin intervencion manual
+- conecta por HTTP a `http://192.168.1.27:8080/api`
+- conecta el stream por WebSocket a `ws://192.168.1.27:8080/api/ws/robot-stream`
