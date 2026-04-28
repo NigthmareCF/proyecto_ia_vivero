@@ -46,6 +46,14 @@ BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream
 - `left`: QR lateral y evidencia de planta
 - `right`: QR lateral y evidencia de planta
 
+Mapeo local verificado en la Raspberry Pi:
+
+```text
+left  -> /dev/video0
+right -> /dev/video2
+front -> /dev/video4
+```
+
 ## Requisitos previos en la Raspberry Pi
 
 1. Raspberry Pi OS 64-bit instalado.

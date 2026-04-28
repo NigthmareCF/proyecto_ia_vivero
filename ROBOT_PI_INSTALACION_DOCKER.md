@@ -43,6 +43,9 @@ Variables clave para trabajo local en la red actual:
 - `BACKEND_BASE_URL=http://192.168.1.27:8080/api`
 - `BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream`
 - `ROBOT_ID=ROBOT-001`
+- `CAMERA_LEFT_INDEX=0`
+- `CAMERA_RIGHT_INDEX=2`
+- `CAMERA_FRONT_INDEX=4`
 - `WIFI_SSID=Redmi Note 14`
 - `WIFI_PASSWORD=tashycora`
 
