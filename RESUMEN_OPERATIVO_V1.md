@@ -150,7 +150,7 @@
   - reversa
   - watchdog manual con teclado real
 - Ver si `rear_ir_active_high=true` coincide con el comportamiento físico real.
-- Si luego quieres respaldo móvil, la opción recomendable no es Bluetooth con stream, sino un modo local Wi‑Fi/hotspot servido por la Pi.
+- Si luego quieres respaldo móvil, la opción recomendable no es Bluetooth con stream, sino un modo local Wi-Fi/hotspot servido por la Pi.
 
 ## Decisiones ya tomadas
 
