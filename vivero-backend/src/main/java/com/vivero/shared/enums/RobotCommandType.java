@@ -12,5 +12,6 @@ public enum RobotCommandType {
     HEARTBEAT,
     SWITCH_CAMERA,
     SET_SPEED_PROFILE,
-    RUN_ACRO
+    RUN_ACRO,
+    SEARCH_BY_STATE
 }

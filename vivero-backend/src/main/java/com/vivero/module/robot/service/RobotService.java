@@ -26,6 +26,8 @@ public interface RobotService {
 
     RobotObservationResponseDto registerObservation(RobotObservationRequestDto observation);
 
+    java.util.List<RobotObservationResponseDto> getObservationsByPatrol(String patrolId);
+
     RobotPatrolAnalysisResponseDto finalizePatrolAnalysis(String patrolId, String robotId);
 
     RobotPatrolAnalysisResponseDto getPatrolAnalysis(String patrolId);

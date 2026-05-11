@@ -1,6 +1,13 @@
 import api from "./axiosInstance";
 
 export const getRobotStatus = () => api.get("/robot/status").then((res) => res.data.data);
+export const getRobotPatrolAnalysis = (patrolId: string) =>
+  api.get(`/robot/patrols/${patrolId}/analysis`).then((res) => res.data.data);
+export const getRobotPatrolObservations = (patrolId: string) =>
+  api.get(`/robot/patrols/${patrolId}/observations`).then((res) => res.data.data);
+
+export type SearchStartOrientation = "FORWARD" | "REVERSE";
+export type RobotSearchState = "SANO" | "ATENCION" | "PELIGRO" | "INCONCLUSA";
 
 const manualDirections = new Set(["FORWARD", "BACKWARD", "LEFT", "RIGHT", "STOP"]);
 const speedProfileMap: Record<string, string> = {
@@ -10,13 +17,13 @@ const speedProfileMap: Record<string, string> = {
   TURBO: "TURBO",
 };
 
-export const sendRobotCommand = (command: string, value?: string) => {
+export const sendRobotCommand = (command: string, value?: string | number) => {
   if (manualDirections.has(command)) {
     return api
       .post("/robot/command", {
         commandType: "MANUAL_MOVE",
         direction: command,
-        speed: typeof value === "string" ? Number(value) || 35 : 35,
+        speed: typeof value === "number" ? value : typeof value === "string" ? Number(value) || 35 : 35,
       })
       .then((res) => res.data.data);
   }
@@ -42,7 +49,31 @@ export const setRobotMode = (profile: "AUTO_LINE" | "MANUAL_FREE" | "ACRO") => {
 export const switchRobotCamera = (cameraName: "FRONT" | "LEFT" | "RIGHT") =>
   api.post("/robot/command", { commandType: "SWITCH_CAMERA", cameraName }).then((res) => res.data.data);
 
-export const setRobotSpeedProfile = (speedProfile: "LOW" | "MEDIUM" | "HIGH" | "TURBO") =>
+export const setRobotSpeedProfile = (speedProfile: "LOW" | "MEDIUM" | "HIGH" | "TURBO" | `CUSTOM_${number}`) =>
   api
-    .post("/robot/command", { commandType: "SET_SPEED_PROFILE", speedProfile: speedProfileMap[speedProfile] })
+    .post("/robot/command", {
+      commandType: "SET_SPEED_PROFILE",
+      speedProfile: speedProfileMap[speedProfile] ?? speedProfile,
+    })
+    .then((res) => res.data.data);
+
+export const goToRobotPlant = (targetPlantQr: string, searchStartOrientation: SearchStartOrientation = "FORWARD") =>
+  api
+    .post("/robot/command", {
+      commandType: "GOTO_PLANT",
+      targetPlantQr,
+      searchStartOrientation,
+    })
+    .then((res) => res.data.data);
+
+export const searchRobotByState = (
+  requestedState: RobotSearchState,
+  searchStartOrientation: SearchStartOrientation = "FORWARD",
+) =>
+  api
+    .post("/robot/command", {
+      commandType: "SEARCH_BY_STATE",
+      requestedState,
+      searchStartOrientation,
+    })
     .then((res) => res.data.data);

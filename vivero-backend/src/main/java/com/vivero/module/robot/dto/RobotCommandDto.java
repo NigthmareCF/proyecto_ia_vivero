@@ -3,6 +3,7 @@ package com.vivero.module.robot.dto;
 import com.vivero.shared.enums.ManualDirection;
 import com.vivero.shared.enums.RobotCommandType;
 import com.vivero.shared.enums.RobotMode;
+import com.vivero.shared.enums.SearchStartOrientation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -39,4 +40,9 @@ public class RobotCommandDto {
 
     @Size(max = 80, message = "Sequence name must not exceed 80 characters")
     private String sequenceName;
+
+    @Size(max = 40, message = "Requested state must not exceed 40 characters")
+    private String requestedState;
+
+    private SearchStartOrientation searchStartOrientation;
 }

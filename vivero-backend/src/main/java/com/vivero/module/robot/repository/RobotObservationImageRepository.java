@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RobotObservationImageRepository extends JpaRepository<RobotObservationImage, Long> {
+    java.util.List<RobotObservationImage> findByObservationIdInOrderByObservationIdAscSortOrderAsc(java.util.List<Long> observationIds);
 }

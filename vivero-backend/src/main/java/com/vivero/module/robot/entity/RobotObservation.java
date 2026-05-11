@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Evidencia capturada por la Raspberry Pi para una planta o punto del recorrido.
@@ -47,6 +48,12 @@ public class RobotObservation extends BaseEntity {
 
     @Column(name = "observed_at", nullable = false)
     private LocalDateTime observedAt;
+
+    @Column(name = "operational_date", nullable = false)
+    private LocalDate operationalDate;
+
+    @Column(name = "scan_sequence")
+    private Integer scanSequence;
 
     @Column(name = "image_count", nullable = false)
     private Integer imageCount;

@@ -9,6 +9,10 @@ function toBase64(file: File) {
     reader.onload = () => {
       const result = String(reader.result);
       const [, payload] = result.split(",");
+      if (!payload) {
+        reject(new Error("No se pudo convertir la imagen a base64"));
+        return;
+      }
       resolve({ mimeType: file.type, imagenBase64: payload });
     };
     reader.onerror = reject;
@@ -21,19 +25,28 @@ export function AnalisisPlanta() {
   const [loading, setLoading] = useState(false);
   const [observaciones, setObservaciones] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useAnalisisWebSocket((payload) => setResult(payload));
+  useAnalisisWebSocket(setResult);
 
   async function handleAnalyze() {
     if (!file) return;
     setLoading(true);
-    const image = await toBase64(file);
-    const response = await analizarPlanta({
-      ...image,
-      observacionesOperador: observaciones,
-    });
-    setResult(response);
-    setLoading(false);
+    setErrorMessage(null);
+
+    try {
+      const image = await toBase64(file);
+      const response = await analizarPlanta({
+        ...image,
+        observacionesOperador: observaciones,
+      });
+      setResult(response);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "No se pudo completar el analisis";
+      setErrorMessage(message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -61,6 +74,7 @@ export function AnalisisPlanta() {
         >
           {loading ? "Analizando..." : "Analizar planta"}
         </button>
+        {errorMessage ? <p className="mt-3 text-sm text-alert">{errorMessage}</p> : null}
       </div>
       <PlantReportCard result={result} />
     </section>

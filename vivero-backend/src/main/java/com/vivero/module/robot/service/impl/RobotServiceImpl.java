@@ -27,6 +27,7 @@ import com.vivero.module.robot.service.RobotService;
 import com.vivero.module.robot.service.support.RobotImageStorageService;
 import com.vivero.shared.enums.RobotCommandType;
 import com.vivero.shared.enums.RobotMode;
+import com.vivero.shared.enums.SearchStartOrientation;
 import com.vivero.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +38,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -102,6 +106,11 @@ public class RobotServiceImpl implements RobotService {
                 status.setMode(RobotMode.MANUAL);
                 status.setControlProfile("ACRO");
                 status.setStatusSummary("Acrobacia: " + normalizeToken(command.getSequenceName(), "SPIN"));
+            }
+            case SEARCH_BY_STATE -> {
+                status.setMode(RobotMode.AUTO);
+                status.setControlProfile("SEARCH_BY_STATE");
+                status.setStatusSummary("Busqueda por estado: " + normalizeToken(command.getRequestedState(), "ATENCION"));
             }
             case HEARTBEAT -> { }
         }
@@ -172,16 +181,22 @@ public class RobotServiceImpl implements RobotService {
 
         String normalizedQr = normalizeQr(observation.getPlantQr());
         ParsedQr parsedQr = parseQr(normalizedQr);
+        LocalDateTime observedAt = observation.getObservedAt() != null ? observation.getObservedAt() : LocalDateTime.now();
+        LocalDate operationalDate = observedAt.toLocalDate();
+        String patrolId = normalizeBlank(observation.getPatrolId());
+        int scanSequence = resolveNextScanSequence(patrolId, operationalDate);
 
         RobotObservation entity = robotObservationRepository.save(RobotObservation.builder()
                 .robotId(robotId)
-                .patrolId(normalizeBlank(observation.getPatrolId()))
+                .patrolId(patrolId)
                 .plantQr(normalizedQr)
                 .plantGroupCode(parsedQr.groupCode())
                 .plantSide(parsedQr.side())
                 .captureReason(normalizeBlank(observation.getCaptureReason()))
                 .statusHint(normalizeBlank(observation.getStatusHint()))
-                .observedAt(observation.getObservedAt() != null ? observation.getObservedAt() : LocalDateTime.now())
+                .observedAt(observedAt)
+                .operationalDate(operationalDate)
+                .scanSequence(scanSequence)
                 .imageCount(storedImages.size())
                 .primaryImagePath(storedImages.get(0).filePath())
                 .analysisStatus("PENDING_ANALYSIS")
@@ -205,11 +220,17 @@ public class RobotServiceImpl implements RobotService {
                 .id(entity.getId())
                 .robotId(entity.getRobotId())
                 .patrolId(entity.getPatrolId())
+                .exactQrLabel(entity.getPlantQr())
+                .groupKey(entity.getPlantGroupCode())
+                .plantNumber(parsedQr.plantNumber())
+                .potNumber(parsedQr.potNumber())
                 .plantQr(entity.getPlantQr())
                 .plantGroupCode(entity.getPlantGroupCode())
                 .plantSide(entity.getPlantSide())
                 .captureReason(entity.getCaptureReason())
                 .statusHint(entity.getStatusHint())
+                .operationalDate(entity.getOperationalDate())
+                .scanSequence(entity.getScanSequence())
                 .analysisStatus(entity.getAnalysisStatus())
                 .finalState(entity.getFinalState())
                 .analysisNotes(entity.getAnalysisNotes())
@@ -220,6 +241,49 @@ public class RobotServiceImpl implements RobotService {
         messagingTemplate.convertAndSend("/topic/robot/observations", response);
         log.info("Observación registrada para planta {}", entity.getPlantQr());
         return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RobotObservationResponseDto> getObservationsByPatrol(String patrolId) {
+        List<RobotObservation> observations = robotObservationRepository.findByPatrolIdOrderByObservedAtAsc(patrolId);
+        if (observations.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> observationIds = observations.stream()
+                .map(RobotObservation::getId)
+                .toList();
+
+        Map<Long, List<RobotObservationImageResponseDto>> imagesByObservationId = new HashMap<>();
+        for (RobotObservationImage image : robotObservationImageRepository.findByObservationIdInOrderByObservationIdAscSortOrderAsc(observationIds)) {
+            Long observationId = image.getObservation().getId();
+            imagesByObservationId.computeIfAbsent(observationId, ignored -> new ArrayList<>()).add(toImageResponse(image));
+        }
+
+        return observations.stream()
+                .map(observation -> RobotObservationResponseDto.builder()
+                        .id(observation.getId())
+                        .robotId(observation.getRobotId())
+                        .patrolId(observation.getPatrolId())
+                        .exactQrLabel(observation.getPlantQr())
+                        .groupKey(observation.getPlantGroupCode())
+                        .plantNumber(parseQr(observation.getPlantQr()).plantNumber())
+                        .potNumber(parseQr(observation.getPlantQr()).potNumber())
+                        .plantQr(observation.getPlantQr())
+                        .plantGroupCode(observation.getPlantGroupCode())
+                        .plantSide(observation.getPlantSide())
+                        .captureReason(observation.getCaptureReason())
+                        .statusHint(observation.getStatusHint())
+                        .operationalDate(observation.getOperationalDate())
+                        .scanSequence(observation.getScanSequence())
+                        .analysisStatus(observation.getAnalysisStatus())
+                        .finalState(observation.getFinalState())
+                        .analysisNotes(observation.getAnalysisNotes())
+                        .observedAt(observation.getObservedAt())
+                        .images(imagesByObservationId.getOrDefault(observation.getId(), List.of()))
+                        .build())
+                .toList();
     }
 
     @Override
@@ -278,7 +342,7 @@ public class RobotServiceImpl implements RobotService {
 
         Map<String, List<RobotObservation>> grouped = observations.stream()
                 .collect(Collectors.groupingBy(
-                        observation -> normalizeToken(observation.getPlantGroupCode(), normalizeQr(observation.getPlantQr())),
+                        observation -> buildObservationAnalysisGroupKey(observation),
                         LinkedHashMap::new,
                         Collectors.toList()
                 ));
@@ -293,8 +357,10 @@ public class RobotServiceImpl implements RobotService {
         for (Map.Entry<String, List<RobotObservation>> entry : grouped.entrySet()) {
             List<RobotObservation> groupObservations = entry.getValue();
             groupObservations.sort(Comparator.comparing(RobotObservation::getObservedAt));
+            RobotObservation representativeObservation = groupObservations.get(0);
+            String publicGroupKey = normalizeToken(representativeObservation.getPlantGroupCode(), normalizeQr(representativeObservation.getPlantQr()));
             String finalState = resolveFinalState(groupObservations);
-            String summary = buildPlantSummary(entry.getKey(), finalState, groupObservations.size());
+            String summary = buildPlantSummary(publicGroupKey, finalState, groupObservations.size());
             LocalDateTime lastObservedAt = groupObservations.get(groupObservations.size() - 1).getObservedAt();
 
             if (persistResults) {
@@ -304,7 +370,7 @@ public class RobotServiceImpl implements RobotService {
                     observation.setAnalysisNotes(summary);
                     robotObservationRepository.save(observation);
                 }
-                enqueuePlantStateUpdate(robotId, patrolId, entry.getKey(), groupObservations.get(0).getPlantQr(), finalState, summary);
+                enqueuePlantStateUpdate(robotId, patrolId, publicGroupKey, representativeObservation.getPlantQr(), finalState, summary);
             }
 
             List<RobotPlantSideAnalysisDto> sides = groupObservations.stream()
@@ -324,8 +390,13 @@ public class RobotServiceImpl implements RobotService {
 
             plantAnalyses.add(RobotPlantAnalysisDto.builder()
                     .patrolId(patrolId)
-                    .plantGroupCode(entry.getKey())
-                    .representativePlantQr(groupObservations.get(0).getPlantQr())
+                    .groupKey(publicGroupKey)
+                    .plantNumber(representativeObservation.getPlantQr() == null ? null : parseQr(representativeObservation.getPlantQr()).plantNumber())
+                    .potNumber(representativeObservation.getPlantQr() == null ? null : parseQr(representativeObservation.getPlantQr()).potNumber())
+                    .representativeExactQrLabel(representativeObservation.getPlantQr())
+                    .plantGroupCode(publicGroupKey)
+                    .representativePlantQr(representativeObservation.getPlantQr())
+                    .operationalDate(representativeObservation.getOperationalDate())
                     .finalState(finalState)
                     .summary(summary)
                     .evidenceCount(groupObservations.size())
@@ -385,6 +456,21 @@ public class RobotServiceImpl implements RobotService {
                 .relevant(image.isRelevant())
                 .imageUrl("/api/robot/observations/images/" + image.getId())
                 .build();
+    }
+
+    private int resolveNextScanSequence(String patrolId, LocalDate operationalDate) {
+        if (patrolId == null || patrolId.isBlank()) {
+            return 1;
+        }
+        return (int) robotObservationRepository.countByPatrolIdAndOperationalDate(patrolId, operationalDate) + 1;
+    }
+
+    private String buildObservationAnalysisGroupKey(RobotObservation observation) {
+        String groupKey = normalizeToken(observation.getPlantGroupCode(), normalizeQr(observation.getPlantQr()));
+        if (observation.getOperationalDate() == null) {
+            return groupKey;
+        }
+        return groupKey + "|" + observation.getOperationalDate();
     }
 
     private String normalizeQr(String qrCode) {
@@ -469,6 +555,7 @@ public class RobotServiceImpl implements RobotService {
             case SWITCH_CAMERA -> "CAMERA_SELECT";
             case SET_SPEED_PROFILE -> "SPEED_PROFILE";
             case RUN_ACRO -> "ACRO";
+            case SEARCH_BY_STATE -> "SEARCH_BY_STATE";
             case HEARTBEAT -> "HEARTBEAT";
         };
     }
@@ -476,19 +563,138 @@ public class RobotServiceImpl implements RobotService {
     private Map<String, Object> resolveRobotCommandPayload(RobotCommandDto command) {
         Map<String, Object> payload = new LinkedHashMap<>();
         RobotCommandType commandType = command.getCommandType();
+        SearchStartOrientation searchStartOrientation = resolveSearchStartOrientation(command.getSearchStartOrientation());
         if (commandType == RobotCommandType.MANUAL_MOVE) {
             payload.put("direction", command.getDirection() == null ? "stop" : command.getDirection().name().toLowerCase(Locale.ROOT));
             payload.put("speed", command.getSpeed() == null ? 0 : command.getSpeed());
         } else if (commandType == RobotCommandType.GOTO_PLANT) {
-            payload.put("plantQr", normalizeQr(command.getTargetPlantQr()));
+            String requestedTarget = normalizeQr(command.getTargetPlantQr());
+            ParsedQr parsedQr = parseQr(requestedTarget);
+            String groupKey = parsedQr.groupCode();
+            payload.put("plantQr", requestedTarget);
+            payload.put("groupKey", groupKey);
+            payload.put("exactQrLabel", requestedTarget);
+            payload.put("searchStartOrientation", searchStartOrientation.name());
+            enrichTargetHistoryHint(payload, requestedTarget, groupKey);
         } else if (commandType == RobotCommandType.SWITCH_CAMERA) {
             payload.put("camera", normalizeBlank(command.getCameraName()));
         } else if (commandType == RobotCommandType.SET_SPEED_PROFILE) {
             payload.put("profile", normalizeToken(command.getSpeedProfile(), "MEDIUM"));
         } else if (commandType == RobotCommandType.RUN_ACRO) {
             payload.put("sequence", normalizeToken(command.getSequenceName(), "SPIN"));
+        } else if (commandType == RobotCommandType.SEARCH_BY_STATE) {
+            String requestedState = normalizeSearchState(command.getRequestedState());
+            payload.put("state", requestedState);
+            payload.put("searchStartOrientation", searchStartOrientation.name());
+            payload.put("targets", resolveLatestTargetsForState(requestedState, searchStartOrientation));
         }
         return payload;
+    }
+
+    private void enrichTargetHistoryHint(Map<String, Object> payload, String requestedTarget, String groupKey) {
+        if (requestedTarget == null || requestedTarget.isBlank()) {
+            return;
+        }
+        RobotObservation latestObservation = isExactQrLabel(requestedTarget)
+                ? robotObservationRepository.findTopByPlantQrOrderByObservedAtDesc(requestedTarget).orElse(null)
+                : robotObservationRepository.findTopByPlantGroupCodeOrderByObservedAtDesc(groupKey).orElse(null);
+        if (latestObservation == null) {
+            return;
+        }
+        payload.put("historyPatrolId", latestObservation.getPatrolId());
+        payload.put("expectedScanSequence", latestObservation.getScanSequence());
+        payload.put("operationalDate", latestObservation.getOperationalDate() == null ? null : latestObservation.getOperationalDate().toString());
+        payload.put("historyMatchedGroupKey", normalizeToken(latestObservation.getPlantGroupCode(), groupKey));
+        payload.put("historyMatchedExactQrLabel", latestObservation.getPlantQr());
+
+        if (latestObservation.getPatrolId() == null || latestObservation.getOperationalDate() == null) {
+            return;
+        }
+
+        List<RobotObservation> patrolTimeline = robotObservationRepository.findByPatrolIdAndOperationalDateOrderByScanSequenceAsc(
+                latestObservation.getPatrolId(),
+                latestObservation.getOperationalDate()
+        );
+        payload.put("historySequenceCount", patrolTimeline.size());
+        int observationIndex = -1;
+        for (int index = 0; index < patrolTimeline.size(); index++) {
+            if (Objects.equals(patrolTimeline.get(index).getId(), latestObservation.getId())) {
+                observationIndex = index;
+                break;
+            }
+        }
+        if (observationIndex > 0) {
+            RobotObservation previousObservation = patrolTimeline.get(observationIndex - 1);
+            payload.put("neighborBeforeGroupKey", normalizeToken(previousObservation.getPlantGroupCode(), normalizeQr(previousObservation.getPlantQr())));
+            payload.put("neighborBeforeExactQrLabel", previousObservation.getPlantQr());
+            payload.put("neighborBeforeSequence", previousObservation.getScanSequence());
+        }
+        if (observationIndex >= 0 && observationIndex + 1 < patrolTimeline.size()) {
+            RobotObservation nextObservation = patrolTimeline.get(observationIndex + 1);
+            payload.put("neighborAfterGroupKey", normalizeToken(nextObservation.getPlantGroupCode(), normalizeQr(nextObservation.getPlantQr())));
+            payload.put("neighborAfterExactQrLabel", nextObservation.getPlantQr());
+            payload.put("neighborAfterSequence", nextObservation.getScanSequence());
+        }
+    }
+
+    private List<Map<String, Object>> resolveLatestTargetsForState(String requestedState, SearchStartOrientation searchStartOrientation) {
+        Map<String, RobotObservation> latestByGroupKey = new LinkedHashMap<>();
+        for (RobotObservation observation : robotObservationRepository.findByFinalStateOrderByObservedAtDesc(requestedState)) {
+            String groupKey = normalizeToken(observation.getPlantGroupCode(), normalizeQr(observation.getPlantQr()));
+            latestByGroupKey.putIfAbsent(groupKey, observation);
+        }
+
+        return latestByGroupKey.values().stream()
+                .sorted(Comparator.comparing(
+                        RobotObservation::getScanSequence,
+                        Comparator.nullsLast(Integer::compareTo)
+                ))
+                .map(observation -> {
+                    Map<String, Object> target = new LinkedHashMap<>();
+                    target.put("groupKey", normalizeToken(observation.getPlantGroupCode(), normalizeQr(observation.getPlantQr())));
+                    target.put("exactQrLabel", observation.getPlantQr());
+                    target.put("expectedScanSequence", observation.getScanSequence());
+                    target.put("historySequenceCount", resolveHistorySequenceCount(observation));
+                    target.put("searchStartOrientation", searchStartOrientation.name());
+                    target.put("operationalDate", observation.getOperationalDate() == null ? null : observation.getOperationalDate().toString());
+                    target.put("patrolId", observation.getPatrolId());
+                    return target;
+                })
+                .toList();
+    }
+
+    private Integer resolveHistorySequenceCount(RobotObservation observation) {
+        if (observation.getPatrolId() == null || observation.getOperationalDate() == null) {
+            return null;
+        }
+        long count = robotObservationRepository.countByPatrolIdAndOperationalDate(
+                observation.getPatrolId(),
+                observation.getOperationalDate()
+        );
+        return count <= 0 ? null : (int) count;
+    }
+
+    private String normalizeSearchState(String rawState) {
+        String normalized = normalizeToken(rawState, "ATENCION");
+        return switch (normalized) {
+            case "HEALTHY", "SANO" -> "SANO";
+            case "ATTENTION", "ATENCION" -> "ATENCION";
+            case "DANGER", "PELIGRO" -> "PELIGRO";
+            case "UNKNOWN", "INCONCLUSA" -> "INCONCLUSA";
+            default -> normalized;
+        };
+    }
+
+    private boolean isExactQrLabel(String qrValue) {
+        if (qrValue == null || qrValue.isBlank()) {
+            return false;
+        }
+        String[] parts = qrValue.split("_");
+        return parts.length >= 5 && ("IZ".equalsIgnoreCase(parts[4]) || "DR".equalsIgnoreCase(parts[4]));
+    }
+
+    private SearchStartOrientation resolveSearchStartOrientation(SearchStartOrientation orientation) {
+        return orientation == null ? SearchStartOrientation.FORWARD : orientation;
     }
 
     private String resolveModeCommand(RobotMode targetMode) {
@@ -551,23 +757,29 @@ public class RobotServiceImpl implements RobotService {
     }
 
     private String buildPlantSummary(String plantGroupCode, String finalState, int evidenceCount) {
-        return "Grupo " + plantGroupCode
+        ParsedQr parsedQr = parseQr(plantGroupCode);
+        String label = parsedQr.plantNumber() != null && parsedQr.potNumber() != null
+                ? "Planta " + parsedQr.plantNumber() + " en maceta " + parsedQr.potNumber()
+                : "Grupo " + plantGroupCode;
+        return label
                 + " consolidado en estado " + finalState
                 + " con " + evidenceCount + " evidencias capturadas durante el patrullaje.";
     }
 
     private ParsedQr parseQr(String plantQr) {
         if (plantQr == null || plantQr.isBlank()) {
-            return new ParsedQr("UNKNOWN", "NA");
+            return new ParsedQr("UNKNOWN", "NA", null, null);
         }
         String[] parts = plantQr.split("_");
-        if (parts.length >= 5 && "PLA".equals(parts[0]) && "M".equals(parts[2])) {
-            String groupCode = String.join("_", parts[0], parts[1], parts[2], parts[3]);
+        if (parts.length >= 5 && "PLA".equals(parts[0]) && "MA".equals(parts[2])) {
+            String plantNumber = parts[1];
+            String potNumber = parts[3];
+            String groupCode = String.join("_", parts[0], plantNumber, parts[2], potNumber);
             String side = parts[4];
-            return new ParsedQr(groupCode, side);
+            return new ParsedQr(groupCode, side, plantNumber, potNumber);
         }
-        return new ParsedQr(plantQr, "NA");
+        return new ParsedQr(plantQr, "NA", null, null);
     }
 
-    private record ParsedQr(String groupCode, String side) {}
+    private record ParsedQr(String groupCode, String side, String plantNumber, String potNumber) {}
 }

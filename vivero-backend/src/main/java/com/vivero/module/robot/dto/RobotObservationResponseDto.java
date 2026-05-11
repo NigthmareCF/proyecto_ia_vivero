@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -16,11 +17,17 @@ public class RobotObservationResponseDto {
     private Long id;
     private String robotId;
     private String patrolId;
+    private String exactQrLabel;
+    private String groupKey;
+    private String plantNumber;
+    private String potNumber;
     private String plantQr;
     private String plantGroupCode;
     private String plantSide;
     private String captureReason;
     private String statusHint;
+    private LocalDate operationalDate;
+    private Integer scanSequence;
     private String analysisStatus;
     private String finalState;
     private String analysisNotes;

@@ -3,6 +3,7 @@ import SockJS from "sockjs-client";
 import { useEffect } from "react";
 import { getRobotStatus } from "../api/robotApi";
 import { normalizeRobotStatus, useRobotStore } from "../store/robotStore";
+import { resolveRobotSockJsUrl } from "../utils/robotWsUrls";
 
 export function useRobotWebSocket() {
   const setStatus = useRobotStore((state) => state.setStatus);
@@ -13,7 +14,7 @@ export function useRobotWebSocket() {
       .catch(() => setStatus({ isConnected: false, connectionQuality: "OFFLINE" }));
 
     const client = new Client({
-      webSocketFactory: () => new SockJS((import.meta.env.VITE_WS_URL ?? "http://localhost:8080/api") + "/ws"),
+      webSocketFactory: () => new SockJS(resolveRobotSockJsUrl()),
       reconnectDelay: 5000,
       onConnect: () => {
         setStatus({ isConnected: true, connectionQuality: "GOOD" });

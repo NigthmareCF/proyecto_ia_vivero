@@ -49,6 +49,15 @@ public class RobotController {
         return ResponseEntity.ok(ApiResponse.ok("Robot observation stored successfully", robotService.registerObservation(observation)));
     }
 
+    @GetMapping("/patrols/{patrolId}/observations")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER', 'VIEWER')")
+    public ResponseEntity<ApiResponse<java.util.List<RobotObservationResponseDto>>> getObservationsByPatrol(@PathVariable String patrolId) {
+        return ResponseEntity.ok(ApiResponse.ok(
+                "Robot patrol observations retrieved successfully",
+                robotService.getObservationsByPatrol(patrolId)
+        ));
+    }
+
     @PostMapping("/patrols/{patrolId}/analysis/finalize")
     @PreAuthorize("hasAnyRole('ADMIN', 'CONTROLLER')")
     public ResponseEntity<ApiResponse<RobotPatrolAnalysisResponseDto>> finalizePatrolAnalysis(

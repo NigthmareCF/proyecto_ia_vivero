@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/layout/ProtectedRoute";
 import { Sidebar } from "./components/layout/Sidebar";
 import { Navbar } from "./components/layout/Navbar";
+import { VoiceCommandDock } from "./components/layout/VoiceCommandDock";
 import { useAuth } from "./hooks/useAuth";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { DashboardPage } from "./pages/dashboard/DashboardPage";
@@ -9,7 +10,6 @@ import { PlantsPage } from "./pages/plants/PlantsPage";
 import { PlantDetailPage } from "./pages/plants/PlantDetailPage";
 import { PatrolsPage } from "./pages/patrols/PatrolsPage";
 import { PatrolDetailPage } from "./pages/patrols/PatrolDetailPage";
-import { RobotControlPage } from "./pages/robot/RobotControlPage";
 import { GotoPlantPage } from "./pages/robot/GotoPlantPage";
 import { ReportsPage } from "./pages/reports/ReportsPage";
 import { AnalisisPlantaPage } from "./pages/analisis/AnalisisPlantaPage";
@@ -19,7 +19,11 @@ function Shell() {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Routes><Route path="*" element={<LoginPage />} /></Routes>;
+    return (
+      <Routes>
+        <Route path="*" element={<LoginPage />} />
+      </Routes>
+    );
   }
 
   return (
@@ -27,13 +31,14 @@ function Shell() {
       <Sidebar />
       <main className="flex-1 space-y-6">
         <Navbar />
+        <VoiceCommandDock />
         <Routes>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/plants" element={<PlantsPage />} />
           <Route path="/plants/:id" element={<PlantDetailPage />} />
           <Route path="/patrols" element={<PatrolsPage />} />
           <Route path="/patrols/:id" element={<PatrolDetailPage />} />
-          <Route path="/robot" element={<RobotControlPage />} />
+          <Route path="/robot" element={<GotoPlantPage />} />
           <Route path="/robot/goto" element={<GotoPlantPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/analisis" element={<AnalisisPlantaPage />} />
