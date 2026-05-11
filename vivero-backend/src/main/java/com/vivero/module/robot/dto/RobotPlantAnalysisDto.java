@@ -17,4 +17,6 @@ public class RobotPlantAnalysisDto {
     private Integer evidenceCount;
     private LocalDateTime lastObservedAt;
     private List<RobotPlantSideAnalysisDto> sides;
+    private List<RobotPlantEvidenceImageDto> evidenceImages;
+    private List<RobotPlantObservationDto> observations;
 }

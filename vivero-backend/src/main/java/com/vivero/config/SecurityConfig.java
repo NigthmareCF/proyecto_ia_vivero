@@ -56,6 +56,8 @@ public class SecurityConfig {
                     "/api/robot/heartbeat",
                     "/robot/observations",
                     "/api/robot/observations",
+                    "/robot/observations/images/*",
+                    "/api/robot/observations/images/*",
                     "/robot/commands/next",
                     "/api/robot/commands/next",
                     "/robot/commands/*/ack",

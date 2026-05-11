@@ -11,6 +11,8 @@ import com.vivero.module.robot.dto.RobotObservationRequestDto;
 import com.vivero.module.robot.dto.RobotObservationResponseDto;
 import com.vivero.module.robot.dto.RobotPatrolAnalysisResponseDto;
 import com.vivero.module.robot.dto.RobotPlantAnalysisDto;
+import com.vivero.module.robot.dto.RobotPlantEvidenceImageDto;
+import com.vivero.module.robot.dto.RobotPlantObservationDto;
 import com.vivero.module.robot.dto.RobotPlantSideAnalysisDto;
 import com.vivero.module.robot.dto.RobotQueuedCommandResponseDto;
 import com.vivero.module.robot.dto.RobotStatusResponseDto;
@@ -44,7 +46,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -63,7 +67,10 @@ public class RobotServiceImpl implements RobotService {
     @Override
     @Transactional(readOnly = true)
     public RobotStatusResponseDto getCurrentStatus() {
-        return robotMapper.toResponse(getOrCreateStatus());
+        return robotMapper.toResponse(
+                robotStatusRepository.findTopByOrderByLastSeenAtDesc()
+                        .orElseGet(this::buildDefaultStatus)
+        );
     }
 
     @Override
@@ -190,13 +197,17 @@ public class RobotServiceImpl implements RobotService {
                 .build());
 
         List<RobotObservationImageResponseDto> images = new ArrayList<>();
+        Set<Integer> relevantSortOrders = resolveRelevantSortOrders(
+                normalizeObservationState(observation.getStatusHint()),
+                storedImages.size()
+        );
         for (RobotImageStorageService.StoredRobotImage storedImage : storedImages) {
             RobotObservationImage savedImage = robotObservationImageRepository.save(RobotObservationImage.builder()
                     .observation(entity)
                     .filePath(storedImage.filePath())
                     .mimeType(storedImage.mimeType())
                     .sortOrder(storedImage.sortOrder())
-                    .relevant(storedImage.sortOrder() == 0)
+                    .relevant(relevantSortOrders.contains(storedImage.sortOrder()))
                     .build());
             images.add(toImageResponse(savedImage));
         }
@@ -233,8 +244,10 @@ public class RobotServiceImpl implements RobotService {
     @Override
     @Transactional(readOnly = true)
     public RobotPatrolAnalysisResponseDto getPatrolAnalysis(String patrolId) {
-        RobotStatus status = getOrCreateStatus();
-        return buildPatrolAnalysis(patrolId, status.getRobotId(), false);
+        String robotId = robotStatusRepository.findTopByOrderByLastSeenAtDesc()
+                .map(RobotStatus::getRobotId)
+                .orElse("ROBOT-001");
+        return buildPatrolAnalysis(patrolId, robotId, false);
     }
 
     @Override
@@ -296,6 +309,29 @@ public class RobotServiceImpl implements RobotService {
             String finalState = resolveFinalState(groupObservations);
             String summary = buildPlantSummary(entry.getKey(), finalState, groupObservations.size());
             LocalDateTime lastObservedAt = groupObservations.get(groupObservations.size() - 1).getObservedAt();
+            List<RobotPlantObservationDto> observationDtos = groupObservations.stream()
+                    .map(observation -> toPlantObservation(observation, finalState))
+                    .toList();
+            List<RobotPlantEvidenceImageDto> evidenceImages = observationDtos.stream()
+                    .flatMap(observation -> observation.getImages().stream()
+                            .map(image -> RobotPlantEvidenceImageDto.builder()
+                                    .observationId(observation.getObservationId())
+                                    .imageId(image.getId())
+                                    .imageUrl(image.getImageUrl())
+                                    .mimeType(image.getMimeType())
+                                    .sortOrder(image.getSortOrder())
+                                    .relevant(image.isRelevant())
+                                    .plantQr(observation.getPlantQr())
+                                    .plantSide(observation.getPlantSide())
+                                    .statusHint(observation.getStatusHint())
+                                    .finalState(observation.getFinalState())
+                                    .observedAt(observation.getObservedAt())
+                                    .build()))
+                    .sorted(Comparator
+                            .comparing(RobotPlantEvidenceImageDto::isRelevant).reversed()
+                            .thenComparing(RobotPlantEvidenceImageDto::getObservedAt, Comparator.nullsLast(Comparator.reverseOrder()))
+                            .thenComparing(RobotPlantEvidenceImageDto::getSortOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                    .toList();
 
             if (persistResults) {
                 for (RobotObservation observation : groupObservations) {
@@ -331,6 +367,8 @@ public class RobotServiceImpl implements RobotService {
                     .evidenceCount(groupObservations.size())
                     .lastObservedAt(lastObservedAt)
                     .sides(sides)
+                    .evidenceImages(evidenceImages)
+                    .observations(observationDtos)
                     .build());
 
             switch (finalState) {
@@ -357,18 +395,27 @@ public class RobotServiceImpl implements RobotService {
 
     private RobotStatus getOrCreateStatus() {
         return robotStatusRepository.findTopByOrderByLastSeenAtDesc()
-                .orElseGet(() -> robotStatusRepository.save(Objects.requireNonNull(
-                        RobotStatus.builder()
-                                .robotId("ROBOT-001")
-                                .mode(RobotMode.IDLE)
-                                .connected(false)
-                                .activeCamera("FRONT")
-                                .controlProfile("IDLE")
-                                .speedProfile("MEDIUM")
-                                .lastSeenAt(LocalDateTime.now())
-                                .lastCommand("INIT")
-                                .build()
-                )));
+                .orElseGet(() -> robotStatusRepository.save(Objects.requireNonNull(buildDefaultStatus())));
+    }
+
+    private RobotStatus buildDefaultStatus() {
+        return RobotStatus.builder()
+                .robotId("ROBOT-001")
+                .mode(RobotMode.IDLE)
+                .connected(false)
+                .batteryLevel(0)
+                .queueDepth(0)
+                .streamActive(false)
+                .obstacleDetected(false)
+                .blocked(false)
+                .connectionQuality("OFFLINE")
+                .statusSummary("Sin telemetria disponible. Esperando heartbeat de la Pi 5.")
+                .activeCamera("FRONT")
+                .controlProfile("IDLE")
+                .speedProfile("MEDIUM")
+                .lastSeenAt(LocalDateTime.now())
+                .lastCommand("INIT")
+                .build();
     }
 
     private RobotStatusResponseDto publishStatus(RobotStatus status) {
@@ -384,6 +431,26 @@ public class RobotServiceImpl implements RobotService {
                 .sortOrder(image.getSortOrder())
                 .relevant(image.isRelevant())
                 .imageUrl("/api/robot/observations/images/" + image.getId())
+                .build();
+    }
+
+    private RobotPlantObservationDto toPlantObservation(RobotObservation observation, String finalState) {
+        List<RobotObservationImageResponseDto> images = robotObservationImageRepository
+                .findByObservationIdOrderBySortOrderAsc(observation.getId())
+                .stream()
+                .map(this::toImageResponse)
+                .toList();
+
+        return RobotPlantObservationDto.builder()
+                .observationId(observation.getId())
+                .plantQr(observation.getPlantQr())
+                .plantSide(observation.getPlantSide())
+                .statusHint(normalizeObservationState(observation.getStatusHint()))
+                .finalState(finalState)
+                .analysisStatus(observation.getAnalysisStatus())
+                .analysisNotes(observation.getAnalysisNotes())
+                .observedAt(observation.getObservedAt())
+                .images(images)
                 .build();
     }
 
@@ -556,17 +623,51 @@ public class RobotServiceImpl implements RobotService {
                 + " con " + evidenceCount + " evidencias capturadas durante el patrullaje.";
     }
 
+    private Set<Integer> resolveRelevantSortOrders(String normalizedState, int imageCount) {
+        if (imageCount <= 0) {
+            return Set.of();
+        }
+        if ("PELIGRO".equals(normalizedState)) {
+            return buildRelevantSortOrderSet(Math.min(imageCount, 3));
+        }
+        if ("ATENCION".equals(normalizedState) || "REVISION_MANUAL".equals(normalizedState)) {
+            return buildRelevantSortOrderSet(Math.min(imageCount, 2));
+        }
+        return Set.of(0);
+    }
+
+    private Set<Integer> buildRelevantSortOrderSet(int count) {
+        return IntStream.range(0, Math.max(count, 1))
+                .boxed()
+                .collect(Collectors.toSet());
+    }
+
     private ParsedQr parseQr(String plantQr) {
         if (plantQr == null || plantQr.isBlank()) {
             return new ParsedQr("UNKNOWN", "NA");
         }
         String[] parts = plantQr.split("_");
+        if (parts.length >= 5 && "PLA".equals(parts[0]) && "MA".equals(parts[2])) {
+            String groupCode = String.join("_", parts[0], parts[1], parts[2], parts[3]);
+            String side = normalizePlantSide(parts[4]);
+            return new ParsedQr(groupCode, side);
+        }
         if (parts.length >= 5 && "PLA".equals(parts[0]) && "M".equals(parts[2])) {
             String groupCode = String.join("_", parts[0], parts[1], parts[2], parts[3]);
-            String side = parts[4];
+            String side = normalizePlantSide(parts[4]);
             return new ParsedQr(groupCode, side);
         }
         return new ParsedQr(plantQr, "NA");
+    }
+
+    private String normalizePlantSide(String rawSide) {
+        String side = normalizeToken(rawSide, "NA");
+        return switch (side) {
+            case "D", "DER", "DERECHA", "RIGHT" -> "D";
+            case "I", "IZQ", "IZQUIERDA", "LEFT" -> "I";
+            case "O", "CENTER", "CENTRO" -> "O";
+            default -> side;
+        };
     }
 
     private record ParsedQr(String groupCode, String side) {}

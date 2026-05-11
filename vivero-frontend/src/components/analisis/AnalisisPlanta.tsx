@@ -19,6 +19,7 @@ function toBase64(file: File) {
 export function AnalisisPlanta() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [observaciones, setObservaciones] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
@@ -26,14 +27,20 @@ export function AnalisisPlanta() {
 
   async function handleAnalyze() {
     if (!file) return;
-    setLoading(true);
-    const image = await toBase64(file);
-    const response = await analizarPlanta({
-      ...image,
-      observacionesOperador: observaciones,
-    });
-    setResult(response);
-    setLoading(false);
+    try {
+      setLoading(true);
+      setError(null);
+      const image = await toBase64(file);
+      const response = await analizarPlanta({
+        ...image,
+        observacionesOperador: observaciones,
+      });
+      setResult(response);
+    } catch {
+      setError("No fue posible completar el análisis en este momento.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -61,6 +68,7 @@ export function AnalisisPlanta() {
         >
           {loading ? "Analizando..." : "Analizar planta"}
         </button>
+        {error && <p className="mt-3 text-sm text-alert">{error}</p>}
       </div>
       <PlantReportCard result={result} />
     </section>

@@ -17,6 +17,28 @@ Implementado hoy:
 - telemetria base
 - IA local opcional
 
+## Formato QR operativo
+
+El runtime envia al backend el contenido del QR tal como lo detecta. Para operacion vigente, el QR de planta debe codificarse asi:
+
+```text
+PLA_<planta>_MA_<maceta>_<lado>
+```
+
+Donde:
+
+- `<planta>` identifica el correlativo de planta dentro del bloque o bandeja
+- `<maceta>` identifica la maceta o grupo fisico
+- `<lado>` debe ser `D`, `I` u `O`
+
+Ejemplo:
+
+```text
+PLA_07_MA_03_D
+```
+
+Eso permite al backend consolidar evidencia por grupo `PLA_07_MA_03` y asociar la causa observada al lado correcto.
+
 No implementado aun:
 
 - captura lateral en movimiento sin detener el robot
