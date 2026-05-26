@@ -135,6 +135,26 @@ export function VoiceCommandDock() {
       }
     };
 
+    const safeStopRecognition = () => {
+      try {
+        recognition.stop();
+      } catch {
+        // Ignored: some browsers throw if recognition was already stopped.
+      }
+    };
+
+    const safeStartRecognition = () => {
+      try {
+        recognition.start();
+        return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "No se pudo iniciar el reconocimiento";
+        setStatus("error");
+        setErrorMessage(`Reconocimiento de voz: ${message}`);
+        return false;
+      }
+    };
+
     const scheduleRecognitionRestart = () => {
       if (!enabledRef.current) {
         setStatus("idle");
@@ -146,16 +166,8 @@ export function VoiceCommandDock() {
         if (!enabledRef.current) {
           return;
         }
-        try {
-          recognition.stop();
-        } catch {
-          // Ignorado: algunos navegadores lanzan si ya está detenido.
-        }
-        try {
-          recognition.start();
-        } catch {
-          setStatus("error");
-        }
+        safeStopRecognition();
+        safeStartRecognition();
       }, 250);
     };
 
@@ -232,7 +244,7 @@ export function VoiceCommandDock() {
 
     recognition.onend = () => {
       if (shouldRestartRef.current) {
-        recognition.start();
+        safeStartRecognition();
         return;
       }
       setStatus("idle");
@@ -298,7 +310,7 @@ export function VoiceCommandDock() {
     return () => {
       shouldRestartRef.current = false;
       clearPendingRestart();
-      recognition.stop();
+      safeStopRecognition();
       recognitionRef.current = null;
     };
   }, [
@@ -318,11 +330,23 @@ export function VoiceCommandDock() {
     }
 
     if (enabled) {
-      recognition.start();
+      try {
+        recognition.start();
+        setErrorMessage(null);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "No se pudo iniciar el reconocimiento";
+        setStatus("error");
+        setErrorMessage(`Reconocimiento de voz: ${message}`);
+      }
       return;
     }
-    recognition.stop();
-  }, [enabled, supported]);
+
+    try {
+      recognition.stop();
+    } catch {
+      // Ignored: some browsers throw if recognition was already stopped.
+    }
+  }, [enabled, supported, setErrorMessage, setStatus]);
 
   const toggleVoiceControl = () => {
     setEnabled(!enabled);
@@ -340,15 +364,15 @@ export function VoiceCommandDock() {
       : status === "listening"
         ? "Escuchando"
         : status === "error"
-            ? "Error"
-            : "En espera";
+          ? "Error"
+          : "En espera";
 
   const indicatorClass =
     status === "listening"
       ? "bg-emerald-500"
       : status === "error"
-          ? "bg-rose-500"
-          : "bg-stone-400";
+        ? "bg-rose-500"
+        : "bg-stone-400";
 
   return (
     <section className="rounded-[2rem] bg-white/80 p-4 shadow-sm backdrop-blur">
