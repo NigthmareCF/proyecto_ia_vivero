@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import threading
 import time
+from collections.abc import Callable
 
 from src.config import LED_BLUE, LED_GREEN, LED_RED, LED_YELLOW, Settings
 
@@ -18,6 +19,7 @@ _blue_mode = "off"
 _blue_worker: threading.Thread | None = None
 _blue_lock = threading.Lock()
 _blue_stop_event = threading.Event()
+_blue_manual_event = threading.Event()
 _settings: Settings | None = None
 
 
@@ -68,6 +70,52 @@ def _set_blue_duty(duty_cycle: float) -> None:
     _blue_pwm.ChangeDutyCycle(max(0.0, min(duty_cycle, 100.0)))
 
 
+def _stop_blue_pwm_for_manual_control() -> bool:
+    if not _enabled or GPIO is None or _blue_pwm is None:
+        return False
+    _set_blue_duty(0.0)
+    _blue_pwm.stop()
+    GPIO.output(LED_BLUE, GPIO.LOW)
+    return True
+
+
+def _restart_blue_pwm_after_manual_control(was_running: bool) -> None:
+    global _blue_pwm
+    if not was_running or not _enabled or GPIO is None:
+        return
+    _blue_pwm = GPIO.PWM(LED_BLUE, 100)
+    _blue_pwm.start(0)
+
+
+def pulse_blue_with(
+    action: Callable[[float], None],
+    repeats: int = 3,
+    on_duration: float = 0.2,
+    off_duration: float = 0.15,
+) -> None:
+    _blue_manual_event.set()
+    pwm_was_running = False
+    try:
+        pwm_was_running = _stop_blue_pwm_for_manual_control()
+        time.sleep(0.08)
+        for _ in range(max(repeats, 0)):
+            if _enabled and GPIO is not None:
+                GPIO.output(LED_BLUE, GPIO.HIGH)
+            started_at = time.monotonic()
+            action(on_duration)
+            remaining = on_duration - (time.monotonic() - started_at)
+            if remaining > 0:
+                time.sleep(remaining)
+            if _enabled and GPIO is not None:
+                GPIO.output(LED_BLUE, GPIO.LOW)
+            time.sleep(max(off_duration, 0.0))
+    finally:
+        if _enabled and GPIO is not None:
+            GPIO.output(LED_BLUE, GPIO.LOW)
+        _restart_blue_pwm_after_manual_control(pwm_was_running)
+        _blue_manual_event.clear()
+
+
 def set_heartbeat_off() -> None:
     global _blue_mode
     with _blue_lock:
@@ -104,6 +152,9 @@ def _run_blue_effect() -> None:
         mode = _current_blue_mode()
         if _settings is None:
             time.sleep(0.1)
+            continue
+        if _blue_manual_event.is_set():
+            time.sleep(0.02)
             continue
         if mode == "off":
             _set_blue_duty(0.0)

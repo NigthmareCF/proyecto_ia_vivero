@@ -963,6 +963,9 @@ def main() -> None:
             runtime_context["last_watchdog_reason"] = "MANUAL_COMMAND_TIMEOUT"
         motor_controller.stop()
 
+    def alert_obstacle_feedback() -> None:
+        led_handler.pulse_blue_with(buzzer_handler.beep)
+
     def is_reverse_motion_blocked() -> bool:
         rear_state = refresh_rear_obstacle_state()
         if not (rear_state["left"] or rear_state["right"]):
@@ -973,7 +976,7 @@ def main() -> None:
             runtime_context["last_watchdog_reason"] = "REAR_OBSTACLE_BLOCKED_REVERSE"
             set_status_summary("Obstaculo trasero")
             lcd_handler.show_temporary_message("Obst trasero", "Retroceso no", duration_seconds=4.0)
-            buzzer_handler.alert()
+            alert_obstacle_feedback()
         motor_controller.stop()
         return True
 
@@ -1130,7 +1133,7 @@ def main() -> None:
                     motor_controller.stop()
                     set_status_summary("Obstaculo detectado")
                     lcd_handler.show_temporary_message("Obstaculo", "Detectado", duration_seconds=3.0)
-                    buzzer_handler.alert()
+                    alert_obstacle_feedback()
                     time.sleep(1.5)
                     motor_controller.turn_right(patrol_speed)
                     time.sleep(0.5)
