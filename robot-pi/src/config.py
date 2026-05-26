@@ -8,29 +8,30 @@ from dotenv import load_dotenv
 
 
 # Pinout alineado a la documentacion de circuito local.
-# El L298N queda controlado por IN1..IN4; ENA/ENB deben permanecer
-# puenteados en el modulo si se usa este mapeo.
 MOTOR_LEFT_IN1 = 17
 MOTOR_LEFT_IN2 = 27
 MOTOR_RIGHT_IN3 = 22
 MOTOR_RIGHT_IN4 = 23
+MOTOR_LEFT_ENA = 18
+MOTOR_RIGHT_ENB = 25
 
 LINE_SENSOR_LEFT = 13
 LINE_SENSOR_CENTER = 19
-LINE_SENSOR_RIGHT = 26
+LINE_SENSOR_RIGHT = 16
 
 ULTRASONIC_TRIG = 5
 ULTRASONIC_ECHO = 6
 
-IR_LEFT = 16
-IR_RIGHT = 20
+IR_LEFT = 8
+IR_RIGHT = 9
 
 LCD_SDA = 2
 LCD_SCL = 3
 
 LED_GREEN = 12
 LED_YELLOW = 24
-LED_RED = 25
+LED_RED = 26
+LED_BLUE = 20
 
 BUZZER = 21
 
@@ -62,6 +63,11 @@ class Settings:
     line_lost_timeout: float
     status_interval_seconds: float
     manual_default_speed: int
+    manual_command_timeout_seconds: float
+    speed_profile_low: int
+    speed_profile_medium: int
+    speed_profile_high: int
+    speed_profile_turbo: int
     stream_fps: int
     stream_quality: int
     capture_count: int
@@ -73,6 +79,8 @@ class Settings:
     command_poll_interval_seconds: float
     observation_flush_interval_seconds: float
     qr_detection_cooldown_seconds: float
+    qr_label_cache_path: str
+    qr_label_request_timeout_seconds: float
     local_ai_enabled: bool
     offline_queue_dir: str
     wifi_ssid: str
@@ -83,6 +91,14 @@ class Settings:
     led_enabled: bool
     buzzer_enabled: bool
     line_active_low: bool
+    rear_ir_active_high: bool
+    heartbeat_led_blink_interval_seconds: float
+    heartbeat_led_fast_blink_interval_seconds: float
+    heartbeat_led_breathe_step_seconds: float
+    heartbeat_led_breathe_step_duty: float
+    lcd_rotation_interval_seconds: float
+    search_history_tolerance_scans: int
+    state_search_pause_seconds: float
 
     @classmethod
     def load(cls) -> "Settings":
@@ -112,6 +128,11 @@ class Settings:
             line_lost_timeout=float(os.getenv("LINE_LOST_TIMEOUT", "3.0")),
             status_interval_seconds=float(os.getenv("STATUS_INTERVAL_SECONDS", "10")),
             manual_default_speed=int(os.getenv("MANUAL_DEFAULT_SPEED", "35")),
+            manual_command_timeout_seconds=float(os.getenv("MANUAL_COMMAND_TIMEOUT_SECONDS", "0.3")),
+            speed_profile_low=int(os.getenv("SPEED_PROFILE_LOW", "30")),
+            speed_profile_medium=int(os.getenv("SPEED_PROFILE_MEDIUM", "45")),
+            speed_profile_high=int(os.getenv("SPEED_PROFILE_HIGH", "65")),
+            speed_profile_turbo=int(os.getenv("SPEED_PROFILE_TURBO", "85")),
             stream_fps=int(os.getenv("STREAM_FPS", "10")),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
             capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
@@ -123,6 +144,8 @@ class Settings:
             command_poll_interval_seconds=float(os.getenv("COMMAND_POLL_INTERVAL_SECONDS", "1.0")),
             observation_flush_interval_seconds=float(os.getenv("OBSERVATION_FLUSH_INTERVAL_SECONDS", "5.0")),
             qr_detection_cooldown_seconds=float(os.getenv("QR_DETECTION_COOLDOWN_SECONDS", "12.0")),
+            qr_label_cache_path=os.getenv("QR_LABEL_CACHE_PATH", "/app/data/qr-label-cache.db"),
+            qr_label_request_timeout_seconds=float(os.getenv("QR_LABEL_REQUEST_TIMEOUT_SECONDS", "1.8")),
             local_ai_enabled=os.getenv("LOCAL_AI_ENABLED", "false").lower() == "true",
             offline_queue_dir=os.getenv("OFFLINE_QUEUE_DIR", "/app/data/offline-queue"),
             wifi_ssid=os.getenv("WIFI_SSID", "Redmi Note 14"),
@@ -133,4 +156,12 @@ class Settings:
             led_enabled=os.getenv("LED_ENABLED", "true").lower() == "true",
             buzzer_enabled=os.getenv("BUZZER_ENABLED", "true").lower() == "true",
             line_active_low=os.getenv("LINE_ACTIVE_LOW", "true").lower() == "true",
+            rear_ir_active_high=os.getenv("REAR_IR_ACTIVE_HIGH", "true").lower() == "true",
+            heartbeat_led_blink_interval_seconds=float(os.getenv("HEARTBEAT_LED_BLINK_INTERVAL_SECONDS", "0.5")),
+            heartbeat_led_fast_blink_interval_seconds=float(os.getenv("HEARTBEAT_LED_FAST_BLINK_INTERVAL_SECONDS", "0.2")),
+            heartbeat_led_breathe_step_seconds=float(os.getenv("HEARTBEAT_LED_BREATHE_STEP_SECONDS", "0.04")),
+            heartbeat_led_breathe_step_duty=float(os.getenv("HEARTBEAT_LED_BREATHE_STEP_DUTY", "5")),
+            lcd_rotation_interval_seconds=float(os.getenv("LCD_ROTATION_INTERVAL_SECONDS", "2.4")),
+            search_history_tolerance_scans=int(os.getenv("SEARCH_HISTORY_TOLERANCE_SCANS", "2")),
+            state_search_pause_seconds=float(os.getenv("STATE_SEARCH_PAUSE_SECONDS", "5.0")),
         )
