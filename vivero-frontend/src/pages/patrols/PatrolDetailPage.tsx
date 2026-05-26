@@ -1,34 +1,66 @@
 import { useEffect, useState } from "react";
-import { getPatrolAnalysis, type PatrolAnalysisResponse } from "../../api/patrolsApi";
 import { useParams } from "react-router-dom";
+import { getRobotPatrolAnalysis, getRobotPatrolObservations } from "../../api/robotApi";
+import { resolveBackendAssetUrl } from "../../utils/backendUrls";
 
-function stateTone(state: string) {
-  switch (state) {
-    case "PELIGRO":
-      return "bg-rose-100 text-rose-700";
-    case "ATENCION":
-      return "bg-amber-100 text-amber-700";
-    case "SANO":
-      return "bg-emerald-100 text-emerald-700";
-    default:
-      return "bg-slate-100 text-slate-700";
-  }
-}
+type PatrolPlantAnalysis = {
+  groupKey: string;
+  plantNumber: string | null;
+  potNumber: string | null;
+  representativeExactQrLabel: string;
+  plantGroupCode: string;
+  representativePlantQr: string;
+  operationalDate: string | null;
+  finalState: string;
+  summary: string;
+  evidenceCount: number;
+};
 
-function absoluteImageUrl(imageUrl: string) {
-  if (/^https?:\/\//i.test(imageUrl)) {
-    return imageUrl;
-  }
-  const apiUrl = (import.meta.env.VITE_API_URL ?? "http://localhost:8080/api").replace(/\/+$/, "");
-  const origin = apiUrl.endsWith("/api") ? apiUrl.slice(0, -4) : apiUrl;
-  return `${origin}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}`;
+type PatrolAnalysis = {
+  patrolId: string;
+  totalGroups: number;
+  healthyCount: number;
+  attentionCount: number;
+  dangerCount: number;
+  manualReviewCount: number;
+  inconclusiveCount: number;
+  plants: PatrolPlantAnalysis[];
+};
+
+type ObservationImage = {
+  id: number;
+  sortOrder: number;
+  relevant: boolean;
+  imageUrl: string;
+};
+
+type Observation = {
+  id: number;
+  exactQrLabel: string;
+  groupKey: string;
+  plantNumber: string | null;
+  potNumber: string | null;
+  plantQr: string;
+  plantSide: string;
+  statusHint: string;
+  operationalDate: string | null;
+  scanSequence: number | null;
+  analysisStatus: string;
+  finalState: string | null;
+  analysisNotes: string | null;
+  images: ObservationImage[];
+};
+
+function resolveImageUrl(imageUrl: string) {
+  return resolveBackendAssetUrl(imageUrl);
 }
 
 export function PatrolDetailPage() {
   const { id } = useParams();
-  const [analysis, setAnalysis] = useState<PatrolAnalysisResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<PatrolAnalysis | null>(null);
+  const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -39,91 +71,130 @@ export function PatrolDetailPage() {
 
     setLoading(true);
     setError(null);
-    getPatrolAnalysis(id)
-      .then(setAnalysis)
-      .catch(() => setError("No fue posible cargar el analisis consolidado del patrullaje."))
+
+    Promise.all([getRobotPatrolAnalysis(id), getRobotPatrolObservations(id)])
+      .then(([analysisResponse, observationsResponse]) => {
+        setAnalysis(analysisResponse as PatrolAnalysis);
+        setObservations((observationsResponse as Observation[]) ?? []);
+      })
+      .catch((requestError) => {
+        console.error("No se pudo cargar el detalle del patrullaje", requestError);
+        setError("No se pudo cargar el detalle del patrullaje.");
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
+  const relevantObservations = observations
+    .map((observation) => ({
+      ...observation,
+      relevantImages: observation.images.filter((image) => image.relevant),
+    }))
+    .filter((observation) => observation.relevantImages.length > 0);
+
+  const formatPlantLabel = (plantNumber: string | null, potNumber: string | null, fallback: string) => {
+    if (!plantNumber || !potNumber) {
+      return fallback;
+    }
+    return `Planta ${plantNumber} · Maceta ${potNumber}`;
+  };
+
   if (loading) {
-    return <section className="rounded-[2rem] bg-white p-6 shadow-sm text-moss">Cargando analisis del patrullaje...</section>;
+    return <section className="rounded-[2rem] bg-white p-6 shadow-sm">Cargando detalle del patrullaje...</section>;
   }
 
-  if (error || !analysis) {
-    return <section className="rounded-[2rem] bg-white p-6 shadow-sm text-alert">{error ?? "Sin datos disponibles."}</section>;
+  if (error) {
+    return <section className="rounded-[2rem] bg-white p-6 shadow-sm text-alert">{error}</section>;
   }
 
   return (
     <section className="space-y-6">
       <article className="rounded-[2rem] bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="font-display text-3xl text-ink">Patrullaje {analysis.patrolId}</h2>
-            <p className="mt-2 text-sm text-moss">Consolidado de estados y evidencia visual capturada por el robot.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
-            <div className="rounded-2xl bg-sand px-4 py-3"><span className="block text-moss">Grupos</span><strong>{analysis.totalGroups}</strong></div>
-            <div className="rounded-2xl bg-sand px-4 py-3"><span className="block text-moss">Sanos</span><strong>{analysis.healthyCount}</strong></div>
-            <div className="rounded-2xl bg-sand px-4 py-3"><span className="block text-moss">Atencion</span><strong>{analysis.attentionCount}</strong></div>
-            <div className="rounded-2xl bg-sand px-4 py-3"><span className="block text-moss">Peligro</span><strong>{analysis.dangerCount}</strong></div>
-            <div className="rounded-2xl bg-sand px-4 py-3"><span className="block text-moss">Revision</span><strong>{analysis.manualReviewCount}</strong></div>
-          </div>
+        <p className="text-xs uppercase tracking-[0.18em] text-moss">Patrullaje {analysis?.patrolId ?? id}</p>
+        <h2 className="mt-2 font-display text-3xl text-ink">Resumen de analisis</h2>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {[
+            ["Grupos", analysis?.totalGroups ?? 0],
+            ["Sanos", analysis?.healthyCount ?? 0],
+            ["Atencion", analysis?.attentionCount ?? 0],
+            ["Peligro", analysis?.dangerCount ?? 0],
+            ["Revision", analysis?.manualReviewCount ?? 0],
+            ["Inconcluso", analysis?.inconclusiveCount ?? 0],
+          ].map(([label, value]) => (
+            <article key={String(label)} className="rounded-[1.5rem] bg-sand p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-moss">{label}</p>
+              <p className="mt-2 font-display text-4xl text-ink">{value}</p>
+            </article>
+          ))}
         </div>
       </article>
 
-      <div className="space-y-6">
-        {analysis.plants.map((plant) => (
-          <article key={plant.plantGroupCode} className="rounded-[2rem] bg-white p-6 shadow-sm">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="font-display text-2xl text-ink">{plant.plantGroupCode}</h3>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${stateTone(plant.finalState)}`}>
-                    {plant.finalState}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-moss">{plant.summary}</p>
-                <p className="mt-2 text-xs uppercase tracking-[0.18em] text-moss">
-                  QR representativo {plant.representativePlantQr} · {plant.evidenceCount} evidencias
-                </p>
+      <article className="rounded-[2rem] bg-white p-6 shadow-sm">
+        <h3 className="font-display text-2xl text-ink">Plantas consolidadas</h3>
+        <div className="mt-5 grid gap-4">
+          {(analysis?.plants ?? []).map((plant) => (
+            <article key={plant.groupKey ?? plant.plantGroupCode} className="rounded-[1.5rem] border border-sand p-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full bg-sand px-3 py-1 text-sm text-ink">
+                  {formatPlantLabel(plant.plantNumber, plant.potNumber, plant.groupKey ?? plant.plantGroupCode)}
+                </span>
+                <span className="rounded-full bg-sand px-3 py-1 text-sm text-ink">{plant.finalState}</span>
+                <span className="rounded-full bg-sand px-3 py-1 text-sm text-ink">{plant.evidenceCount} evidencias</span>
+                {plant.operationalDate ? (
+                  <span className="rounded-full bg-sand px-3 py-1 text-sm text-ink">Fecha {plant.operationalDate}</span>
+                ) : null}
               </div>
-              <div className="flex flex-wrap gap-2 text-xs">
-                {plant.sides.map((side) => (
-                  <span key={`${plant.plantGroupCode}-${side.side}`} className="rounded-full bg-sand px-3 py-1 text-ink">
-                    Lado {side.side}: {side.dominantState} ({side.evidenceCount})
-                  </span>
-                ))}
-              </div>
-            </div>
+              <p className="mt-3 text-sm text-moss">{plant.summary}</p>
+            </article>
+          ))}
+        </div>
+      </article>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {plant.evidenceImages.map((image) => (
-                <figure key={image.imageId} className="overflow-hidden rounded-[1.5rem] border border-ink/10 bg-sand/40">
-                  <img
-                    src={absoluteImageUrl(image.imageUrl)}
-                    alt={`${image.plantQr} lado ${image.plantSide}`}
-                    className="h-56 w-full object-cover"
-                  />
-                  <figcaption className="space-y-2 p-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className={`rounded-full px-3 py-1 text-[11px] font-semibold ${stateTone(image.finalState)}`}>
-                        {image.finalState}
-                      </span>
-                      {image.relevant ? (
-                        <span className="rounded-full bg-ink px-3 py-1 text-[11px] font-semibold text-white">Relevante</span>
-                      ) : null}
-                    </div>
-                    <p className="text-sm font-medium text-ink">{image.plantQr}</p>
-                    <p className="text-xs text-moss">
-                      Lado {image.plantSide} · Hint {image.statusHint} · Frame {image.sortOrder + 1}
-                    </p>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
+      <article className="rounded-[2rem] bg-white p-6 shadow-sm">
+        <h3 className="font-display text-2xl text-ink">Imagenes relevantes</h3>
+        <p className="mt-2 text-sm text-moss">
+          Este bloque expone las imagenes marcadas como relevantes por el backend para cada observacion del patrullaje.
+        </p>
+        <div className="mt-5 grid gap-5 lg:grid-cols-2">
+          {relevantObservations.length > 0 ? (
+            relevantObservations.map((observation) => (
+              <article key={observation.id} className="rounded-[1.5rem] border border-sand p-4">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-moss">
+                  <span className="rounded-full bg-sand px-3 py-1">
+                    {formatPlantLabel(observation.plantNumber, observation.potNumber, observation.groupKey ?? observation.plantQr)}
+                  </span>
+                  <span className="rounded-full bg-sand px-3 py-1">Etiqueta {observation.exactQrLabel}</span>
+                  <span className="rounded-full bg-sand px-3 py-1">{observation.finalState ?? observation.statusHint}</span>
+                  <span className="rounded-full bg-sand px-3 py-1">{observation.analysisStatus}</span>
+                  {observation.scanSequence !== null ? (
+                    <span className="rounded-full bg-sand px-3 py-1">Escaneo #{observation.scanSequence}</span>
+                  ) : null}
+                  {observation.operationalDate ? (
+                    <span className="rounded-full bg-sand px-3 py-1">Fecha {observation.operationalDate}</span>
+                  ) : null}
+                </div>
+                {observation.analysisNotes ? <p className="mt-3 text-sm text-moss">{observation.analysisNotes}</p> : null}
+                <p className="mt-2 text-sm text-moss">Lado observado: {observation.plantSide || "NA"}</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {observation.relevantImages.map((image) => (
+                    <figure key={image.id} className="overflow-hidden rounded-[1.25rem] bg-sand">
+                      <img
+                        src={resolveImageUrl(image.imageUrl)}
+                        alt={`Observacion ${observation.exactQrLabel} imagen ${image.sortOrder + 1}`}
+                        className="h-48 w-full object-cover"
+                      />
+                      <figcaption className="px-3 py-2 text-xs uppercase tracking-[0.18em] text-moss">
+                        Relevante · orden {image.sortOrder + 1}
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </article>
+            ))
+          ) : (
+            <p className="text-sm text-moss">No hay imagenes relevantes disponibles para este patrullaje.</p>
+          )}
+        </div>
+      </article>
     </section>
   );
 }

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.ListItem;
 import com.itextpdf.layout.element.Paragraph;
@@ -27,9 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Generador de PDF para reportes del vivero.
- */
 @Component
 @RequiredArgsConstructor
 public class PdfReportGenerator {
@@ -67,7 +64,9 @@ public class PdfReportGenerator {
             document.add(new Paragraph(" "));
             document.add(new Paragraph("Reporte No. " + report.getId()).setBold());
             document.add(new Paragraph("Fecha de emision: " + DATE_FORMAT.format(report.getCreatedAt())));
-            document.add(new Paragraph("Patrullaje No. " + report.getPatrolId()));
+            document.add(new Paragraph(report.getPatrolId() == null
+                    ? "Analisis manual independiente"
+                    : "Patrullaje No. " + report.getPatrolId()));
             document.add(new Paragraph("Emitido por: " + report.getGeneratedBy().getFullName()));
             document.add(new Paragraph(" "));
 
@@ -139,12 +138,12 @@ public class PdfReportGenerator {
     }
 
     private String buildExecutiveSummary(Report report) {
-        return "El patrullaje registró "
+        return "El reporte registro "
                 + report.getObservationsCount() + " plantas evaluadas: "
                 + report.getHealthyCount() + " sanas, "
-                + report.getAttentionCount() + " en atención, "
+                + report.getAttentionCount() + " en atencion, "
                 + report.getDangerCount() + " en peligro, "
-                + report.getManualReviewCount() + " para revisión manual y "
+                + report.getManualReviewCount() + " para revision manual y "
                 + report.getInconclusiveCount() + " inconclusas.";
     }
 

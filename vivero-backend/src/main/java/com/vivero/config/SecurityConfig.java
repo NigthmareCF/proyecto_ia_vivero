@@ -58,6 +58,8 @@ public class SecurityConfig {
                     "/api/robot/observations",
                     "/robot/observations/images/*",
                     "/api/robot/observations/images/*",
+                    "/analisis/images/*",
+                    "/api/analisis/images/*",
                     "/robot/commands/next",
                     "/api/robot/commands/next",
                     "/robot/commands/*/ack",

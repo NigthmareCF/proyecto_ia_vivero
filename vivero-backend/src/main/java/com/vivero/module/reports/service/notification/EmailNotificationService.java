@@ -44,22 +44,26 @@ public class EmailNotificationService implements NotificationService {
         } catch (MailAuthenticationException ex) {
             throw new BusinessException(
                     "Email provider rejected the configured credentials",
-                    "EMAIL_PROVIDER_AUTH_FAILED"
+                    "EMAIL_PROVIDER_AUTH_FAILED",
+                    ex
             );
         } catch (MailSendException ex) {
             throw new BusinessException(
                     "Email provider accepted the request but could not deliver the message",
-                    "EMAIL_PROVIDER_SEND_FAILED"
+                    "EMAIL_PROVIDER_SEND_FAILED",
+                    ex
             );
         } catch (MessagingException ex) {
             throw new BusinessException(
                     "Email message could not be built correctly",
-                    "EMAIL_MESSAGE_BUILD_FAILED"
+                    "EMAIL_MESSAGE_BUILD_FAILED",
+                    ex
             );
         } catch (MailException ex) {
             throw new BusinessException(
                     "Email notification could not be sent by the configured provider",
-                    "EMAIL_NOTIFICATION_ERROR"
+                    "EMAIL_NOTIFICATION_ERROR",
+                    ex
             );
         }
     }

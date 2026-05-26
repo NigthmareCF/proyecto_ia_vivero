@@ -72,6 +72,16 @@ logging:
     org.springframework.security: WARN
     org.hibernate.SQL: WARN
 
+vision:
+  api:
+    enabled: ${VISION_API_ENABLED:false}
+    provider: ${VISION_API_PROVIDER:gemini}
+    model: ${VISION_API_MODEL:gemini-2.5-flash}
+    timeout-seconds: ${VISION_API_TIMEOUT_SECONDS:30}
+    gemini:
+      key: ${GEMINI_API_KEY:}
+      url: ${GEMINI_API_URL:https://generativelanguage.googleapis.com/v1beta/models}
+
 management:
   endpoints:
     web:

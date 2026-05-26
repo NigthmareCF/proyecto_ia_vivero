@@ -27,7 +27,7 @@ import lombok.Setter;
 @Table(name = "reports")
 public class Report extends BaseEntity {
 
-    @Column(name = "patrol_id", nullable = false)
+    @Column(name = "patrol_id")
     private Long patrolId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

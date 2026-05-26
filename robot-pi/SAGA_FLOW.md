@@ -10,20 +10,6 @@
 6. El robot captura evidencia, clasifica localmente si aplica y envia observacion.
 7. En `MANUAL`, responde a comandos y puede mantener stream activo.
 
-### Contrato QR vigente
-
-El contenido del QR debe seguir el formato:
-
-```text
-PLA_<planta>_MA_<maceta>_<lado>
-```
-
-`<lado>`:
-
-- `D` derecha
-- `I` izquierda
-- `O` observacion frontal u otra vista central
-
 ## Flujo acordado para fase siguiente
 
 1. Mantener avance en `AUTO_LINE`.

@@ -54,6 +54,27 @@ def get_distance_cm() -> float:
     return round((pulse_end - pulse_start) * 17150, 2)
 
 
+def _read_ir_pin(pin: int) -> bool:
+    if GPIO is None:
+        return False
+    raw_value = GPIO.input(pin)
+    if _settings and not _settings.rear_ir_active_high:
+        return raw_value == 0
+    return raw_value == 1
+
+
+def get_rear_obstacle_state() -> dict[str, bool]:
+    return {
+        "left": _read_ir_pin(IR_LEFT),
+        "right": _read_ir_pin(IR_RIGHT),
+    }
+
+
+def is_rear_obstacle_detected() -> bool:
+    rear_state = get_rear_obstacle_state()
+    return rear_state["left"] or rear_state["right"]
+
+
 def is_obstacle_detected() -> bool:
     threshold = _settings.obstacle_distance_cm if _settings else 20
     distance = get_distance_cm()

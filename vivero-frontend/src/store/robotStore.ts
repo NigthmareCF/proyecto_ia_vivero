@@ -15,7 +15,12 @@ export type RobotState = {
   activeCamera: string;
   controlProfile: string;
   speedProfile: string;
+  currentSpeedPercent: number | null;
   currentPlantQr: string | null;
+  rearObstacleDetected: boolean;
+  lastWatchdogReason: string | null;
+  latestStreamFrameUrl: string | null;
+  latestStreamCamera: string | null;
   isConnected: boolean;
   setStatus: (status: Partial<RobotState>) => void;
 };
@@ -33,7 +38,12 @@ export const initialRobotState: Omit<RobotState, "setStatus"> = {
   activeCamera: "FRONT",
   controlProfile: "IDLE",
   speedProfile: "MEDIUM",
+  currentSpeedPercent: null,
   currentPlantQr: null,
+  rearObstacleDetected: false,
+  lastWatchdogReason: null,
+  latestStreamFrameUrl: null,
+  latestStreamCamera: null,
   isConnected: false,
 };
 
@@ -153,6 +163,31 @@ export function normalizeRobotStatus(payload: unknown): Partial<RobotState> {
     toText(source.plant_qr) ??
     null;
 
+  const currentSpeedPercent =
+    toNumber(source.currentSpeedPercent) ??
+    toNumber(source.current_speed_percent) ??
+    null;
+
+  const rearObstacleDetected =
+    toBoolean(source.rearObstacleDetected) ??
+    toBoolean(source.rear_obstacle_detected) ??
+    undefined;
+
+  const lastWatchdogReason =
+    toText(source.lastWatchdogReason) ??
+    toText(source.last_watchdog_reason) ??
+    null;
+
+  const latestStreamFrameUrl =
+    toText(source.latestStreamFrameUrl) ??
+    toText(source.latest_stream_frame_url) ??
+    null;
+
+  const latestStreamCamera =
+    toText(source.latestStreamCamera) ??
+    toText(source.latest_stream_camera) ??
+    null;
+
   const isConnected = toBoolean(source.isConnected) ?? toBoolean(source.is_connected) ?? undefined;
 
   return {
@@ -168,7 +203,12 @@ export function normalizeRobotStatus(payload: unknown): Partial<RobotState> {
     ...(activeCamera ? { activeCamera } : {}),
     ...(controlProfile ? { controlProfile } : {}),
     ...(speedProfile ? { speedProfile } : {}),
+    ...(currentSpeedPercent !== null ? { currentSpeedPercent } : {}),
     ...(currentPlantQr ? { currentPlantQr } : {}),
+    ...(rearObstacleDetected !== undefined ? { rearObstacleDetected } : {}),
+    ...(lastWatchdogReason ? { lastWatchdogReason } : {}),
+    ...(latestStreamFrameUrl ? { latestStreamFrameUrl } : {}),
+    ...(latestStreamCamera ? { latestStreamCamera } : {}),
     ...(isConnected !== undefined ? { isConnected } : {}),
   };
 }

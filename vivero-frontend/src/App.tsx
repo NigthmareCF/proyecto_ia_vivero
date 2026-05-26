@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/layout/ProtectedRoute";
 import { Sidebar } from "./components/layout/Sidebar";
 import { Navbar } from "./components/layout/Navbar";
+import { VoiceCommandDock } from "./components/layout/VoiceCommandDock";
 import { useAuth } from "./hooks/useAuth";
 import { LoginPage } from "./pages/auth/LoginPage";
 
@@ -44,6 +45,7 @@ function Shell() {
       <Sidebar />
       <main className="flex-1 space-y-6">
         <Navbar />
+        <VoiceCommandDock />
         <Suspense fallback={<div className="rounded-3xl bg-white p-6 text-moss shadow-sm">Cargando modulo...</div>}>
           <Routes>
             <Route

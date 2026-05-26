@@ -3,7 +3,16 @@ type Props = {
 };
 
 export function PlantReportCard({ result }: Props) {
-  if (!result) return null;
+  if (!result) {
+    return (
+      <article className="rounded-[2rem] bg-white p-6 shadow-sm">
+        <h3 className="font-display text-2xl text-ink">Reporte de analisis</h3>
+        <p className="mt-3 text-sm text-moss">
+          Aun no hay resultados. Carga una imagen o espera un mensaje del backend para ver el diagnostico.
+        </p>
+      </article>
+    );
+  }
 
   return (
     <article className="rounded-[2rem] bg-white p-6 shadow-sm">

@@ -15,4 +15,8 @@ public class PlantAnalysisResponseDto {
     private String diagnostico;
     private List<String> hallazgos;
     private List<String> recomendaciones;
+    private String modeloIa;
+    private String proveedorIa;
+    private boolean requiereRevisionManual;
+    private boolean fallback;
 }
