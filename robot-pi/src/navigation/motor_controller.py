@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import time
 
 from src.config import (
     MOTOR_LEFT_ENA,
@@ -14,6 +15,20 @@ from src.config import (
 
 
 LOGGER = logging.getLogger(__name__)
+LOW_POWER_THRESHOLD = 20
+LOW_POWER_START_DUTY = 25
+LOW_POWER_START_SECONDS = 0.12
+
+MOTION_PATTERNS = {
+    "backward": (0, 1, 1, 0),
+    "turn_left": (1, 0, 1, 0),
+    "forward": (1, 0, 0, 1),
+    "turn_right": (0, 1, 0, 1),
+    "forward_right": (0, 0, 0, 1),
+    "forward_left": (1, 0, 0, 0),
+    "backward_left": (0, 1, 0, 0),
+    "backward_right": (0, 0, 1, 0),
+}
 
 try:
     import RPi.GPIO as GPIO  # type: ignore
@@ -37,7 +52,7 @@ def setup() -> None:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     for pin in [MOTOR_LEFT_IN1, MOTOR_LEFT_IN2, MOTOR_RIGHT_IN3, MOTOR_RIGHT_IN4, MOTOR_LEFT_ENA, MOTOR_RIGHT_ENB]:
-        GPIO.setup(pin, GPIO.OUT)
+        GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
     _left_speed_pwm = GPIO.PWM(MOTOR_LEFT_ENA, PWM_FREQUENCY_HZ)
     _right_speed_pwm = GPIO.PWM(MOTOR_RIGHT_ENB, PWM_FREQUENCY_HZ)
     for pwm in [_left_speed_pwm, _right_speed_pwm]:
@@ -45,39 +60,101 @@ def setup() -> None:
     stop()
 
 
-def _set_direction(left_forward: bool, right_forward: bool) -> None:
-    GPIO.output(MOTOR_LEFT_IN1, GPIO.HIGH if left_forward else GPIO.LOW)
-    GPIO.output(MOTOR_LEFT_IN2, GPIO.LOW if left_forward else GPIO.HIGH)
-    GPIO.output(MOTOR_RIGHT_IN3, GPIO.HIGH if right_forward else GPIO.LOW)
-    GPIO.output(MOTOR_RIGHT_IN4, GPIO.LOW if right_forward else GPIO.HIGH)
+def _clamp_speed(speed: int) -> int:
+    return max(0, min(speed, 100))
 
 
-def _apply(left_forward: bool, right_forward: bool, left_speed: int, right_speed: int) -> None:
+def _apply_pwm(left_speed: int, right_speed: int) -> None:
+    left_speed = _clamp_speed(left_speed)
+    right_speed = _clamp_speed(right_speed)
+    needs_start_boost = (
+        0 < left_speed < LOW_POWER_THRESHOLD
+        or 0 < right_speed < LOW_POWER_THRESHOLD
+    )
+    if needs_start_boost:
+        _left_speed_pwm.ChangeDutyCycle(LOW_POWER_START_DUTY if left_speed > 0 else 0)
+        _right_speed_pwm.ChangeDutyCycle(LOW_POWER_START_DUTY if right_speed > 0 else 0)
+        time.sleep(LOW_POWER_START_SECONDS)
+    _left_speed_pwm.ChangeDutyCycle(left_speed)
+    _right_speed_pwm.ChangeDutyCycle(right_speed)
+
+
+def _apply_pattern(pattern: tuple[int, int, int, int], speed: int) -> None:
     if GPIO is None or not _pwms_ready():
         return
-    _set_direction(left_forward, right_forward)
-    _left_speed_pwm.ChangeDutyCycle(max(0, min(left_speed, 100)))
-    _right_speed_pwm.ChangeDutyCycle(max(0, min(right_speed, 100)))
+    in1, in2, in3, in4 = pattern
+    left_speed = speed if in1 or in2 else 0
+    right_speed = speed if in3 or in4 else 0
+    apply_raw(in1, in2, in3, in4, left_speed, right_speed)
+
+
+def pin_map() -> dict[str, int]:
+    return {
+        "IN1": MOTOR_LEFT_IN1,
+        "IN2": MOTOR_LEFT_IN2,
+        "IN3": MOTOR_RIGHT_IN3,
+        "IN4": MOTOR_RIGHT_IN4,
+        "ENA": MOTOR_LEFT_ENA,
+        "ENB": MOTOR_RIGHT_ENB,
+    }
+
+
+def apply_raw(in1: int, in2: int, in3: int, in4: int, ena_speed: int, enb_speed: int) -> None:
+    if GPIO is None or not _pwms_ready():
+        return
+    GPIO.output(MOTOR_LEFT_IN1, GPIO.HIGH if in1 else GPIO.LOW)
+    GPIO.output(MOTOR_LEFT_IN2, GPIO.HIGH if in2 else GPIO.LOW)
+    GPIO.output(MOTOR_RIGHT_IN3, GPIO.HIGH if in3 else GPIO.LOW)
+    GPIO.output(MOTOR_RIGHT_IN4, GPIO.HIGH if in4 else GPIO.LOW)
+    _apply_pwm(ena_speed, enb_speed)
 
 
 def move_forward(speed: int) -> None:
-    _apply(True, True, speed, speed)
+    _apply_pattern(MOTION_PATTERNS["forward"], speed)
 
 
 def move_backward(speed: int) -> None:
-    _apply(False, False, speed, speed)
+    _apply_pattern(MOTION_PATTERNS["backward"], speed)
 
 
 def turn_left(speed: int) -> None:
-    if GPIO is None or not _pwms_ready():
-        return
-    _apply(False, True, max(0, min(speed // 2, 100)), max(0, min(speed, 100)))
+    _apply_pattern(MOTION_PATTERNS["turn_left"], speed)
 
 
 def turn_right(speed: int) -> None:
-    if GPIO is None or not _pwms_ready():
-        return
-    _apply(True, False, max(0, min(speed, 100)), max(0, min(speed // 2, 100)))
+    _apply_pattern(MOTION_PATTERNS["turn_right"], speed)
+
+
+def move_left_forward(speed: int) -> None:
+    _apply_pattern(MOTION_PATTERNS["forward_left"], speed)
+
+
+def move_left_backward(speed: int) -> None:
+    _apply_pattern(MOTION_PATTERNS["backward_left"], speed)
+
+
+def move_right_forward(speed: int) -> None:
+    _apply_pattern(MOTION_PATTERNS["forward_right"], speed)
+
+
+def move_right_backward(speed: int) -> None:
+    _apply_pattern(MOTION_PATTERNS["backward_right"], speed)
+
+
+def move_forward_left(speed: int) -> None:
+    move_left_forward(speed)
+
+
+def move_forward_right(speed: int) -> None:
+    move_right_forward(speed)
+
+
+def move_backward_left(speed: int) -> None:
+    move_left_backward(speed)
+
+
+def move_backward_right(speed: int) -> None:
+    move_right_backward(speed)
 
 
 def stop() -> None:
@@ -92,7 +169,15 @@ def stop() -> None:
 
 
 def cleanup() -> None:
+    global _left_speed_pwm, _right_speed_pwm
     if GPIO is None:
         return
     stop()
+    pwms = [_left_speed_pwm, _right_speed_pwm]
+    for pwm in pwms:
+        if pwm is not None:
+            pwm.stop()
+    _left_speed_pwm = None
+    _right_speed_pwm = None
+    del pwms
     GPIO.cleanup()

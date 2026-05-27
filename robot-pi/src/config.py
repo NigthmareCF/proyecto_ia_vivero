@@ -37,6 +37,8 @@ BUZZER = 21
 
 CLASSES = ["atencion", "peligro", "sano"]
 PWM_FREQUENCY_HZ = 1000
+MOTOR_LEFT_INVERTED = os.getenv("MOTOR_LEFT_INVERTED", "true").lower() == "true"
+MOTOR_RIGHT_INVERTED = os.getenv("MOTOR_RIGHT_INVERTED", "false").lower() == "true"
 N_CAPTURES = 6
 
 
@@ -136,7 +138,7 @@ class Settings:
             stream_fps=int(os.getenv("STREAM_FPS", "10")),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
             capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
-            qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "22")),
+            qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "25")),
             burst_frame_interval_seconds=float(os.getenv("BURST_FRAME_INTERVAL_SECONDS", "0.08")),
             end_row_forward_seconds=float(os.getenv("END_ROW_FORWARD_SECONDS", "5.0")),
             end_row_turn_seconds=float(os.getenv("END_ROW_TURN_SECONDS", "1.0")),
@@ -155,7 +157,7 @@ class Settings:
             lcd_enabled=os.getenv("LCD_ENABLED", "true").lower() == "true",
             led_enabled=os.getenv("LED_ENABLED", "true").lower() == "true",
             buzzer_enabled=os.getenv("BUZZER_ENABLED", "true").lower() == "true",
-            line_active_low=os.getenv("LINE_ACTIVE_LOW", "true").lower() == "true",
+            line_active_low=os.getenv("LINE_ACTIVE_LOW", "false").lower() == "true",
             rear_ir_active_high=os.getenv("REAR_IR_ACTIVE_HIGH", "true").lower() == "true",
             heartbeat_led_blink_interval_seconds=float(os.getenv("HEARTBEAT_LED_BLINK_INTERVAL_SECONDS", "0.5")),
             heartbeat_led_fast_blink_interval_seconds=float(os.getenv("HEARTBEAT_LED_FAST_BLINK_INTERVAL_SECONDS", "0.2")),

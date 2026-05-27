@@ -143,12 +143,29 @@ El robot se divide en **6 subsistemas principales**:
 - **Pin 6, 9, 14, 20, 25, 30, 34, 39:** GND (tierra común)
 
 ### Control de motores (L298N)
-- **GPIO17 (pin 11):** IN1 → Motor izquierdo adelante
-- **GPIO27 (pin 13):** IN2 → Motor izquierdo atrás
-- **GPIO22 (pin 15):** IN3 → Motor derecho adelante
-- **GPIO23 (pin 17):** IN4 → Motor derecho atrás
+- **GPIO17 (pin 11):** IN1
+- **GPIO27 (pin 13):** IN2
+- **GPIO22 (pin 15):** IN3
+- **GPIO23 (pin 17):** IN4
 - **GPIO18 (pin 12):** ENA (PWM) → Control velocidad motores izquierdos
 - **GPIO25 (pin 18):** ENB (PWM) → Control velocidad motores derechos
+
+#### Comportamientos normales probados
+
+Los estados se expresan en orden IN1-IN4:
+
+| Comando | Frontend | IN1 IN2 IN3 IN4 |
+|---|---|---|
+| Avanzar | flecha arriba / `forward` | `1 0 0 1` |
+| Reversa | flecha abajo / `backward` | `0 1 1 0` |
+| Rotacion izquierda | flecha izquierda / `left` | `1 0 1 0` |
+| Rotacion derecha | flecha derecha / `right` | `0 1 0 1` |
+| Giro derecha avanzar | arriba + derecha / `forward_right` | `0 0 0 1` |
+| Giro izquierda avanzar | arriba + izquierda / `forward_left` | `1 0 0 0` |
+| Giro izquierda reversa | abajo + izquierda / `backward_left` | `0 1 0 0` |
+| Giro derecha reversa | abajo + derecha / `backward_right` | `0 0 1 0` |
+
+Nota de arranque: potencias bajas, aproximadamente menores al 20%, no arrancan el motor desde reposo de forma confiable. El controlador aplica primero un pulso corto al 25% y luego baja al valor pedido. Los perfiles normales quedan en 25% o mas cuando se configuran desde variables de entorno.
 
 ### Sensores de línea (seguimiento)
 - **GPIO13 (pin 33):** Salida MH-B izquierdo

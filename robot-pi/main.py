@@ -932,17 +932,49 @@ def main() -> None:
             set_status_summary(f"Estado {state}")
 
     def apply_manual_move(direction: str, speed: int) -> None:
-        if direction == "forward":
+        normalized_direction = direction.strip().lower().replace("-", "_").replace(" ", "_")
+        direction_aliases = {
+            "up": "forward",
+            "down": "backward",
+            "forward_left": "forward_left",
+            "left_forward": "forward_left",
+            "forward_right": "forward_right",
+            "right_forward": "forward_right",
+            "backward_left": "backward_left",
+            "left_backward": "backward_left",
+            "reverse_left": "backward_left",
+            "left_reverse": "backward_left",
+            "backward_right": "backward_right",
+            "right_backward": "backward_right",
+            "reverse_right": "backward_right",
+            "right_reverse": "backward_right",
+        }
+        normalized_direction = direction_aliases.get(normalized_direction, normalized_direction)
+        if normalized_direction == "forward":
             motor_controller.move_forward(speed)
-        elif direction == "backward":
+        elif normalized_direction == "backward":
             if is_reverse_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
             motor_controller.move_backward(speed)
-        elif direction == "left":
+        elif normalized_direction == "left":
             motor_controller.turn_left(speed)
-        elif direction == "right":
+        elif normalized_direction == "right":
             motor_controller.turn_right(speed)
+        elif normalized_direction == "forward_left":
+            motor_controller.move_forward_left(speed)
+        elif normalized_direction == "forward_right":
+            motor_controller.move_forward_right(speed)
+        elif normalized_direction == "backward_left":
+            if is_reverse_motion_blocked():
+                state_machine.update_manual_move("stop", 0)
+                return
+            motor_controller.move_backward_left(speed)
+        elif normalized_direction == "backward_right":
+            if is_reverse_motion_blocked():
+                state_machine.update_manual_move("stop", 0)
+                return
+            motor_controller.move_backward_right(speed)
         else:
             motor_controller.stop()
 
@@ -1114,7 +1146,20 @@ def main() -> None:
                 refresh_rear_obstacle_state()
                 set_stream_enabled(True)
                 enforce_manual_watchdog(snapshot)
-                if snapshot.manual_direction == "backward" and is_reverse_motion_blocked():
+                manual_direction = snapshot.manual_direction.strip().lower().replace("-", "_").replace(" ", "_")
+                reverse_directions = {
+                    "backward",
+                    "down",
+                    "backward_left",
+                    "left_backward",
+                    "reverse_left",
+                    "left_reverse",
+                    "backward_right",
+                    "right_backward",
+                    "reverse_right",
+                    "right_reverse",
+                }
+                if manual_direction in reverse_directions and is_reverse_motion_blocked():
                     state_machine.update_manual_move("stop", 0)
 
             elif snapshot.state == RobotState.FOLLOW_LINE:
