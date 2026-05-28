@@ -38,10 +38,10 @@ cp .env.example .env
 nano .env
 ```
 
-Variables clave para trabajo local en la red actual:
+Variables clave para trabajo local en la red actual, apuntando a Nginx del stack `release`:
 
-- `BACKEND_BASE_URL=http://192.168.1.27:8080/api`
-- `BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream`
+- `BACKEND_BASE_URL=http://192.168.1.27:3000/api`
+- `BACKEND_WS_URL=ws://192.168.1.27:3000/api/ws/robot-stream`
 - `ROBOT_ID=ROBOT-001`
 - `CAMERA_LEFT_INDEX=0`
 - `CAMERA_RIGHT_INDEX=2`
@@ -50,6 +50,11 @@ Variables clave para trabajo local en la red actual:
 - `WIFI_PASSWORD=tashycora`
 
 La configuracion WiFi de la Raspberry Pi ya fue creada con NetworkManager para priorizar el hotspot `Redmi Note 14` como red oculta. No hace falta recrearla para levantar el runtime; estas variables quedan como referencia operativa del robot.
+
+Para VM o dominio publico, no usar Cloudflare ni el puerto directo del backend. Usar la entrada Nginx:
+
+- `BACKEND_BASE_URL=https://dominio-o-ip/api`
+- `BACKEND_WS_URL=wss://dominio-o-ip/api/ws/robot-stream`
 
 ## 5. Verificar hardware
 

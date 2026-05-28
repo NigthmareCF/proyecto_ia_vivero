@@ -25,20 +25,27 @@ No implementado aun:
 
 ## Arquitectura vigente
 
-La referencia vigente es comunicacion directa desde la Raspberry Pi al backend local y de ahi al frontend:
+La referencia vigente es comunicacion desde la Raspberry Pi hacia la entrada Nginx del stack `release`, y de ahi al backend/frontend:
 
 ```text
-Pi -> backend -> frontend
+Pi -> Nginx -> backend -> frontend
 ```
 
-La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` para WebSocket. En la red local actual el backend debe exponerse en:
+La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` para WebSocket. En la red local actual el stack `release` publica Nginx en `3000`, por lo que el robot debe apuntar a:
 
 ```text
-BACKEND_BASE_URL=http://192.168.1.27:8080/api
-BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream
+BACKEND_BASE_URL=http://192.168.1.27:3000/api
+BACKEND_WS_URL=ws://192.168.1.27:3000/api/ws/robot-stream
 ```
 
-`BRIDGE_URL` queda solo como fallback legado y no debe usarse para la operacion normal.
+En VM o dominio publico, usar la misma ruta por Nginx sin exponer el backend directo:
+
+```text
+BACKEND_BASE_URL=https://dominio-o-ip/api
+BACKEND_WS_URL=wss://dominio-o-ip/api/ws/robot-stream
+```
+
+`BRIDGE_URL` queda obsoleto para esta rama y no debe usarse para la operacion normal.
 
 ## Roles de camaras acordados
 

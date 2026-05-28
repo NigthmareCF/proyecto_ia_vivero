@@ -107,10 +107,10 @@ class Settings:
         env_path = Path(__file__).resolve().parents[2] / ".env"
         if env_path.exists():
             load_dotenv(env_path)
-        backend_base_url = os.getenv("BACKEND_BASE_URL") or os.getenv("BRIDGE_URL") or "http://localhost:8080/api"
+        backend_base_url = os.getenv("BACKEND_BASE_URL", "http://localhost:3000/api")
         return cls(
             backend_base_url=backend_base_url,
-            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:8080/api/ws/robot-stream"),
+            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:3000/api/ws/robot-stream"),
             heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
             observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
             command_next_path=os.getenv("COMMAND_NEXT_PATH", "/robot/commands/next"),

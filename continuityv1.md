@@ -50,17 +50,17 @@ git log --oneline -8
 
 La Raspberry Pi esta en la red `192.168.1.0/24`.
 
-Backend local esperado:
+Entrada Nginx local esperada:
 
 ```text
-BACKEND_BASE_URL=http://192.168.1.27:8080/api
-BACKEND_WS_URL=ws://192.168.1.27:8080/api/ws/robot-stream
+BACKEND_BASE_URL=http://192.168.1.27:3000/api
+BACKEND_WS_URL=ws://192.168.1.27:3000/api/ws/robot-stream
 ```
 
-Al final de la sesion, `192.168.1.27:8080` no respondia desde la Pi:
+La verificacion desde la Pi debe pasar por Nginx, no por el backend directo ni por Cloudflare:
 
 ```bash
-curl -fsS --max-time 5 http://192.168.1.27:8080/api/actuator/health
+curl -fsS --max-time 5 http://192.168.1.27:3000/api/actuator/health
 ```
 
 ## WiFi
@@ -222,7 +222,7 @@ Payloads validos:
 
 1. Reiniciar la Pi para aplicar I2C y politica de ventilador desde arranque.
 2. Confirmar que `/dev/i2c-1` existe tras reinicio.
-3. Levantar backend local en `192.168.1.27:8080`.
+3. Levantar el stack `release` local con Nginx publicado en `192.168.1.27:3000`.
 4. Levantar el robot:
 
 ```bash

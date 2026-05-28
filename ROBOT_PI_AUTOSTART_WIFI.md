@@ -4,7 +4,7 @@ Esta guia deja la Raspberry Pi 5 lista para:
 
 - usar la conexion WiFi ya configurada en NetworkManager
 - levantar `robot-pi` automaticamente al encender
-- comunicarse con el backend local en `192.168.1.27:8080`
+- comunicarse con el stack `release` por Nginx en `192.168.1.27:3000`
 
 ## 1. Estado de la conexion WiFi
 
@@ -88,5 +88,5 @@ Al encenderse la Pi:
 - arranca Docker
 - ejecuta `docker compose up -d --build`
 - levanta el runtime del robot sin intervencion manual
-- conecta por HTTP a `http://192.168.1.27:8080/api`
-- conecta el stream por WebSocket a `ws://192.168.1.27:8080/api/ws/robot-stream`
+- conecta por HTTP a `http://192.168.1.27:3000/api`
+- conecta el stream por WebSocket a `ws://192.168.1.27:3000/api/ws/robot-stream`
