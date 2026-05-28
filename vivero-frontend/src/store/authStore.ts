@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+export type AppRole = "ADMIN" | "CONTROLLER" | "VIEWER";
+
 type AuthState = {
   accessToken: string | null;
   refreshToken: string | null;
@@ -19,16 +21,25 @@ const persisted = (() => {
   }
 })();
 
+export function normalizeRole(role: unknown): AppRole | null {
+  if (typeof role !== "string") return null;
+  const normalized = role.trim().toUpperCase().replace(/^ROLE_/, "");
+  if (normalized === "ADMIN" || normalized === "CONTROLLER" || normalized === "VIEWER") {
+    return normalized;
+  }
+  return null;
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   accessToken: persisted.accessToken ?? null,
   refreshToken: persisted.refreshToken ?? null,
   fullName: persisted.fullName ?? null,
   email: persisted.email ?? null,
-  role: persisted.role ?? null,
+  role: normalizeRole(persisted.role),
   authProvider: persisted.authProvider ?? null,
   setSession: (payload) =>
     set((state) => {
-      const next = { ...state, ...payload };
+      const next = { ...state, ...payload, role: normalizeRole(payload.role ?? state.role) };
       localStorage.setItem("vivero-auth", JSON.stringify(next));
       return next;
     }),

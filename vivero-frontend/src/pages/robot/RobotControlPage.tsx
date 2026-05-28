@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   goToRobotPlant,
+  ManualDirection,
   RobotSearchState,
   SearchStartOrientation,
   searchRobotByState,
@@ -12,7 +13,7 @@ import {
 import { useNotificationStore } from "../../store/notificationStore";
 import { useRobotStream } from "../../hooks/useRobotStream";
 import { useRobotWebSocket } from "../../hooks/useRobotWebSocket";
-import { useAuthStore } from "../../store/authStore";
+import { normalizeRole, useAuthStore } from "../../store/authStore";
 import { useRobotStore } from "../../store/robotStore";
 
 const commandLabels: Record<string, string> = {
@@ -20,6 +21,10 @@ const commandLabels: Record<string, string> = {
   BACKWARD: "Retroceder",
   LEFT: "Izquierda",
   RIGHT: "Derecha",
+  FORWARD_RIGHT: "Avanzar derecha",
+  FORWARD_LEFT: "Avanzar izquierda",
+  BACKWARD_RIGHT: "Reversa derecha",
+  BACKWARD_LEFT: "Reversa izquierda",
   STOP: "Detener",
 };
 
@@ -44,12 +49,7 @@ const speedHotkeys: Record<string, "LOW" | "MEDIUM" | "HIGH" | "TURBO"> = {
   r: "TURBO",
 };
 
-const movementHotkeys: Record<string, "FORWARD" | "BACKWARD" | "LEFT" | "RIGHT"> = {
-  ArrowUp: "FORWARD",
-  ArrowDown: "BACKWARD",
-  ArrowLeft: "LEFT",
-  ArrowRight: "RIGHT",
-};
+const movementKeys = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
 
 const standardProfileSpeed: Record<"LOW" | "MEDIUM" | "HIGH" | "TURBO", number> = {
   LOW: 30,
@@ -74,13 +74,31 @@ function resolveSpeedPercent(profile: string, fallback: number, customSpeed: num
   return standardProfileSpeed[profile as keyof typeof standardProfileSpeed] ?? fallback;
 }
 
+function resolveManualDirection(keys: Set<string>): Exclude<ManualDirection, "STOP"> | null {
+  const forward = keys.has("ArrowUp") && !keys.has("ArrowDown");
+  const backward = keys.has("ArrowDown") && !keys.has("ArrowUp");
+  const left = keys.has("ArrowLeft") && !keys.has("ArrowRight");
+  const right = keys.has("ArrowRight") && !keys.has("ArrowLeft");
+
+  if (forward && right) return "FORWARD_RIGHT";
+  if (forward && left) return "FORWARD_LEFT";
+  if (backward && right) return "BACKWARD_RIGHT";
+  if (backward && left) return "BACKWARD_LEFT";
+  if (forward) return "FORWARD";
+  if (backward) return "BACKWARD";
+  if (left) return "LEFT";
+  if (right) return "RIGHT";
+  return null;
+}
+
 export function RobotControlPage() {
   const robot = useRobotStore();
   const role = useAuthStore((state) => state.role);
+  const activeRole = normalizeRole(role);
   const pushToast = useNotificationStore((state) => state.pushToast);
-  const canDrive = role === "ADMIN" || role === "CONTROLLER";
+  const canDrive = activeRole === "ADMIN" || activeRole === "CONTROLLER";
   const canOperateRobot = canDrive && robot.isConnected;
-  const isAdmin = role === "ADMIN";
+  const isAdmin = activeRole === "ADMIN";
   useRobotWebSocket();
   useRobotStream();
 
@@ -92,7 +110,9 @@ export function RobotControlPage() {
   const [searchState, setSearchState] = useState<RobotSearchState>("ATENCION");
   const [searchOrientation, setSearchOrientation] = useState<SearchStartOrientation>("FORWARD");
   const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
-  const activeDirectionRef = useRef<"FORWARD" | "BACKWARD" | "LEFT" | "RIGHT" | null>(null);
+  const [activeKeyboardDirection, setActiveKeyboardDirection] = useState<Exclude<ManualDirection, "STOP"> | null>(null);
+  const activeDirectionRef = useRef<Exclude<ManualDirection, "STOP"> | null>(null);
+  const pressedMovementKeysRef = useRef<Set<string>>(new Set());
   const commandIntervalRef = useRef<number | null>(null);
   const manualModeArmedRef = useRef(false);
   const streamContainerRef = useRef<HTMLDivElement | null>(null);
@@ -151,8 +171,12 @@ export function RobotControlPage() {
     return false;
   };
 
-  const stopManualMotion = () => {
+  const stopManualMotion = (clearPressedKeys = true) => {
     activeDirectionRef.current = null;
+    setActiveKeyboardDirection(null);
+    if (clearPressedKeys) {
+      pressedMovementKeysRef.current.clear();
+    }
     if (commandIntervalRef.current !== null) {
       window.clearInterval(commandIntervalRef.current);
       commandIntervalRef.current = null;
@@ -168,15 +192,16 @@ export function RobotControlPage() {
     await setRobotMode("MANUAL_FREE");
   };
 
-  const dispatchManualMove = async (direction: "FORWARD" | "BACKWARD" | "LEFT" | "RIGHT") => {
+  const dispatchManualMove = async (direction: Exclude<ManualDirection, "STOP">) => {
     if (!ensureRobotReady("mover el robot")) return;
     await ensureManualMode();
     await sendRobotCommand(direction, activeSpeedPercent);
   };
 
-  const startManualMotion = (direction: "FORWARD" | "BACKWARD" | "LEFT" | "RIGHT") => {
+  const startManualMotion = (direction: Exclude<ManualDirection, "STOP">) => {
     if (!ensureRobotReady("mover el robot")) return;
     activeDirectionRef.current = direction;
+    setActiveKeyboardDirection(direction);
     if (commandIntervalRef.current !== null) {
       window.clearInterval(commandIntervalRef.current);
     }
@@ -227,7 +252,7 @@ export function RobotControlPage() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.repeat && !movementHotkeys[event.key]) {
+      if (event.repeat && !movementKeys.has(event.key)) {
         return;
       }
 
@@ -286,20 +311,28 @@ export function RobotControlPage() {
         return;
       }
 
-      const direction = movementHotkeys[event.key];
-      if (direction && canDrive) {
+      if (movementKeys.has(event.key) && canDrive) {
         event.preventDefault();
-        if (activeDirectionRef.current !== direction) {
+        pressedMovementKeysRef.current.add(event.key);
+        const direction = resolveManualDirection(pressedMovementKeysRef.current);
+        if (direction && activeDirectionRef.current !== direction) {
           startManualMotion(direction);
         }
       }
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
-      const direction = movementHotkeys[event.key];
-      if (direction && activeDirectionRef.current === direction) {
+      if (movementKeys.has(event.key)) {
         event.preventDefault();
-        stopManualMotion();
+        pressedMovementKeysRef.current.delete(event.key);
+        const nextDirection = resolveManualDirection(pressedMovementKeysRef.current);
+        if (nextDirection) {
+          if (activeDirectionRef.current !== nextDirection) {
+            startManualMotion(nextDirection);
+          }
+          return;
+        }
+        stopManualMotion(false);
       }
     };
 
@@ -309,7 +342,7 @@ export function RobotControlPage() {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
-  }, [activeSpeedPercent, canDrive, customSpeedPercent, isAdmin, powerPanelOpen]);
+  }, [activeSpeedPercent, canDrive, canOperateRobot, customSpeedPercent, isAdmin, powerPanelOpen, robot.isConnected]);
 
   const connectionClass = connectionTone[robot.connectionQuality] ?? "bg-clay";
   const batteryWidth = Math.min(Math.max(robot.batteryLevel, 0), 100);
@@ -325,6 +358,9 @@ export function RobotControlPage() {
           <span className="rounded-full bg-sand px-3 py-1">Camara {robot.activeCamera}</span>
           <span className="rounded-full bg-sand px-3 py-1">Potencia {selectedSpeedProfile}</span>
           <span className="rounded-full bg-sand px-3 py-1">PWM {activeSpeedPercent}%</span>
+          <span className="rounded-full bg-sand px-3 py-1">
+            Teclado {activeKeyboardDirection ? commandLabels[activeKeyboardDirection] : "sin movimiento"}
+          </span>
           <span className="rounded-full bg-sand px-3 py-1">QR {robot.currentPlantQr ?? "sin objetivo"}</span>
           <span className="inline-flex items-center gap-2 rounded-full bg-sand px-3 py-1">
             <span className={`h-2.5 w-2.5 rounded-full ${connectionClass}`} />
@@ -394,7 +430,7 @@ export function RobotControlPage() {
                   stopManualMotion();
                   return;
                 }
-                startManualMotion(command as "FORWARD" | "BACKWARD" | "LEFT" | "RIGHT");
+                startManualMotion(command as Exclude<ManualDirection, "STOP">);
               }}
               onMouseUp={() => {
                 if (command !== "STOP") stopManualMotion();
@@ -438,6 +474,10 @@ export function RobotControlPage() {
             </button>
           ) : null}
         </div>
+        <p className="mt-3 text-sm text-moss">
+          Estandar PWM: custom acepta 0-100%. Si se solicita 1-19%, la Pi aplica un pulso de arranque al 25%
+          antes de bajar a la potencia indicada.
+        </p>
 
         <div className="mt-6 rounded-[1.5rem] border border-sand p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -519,7 +559,11 @@ export function RobotControlPage() {
             <div className="absolute inset-x-0 top-0 flex items-center justify-between bg-gradient-to-b from-black/45 to-transparent px-4 py-3 text-xs uppercase tracking-[0.18em] text-sand">
               <span>Recorrido en vivo</span>
               <div className="flex items-center gap-3">
-                <span>{robot.activeCamera} · {robot.streamActive ? "stream activo" : "stream en espera"}</span>
+                <span>
+                  {robot.activeCamera} · {robot.streamActive ? "stream activo" : "stream en espera"} ·{" "}
+                  {robot.streamSocketConnected ? "WS conectado" : "WS desconectado"}
+                  {robot.latestStreamFrameAt ? ` · frame ${robot.latestStreamFrameAt}` : " · sin frames"}
+                </span>
                 <button
                   type="button"
                   className="rounded-full border border-white/30 bg-black/20 px-3 py-1 text-[11px] text-white transition hover:bg-white/15"
@@ -536,13 +580,18 @@ export function RobotControlPage() {
               <img
                 src={robot.latestStreamFrameUrl}
                 alt={`Stream ${robot.latestStreamCamera ?? robot.activeCamera}`}
-                className={`w-full object-cover ${isVideoFullscreen ? "h-screen" : "h-full min-h-80"}`}
+                className={`w-full object-contain bg-black ${isVideoFullscreen ? "h-screen" : "h-full min-h-80"}`}
               />
             ) : (
               <div className="text-center">
                 <p className="font-display text-4xl">{robot.streamActive ? robot.activeCamera : "Sin video"}</p>
                 <p className="mt-2 text-sm text-sand/70">
                   `1/2/3` camaras · flechas para manejo manual · `A/M/X` perfiles de control
+                </p>
+                <p className="mt-2 text-xs text-sand/60">
+                  {robot.streamSocketConnected
+                    ? "El frontend esta conectado al canal de video, pero aun no recibio frames de la Pi."
+                    : "El frontend no esta conectado al canal de video del backend."}
                 </p>
               </div>
             )}
@@ -585,7 +634,8 @@ export function RobotControlPage() {
           <div className="w-full max-w-md rounded-[2rem] bg-white p-6 shadow-2xl">
             <h3 className="font-display text-3xl text-ink">Potencia custom</h3>
             <p className="mt-2 text-sm text-moss">
-              Ajusta con flechas izquierda/derecha o con los botones. `Enter` aplica y `Escape` cierra.
+              Ajusta con flechas izquierda/derecha o con los botones. `Enter` aplica y `Escape` cierra. Valores
+              menores a 20% usan el arranque asistido normalizado en la Pi.
             </p>
             <div className="mt-6 rounded-[1.5rem] bg-sand p-5 text-center">
               <p className="text-xs uppercase tracking-[0.18em] text-moss">PWM actual</p>

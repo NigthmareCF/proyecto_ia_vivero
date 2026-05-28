@@ -8,8 +8,28 @@ export const getRobotPatrolObservations = (patrolId: string) =>
 
 export type SearchStartOrientation = "FORWARD" | "REVERSE";
 export type RobotSearchState = "SANO" | "ATENCION" | "PELIGRO" | "INCONCLUSA";
+export type ManualDirection =
+  | "FORWARD"
+  | "BACKWARD"
+  | "LEFT"
+  | "RIGHT"
+  | "FORWARD_RIGHT"
+  | "FORWARD_LEFT"
+  | "BACKWARD_RIGHT"
+  | "BACKWARD_LEFT"
+  | "STOP";
 
-const manualDirections = new Set(["FORWARD", "BACKWARD", "LEFT", "RIGHT", "STOP"]);
+const manualDirections = new Set<ManualDirection>([
+  "FORWARD",
+  "BACKWARD",
+  "LEFT",
+  "RIGHT",
+  "FORWARD_RIGHT",
+  "FORWARD_LEFT",
+  "BACKWARD_RIGHT",
+  "BACKWARD_LEFT",
+  "STOP",
+]);
 const speedProfileMap: Record<string, string> = {
   LOW: "LOW",
   MEDIUM: "MEDIUM",
@@ -17,8 +37,12 @@ const speedProfileMap: Record<string, string> = {
   TURBO: "TURBO",
 };
 
+function isManualDirection(command: string): command is ManualDirection {
+  return manualDirections.has(command as ManualDirection);
+}
+
 export const sendRobotCommand = (command: string, value?: string | number) => {
-  if (manualDirections.has(command)) {
+  if (isManualDirection(command)) {
     return api
       .post("/robot/command", {
         commandType: "MANUAL_MOVE",

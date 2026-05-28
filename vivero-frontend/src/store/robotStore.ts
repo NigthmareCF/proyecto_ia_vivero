@@ -21,6 +21,8 @@ export type RobotState = {
   lastWatchdogReason: string | null;
   latestStreamFrameUrl: string | null;
   latestStreamCamera: string | null;
+  latestStreamFrameAt: string | null;
+  streamSocketConnected: boolean;
   isConnected: boolean;
   setStatus: (status: Partial<RobotState>) => void;
 };
@@ -44,6 +46,8 @@ export const initialRobotState: Omit<RobotState, "setStatus"> = {
   lastWatchdogReason: null,
   latestStreamFrameUrl: null,
   latestStreamCamera: null,
+  latestStreamFrameAt: null,
+  streamSocketConnected: false,
   isConnected: false,
 };
 

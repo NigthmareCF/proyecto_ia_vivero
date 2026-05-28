@@ -8,5 +8,9 @@ public enum ManualDirection {
     BACKWARD,
     LEFT,
     RIGHT,
+    FORWARD_RIGHT,
+    FORWARD_LEFT,
+    BACKWARD_RIGHT,
+    BACKWARD_LEFT,
     STOP
 }

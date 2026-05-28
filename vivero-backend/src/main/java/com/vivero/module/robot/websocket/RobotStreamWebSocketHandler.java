@@ -12,6 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.net.URI;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @Component
@@ -20,13 +21,21 @@ public class RobotStreamWebSocketHandler extends TextWebSocketHandler {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final Set<WebSocketSession> viewerSessions = ConcurrentHashMap.newKeySet();
+    private final AtomicLong relayedFrameCount = new AtomicLong();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        if (!isRobotProducer(session)) {
+        boolean producer = isRobotProducer(session);
+        if (!producer) {
             viewerSessions.add(session);
         }
-        log.info("Robot stream websocket connected: {}", session.getId());
+        log.info(
+                "Robot stream websocket connected: {} role={} viewers={} uri={}",
+                session.getId(),
+                producer ? "robot-producer" : "viewer",
+                viewerSessions.size(),
+                session.getUri()
+        );
     }
 
     @Override
@@ -35,17 +44,21 @@ public class RobotStreamWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         messagingTemplate.convertAndSend("/topic/robot/stream", message.getPayload());
+        long frameCount = relayedFrameCount.incrementAndGet();
         for (WebSocketSession viewer : viewerSessions) {
             if (viewer.isOpen()) {
                 viewer.sendMessage(message);
             }
+        }
+        if (frameCount == 1 || frameCount % 30 == 0) {
+            log.info("Robot stream frame relayed: count={} viewers={} bytes={}", frameCount, viewerSessions.size(), message.getPayloadLength());
         }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         viewerSessions.remove(session);
-        log.info("Robot stream websocket closed: {} - {}", session.getId(), status);
+        log.info("Robot stream websocket closed: {} - {} viewers={}", session.getId(), status, viewerSessions.size());
     }
 
     private boolean isRobotProducer(WebSocketSession session) {

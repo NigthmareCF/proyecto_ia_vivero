@@ -19,16 +19,29 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const refreshToken = useAuthStore.getState().refreshToken;
+    const status = error.response?.status;
+    const canTryRefresh =
+      (status === 401 || status === 403) &&
+      refreshToken &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !String(originalRequest.url ?? "").includes("/auth/refresh");
 
-    if (error.response?.status === 401 && refreshToken && !originalRequest._retry) {
+    if (canTryRefresh) {
       originalRequest._retry = true;
-      const response = await axios.post(
-        `${api.defaults.baseURL}/auth/refresh`,
-        { refreshToken }
-      );
-      useAuthStore.getState().setSession(response.data.data);
-      originalRequest.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
-      return api(originalRequest);
+      try {
+        const response = await axios.post(
+          `${api.defaults.baseURL}/auth/refresh`,
+          { refreshToken }
+        );
+        useAuthStore.getState().setSession(response.data.data);
+        originalRequest.headers = originalRequest.headers ?? {};
+        originalRequest.headers.Authorization = `Bearer ${response.data.data.accessToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        useAuthStore.getState().clear();
+        return Promise.reject(refreshError);
+      }
     }
 
     return Promise.reject(error);

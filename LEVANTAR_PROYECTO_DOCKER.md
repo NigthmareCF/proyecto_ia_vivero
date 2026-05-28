@@ -47,3 +47,19 @@ docker compose up -d
 ## 6. Observacion
 
 El runtime de la Raspberry Pi se levanta aparte desde la rama `robot-pi`, con su propio `docker-compose.yml`.
+
+## 7. Despliegue tipo VM con Nginx
+
+Para una VM GCP o una instancia pública, usa `docker-compose.vm.yml`:
+
+```bash
+cp .env.vm.example .env.vm
+docker compose --env-file .env.vm -f docker-compose.vm.yml up --build -d
+```
+
+Ese stack:
+
+- sirve el frontend compilado desde Nginx en `80`
+- proxyea `/api` y `/api/ws` al backend interno
+- deja al backend sin exposición pública directa
+- mantiene local `docker compose up --build -d` para el flujo de laptop sin Nginx
