@@ -16,11 +16,13 @@ Ajusta como mínimo:
 - `VITE_API_URL`
 - `VITE_WS_URL`
 
-## 2. Construir y levantar
+## 2. Construir y levantar local con Nginx
 
 ```bash
 docker compose up --build -d
 ```
+
+El frontend se compila y se sirve desde Nginx. La entrada local queda en `http://localhost:3000`; Nginx proxyea `/api` y `/api/ws` al backend interno.
 
 ## 3. Revisar estado
 
@@ -33,8 +35,10 @@ docker compose logs -f frontend
 ## 4. URLs esperadas
 
 - Frontend: `http://localhost:3000`
-- Backend: `http://localhost:8080/api`
-- Healthcheck: `http://localhost:8080/api/actuator/health`
+- API por Nginx: `http://localhost:3000/api`
+- Backend directo para depuracion: `http://localhost:8080/api`
+- Healthcheck por Nginx: `http://localhost:3000/health`
+- Healthcheck backend: `http://localhost:8080/api/actuator/health`
 
 ## 5. Reconstruir si cambian dependencias o Dockerfiles
 
@@ -62,4 +66,4 @@ Ese stack:
 - sirve el frontend compilado desde Nginx en `80`
 - proxyea `/api` y `/api/ws` al backend interno
 - deja al backend sin exposición pública directa
-- mantiene local `docker compose up --build -d` para el flujo de laptop sin Nginx
+- usa la misma configuracion Nginx validada localmente
