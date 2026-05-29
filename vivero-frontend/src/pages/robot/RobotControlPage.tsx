@@ -9,6 +9,7 @@ import {
   setRobotSpeedProfile,
   switchRobotCamera,
 } from "../../api/robotApi";
+import { useNotificationStore } from "../../store/notificationStore";
 import { useRobotStream } from "../../hooks/useRobotStream";
 import { useRobotWebSocket } from "../../hooks/useRobotWebSocket";
 import { useAuthStore } from "../../store/authStore";
@@ -76,7 +77,9 @@ function resolveSpeedPercent(profile: string, fallback: number, customSpeed: num
 export function RobotControlPage() {
   const robot = useRobotStore();
   const role = useAuthStore((state) => state.role);
+  const pushToast = useNotificationStore((state) => state.pushToast);
   const canDrive = role === "ADMIN" || role === "CONTROLLER";
+  const canOperateRobot = canDrive && robot.isConnected;
   const isAdmin = role === "ADMIN";
   useRobotWebSocket();
   useRobotStream();
@@ -128,6 +131,26 @@ export function RobotControlPage() {
     customSpeedPercent,
   );
 
+  const ensureRobotReady = (actionLabel: string) => {
+    if (!canDrive) {
+      pushToast({
+        id: crypto.randomUUID(),
+        title: "Tu rol actual no puede enviar comandos del robot",
+        variant: "critical",
+      });
+      return false;
+    }
+    if (robot.isConnected) {
+      return true;
+    }
+    pushToast({
+      id: crypto.randomUUID(),
+      title: `Robot sin conexion: no se puede ${actionLabel}`,
+      variant: "critical",
+    });
+    return false;
+  };
+
   const stopManualMotion = () => {
     activeDirectionRef.current = null;
     if (commandIntervalRef.current !== null) {
@@ -140,18 +163,19 @@ export function RobotControlPage() {
 
   const ensureManualMode = async () => {
     if (manualModeArmedRef.current) return;
+    if (!ensureRobotReady("activar modo manual")) return;
     manualModeArmedRef.current = true;
     await setRobotMode("MANUAL_FREE");
   };
 
   const dispatchManualMove = async (direction: "FORWARD" | "BACKWARD" | "LEFT" | "RIGHT") => {
-    if (!canDrive) return;
+    if (!ensureRobotReady("mover el robot")) return;
     await ensureManualMode();
     await sendRobotCommand(direction, activeSpeedPercent);
   };
 
   const startManualMotion = (direction: "FORWARD" | "BACKWARD" | "LEFT" | "RIGHT") => {
-    if (!canDrive) return;
+    if (!ensureRobotReady("mover el robot")) return;
     activeDirectionRef.current = direction;
     if (commandIntervalRef.current !== null) {
       window.clearInterval(commandIntervalRef.current);
@@ -165,18 +189,20 @@ export function RobotControlPage() {
   };
 
   const applyStandardProfile = (profile: "LOW" | "MEDIUM" | "HIGH" | "TURBO") => {
+    if (!ensureRobotReady("cambiar potencia")) return;
     setSelectedSpeedProfile(profile);
     void setRobotSpeedProfile(profile);
   };
 
   const applyCustomProfile = () => {
+    if (!ensureRobotReady("aplicar potencia custom")) return;
     setSelectedSpeedProfile("CUSTOM");
     void setRobotSpeedProfile(`CUSTOM_${customSpeedPercent}`);
     setPowerPanelOpen(false);
   };
 
   const submitGotoPlant = () => {
-    if (!canDrive) return;
+    if (!ensureRobotReady("ir a la planta")) return;
     const normalizedTarget = targetPlantQr.trim().toUpperCase();
     if (!normalizedTarget) return;
     stopManualMotion();
@@ -184,7 +210,7 @@ export function RobotControlPage() {
   };
 
   const submitSearchByState = () => {
-    if (!canDrive) return;
+    if (!ensureRobotReady("buscar por estado")) return;
     stopManualMotion();
     void searchRobotByState(searchState, searchOrientation);
   };
@@ -228,26 +254,30 @@ export function RobotControlPage() {
       }
 
       if (cameraHotkeys[event.key]) {
+        if (!ensureRobotReady("cambiar camara")) return;
         void switchRobotCamera(cameraHotkeys[event.key]);
         return;
       }
 
       const lowerKey = event.key.toLowerCase();
       if (lowerKey === "m") {
+        if (!ensureRobotReady("activar modo manual")) return;
         void setRobotMode("MANUAL_FREE");
         return;
       }
       if (lowerKey === "a") {
+        if (!ensureRobotReady("activar modo automatico")) return;
         stopManualMotion();
         void setRobotMode("AUTO_LINE");
         return;
       }
       if (lowerKey === "x") {
+        if (!ensureRobotReady("ejecutar acrobacia")) return;
         stopManualMotion();
         void setRobotMode("ACRO");
         return;
       }
-      if (speedHotkeys[lowerKey] && canDrive) {
+      if (speedHotkeys[lowerKey] && canOperateRobot) {
         applyStandardProfile(speedHotkeys[lowerKey]);
         return;
       }
@@ -303,6 +333,11 @@ export function RobotControlPage() {
         </div>
 
         <p className="mt-4 text-sm text-moss">{robot.statusSummary}</p>
+        {!robot.isConnected ? (
+          <p className="mt-2 text-sm text-alert">
+            El runtime del robot esta offline. Los comandos manuales, auto y acro quedaran bloqueados hasta reconectar.
+          </p>
+        ) : null}
         {robot.lastWatchdogReason ? (
           <p className="mt-2 text-sm text-alert">Ultimo corte defensivo: {robot.lastWatchdogReason}</p>
         ) : null}
@@ -353,7 +388,7 @@ export function RobotControlPage() {
             <button
               key={command}
               className="rounded-2xl bg-ink px-4 py-3 text-white transition hover:bg-clay disabled:cursor-not-allowed disabled:bg-stone-400"
-              disabled={!canDrive}
+              disabled={!canOperateRobot}
               onMouseDown={() => {
                 if (command === "STOP") {
                   stopManualMotion();
@@ -385,7 +420,7 @@ export function RobotControlPage() {
               className={`rounded-full px-4 py-2 text-sm transition ${
                 selectedSpeedProfile === profile ? "bg-ink text-white" : "bg-sand text-ink hover:bg-clay hover:text-white"
               }`}
-              disabled={!canDrive}
+              disabled={!canOperateRobot}
               onClick={() => applyStandardProfile(profile)}
             >
               {profile} {standardProfileSpeed[profile]}%
@@ -396,6 +431,7 @@ export function RobotControlPage() {
               className={`rounded-full px-4 py-2 text-sm transition ${
                 selectedSpeedProfile === "CUSTOM" ? "bg-clay text-white" : "bg-sand text-ink hover:bg-clay hover:text-white"
               }`}
+              disabled={!robot.isConnected}
               onClick={() => setPowerPanelOpen(true)}
             >
               CUSTOM {customSpeedPercent}%
@@ -423,7 +459,7 @@ export function RobotControlPage() {
                     ? "bg-ink text-white"
                     : "bg-sand text-ink hover:bg-clay hover:text-white"
                 }`}
-                disabled={!canDrive}
+                disabled={!canOperateRobot}
                 onClick={() => setSearchOrientation(orientation)}
               >
                 {orientationLabels[orientation]}
@@ -440,7 +476,7 @@ export function RobotControlPage() {
             />
             <button
               className="rounded-2xl bg-ink px-5 py-3 text-white transition hover:bg-clay disabled:cursor-not-allowed disabled:bg-stone-400"
-              disabled={!canDrive || targetPlantQr.trim().length === 0}
+              disabled={!canOperateRobot || targetPlantQr.trim().length === 0}
               onClick={submitGotoPlant}
             >
               Ir a planta
@@ -454,7 +490,7 @@ export function RobotControlPage() {
                 className={`rounded-full px-4 py-2 text-sm transition ${
                   searchState === stateOption ? "bg-clay text-white" : "bg-sand text-ink hover:bg-clay hover:text-white"
                 }`}
-                disabled={!canDrive}
+                disabled={!canOperateRobot}
                 onClick={() => setSearchState(stateOption)}
               >
                 {stateOption}
@@ -462,7 +498,7 @@ export function RobotControlPage() {
             ))}
             <button
               className="rounded-full bg-ink px-4 py-2 text-sm text-white transition hover:bg-clay disabled:cursor-not-allowed disabled:bg-stone-400"
-              disabled={!canDrive}
+              disabled={!canOperateRobot}
               onClick={submitSearchByState}
             >
               Buscar por estado

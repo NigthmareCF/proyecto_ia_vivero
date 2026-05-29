@@ -9,8 +9,9 @@ import {
   switchRobotCamera,
 } from "../../api/robotApi";
 import { useNotificationStore } from "../../store/notificationStore";
+import { useRobotStore } from "../../store/robotStore";
 import { useVoiceCommandStore } from "../../store/voiceCommandStore";
-import { parseVoiceCommand } from "../../utils/voiceCommands";
+import { parseVoiceCommandSequence, type ParsedVoiceCommand } from "../../utils/voiceCommands";
 
 type SpeechRecognitionAlternative = {
   transcript: string;
@@ -49,10 +50,37 @@ function resolveRecognitionConstructor(): SpeechRecognitionConstructor | null {
   return api ?? null;
 }
 
+function resolveCommandErrorMessage(error: unknown) {
+  if (typeof error === "object" && error !== null) {
+    const axiosError = error as {
+      response?: {
+        status?: number;
+        data?: {
+          message?: string;
+          error?: string;
+        };
+      };
+      message?: string;
+    };
+    if (axiosError.response?.status === 403) {
+      return "Tu rol actual no puede ejecutar comandos del robot";
+    }
+    const apiMessage = axiosError.response?.data?.message;
+    if (apiMessage) {
+      return apiMessage;
+    }
+    if (axiosError.message) {
+      return axiosError.message;
+    }
+  }
+  return "Error ejecutando comando de voz";
+}
+
 export function VoiceCommandDock() {
   const navigate = useNavigate();
   const location = useLocation();
   const pushToast = useNotificationStore((state) => state.pushToast);
+  const robot = useRobotStore();
   const {
     enabled,
     supported,
@@ -69,7 +97,26 @@ export function VoiceCommandDock() {
   } = useVoiceCommandStore();
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const shouldRestartRef = useRef(false);
-  const [isExecuting, setIsExecuting] = useState(false);
+  const enabledRef = useRef(enabled);
+  const pathnameRef = useRef(location.pathname);
+  const restartTimeoutRef = useRef<number | null>(null);
+  const commandQueueRef = useRef<ParsedVoiceCommand[]>([]);
+  const isExecutingRef = useRef(false);
+  const lastHandledPhraseRef = useRef<{ value: string; at: number } | null>(null);
+  const scheduleRecognitionRestartRef = useRef<(() => void) | null>(null);
+  const recognitionActiveRef = useRef(false);
+  const [, setQueuedTick] = useState(0);
+
+  useEffect(() => {
+    enabledRef.current = enabled;
+    shouldRestartRef.current = enabled;
+  }, [enabled]);
+
+  useEffect(() => {
+    pathnameRef.current = location.pathname;
+  }, [location.pathname]);
+
+  const bumpQueueTick = () => setQueuedTick((current) => current + 1);
 
   useEffect(() => {
     const RecognitionCtor = resolveRecognitionConstructor();
@@ -85,22 +132,154 @@ export function VoiceCommandDock() {
     recognition.interimResults = true;
     recognition.lang = "es-ES";
 
+    const clearPendingRestart = () => {
+      if (restartTimeoutRef.current !== null) {
+        window.clearTimeout(restartTimeoutRef.current);
+        restartTimeoutRef.current = null;
+      }
+    };
+
+    const startRecognitionSafely = () => {
+      if (!enabledRef.current) {
+        return;
+      }
+      if (recognitionActiveRef.current) {
+        return;
+      }
+      try {
+        recognition.start();
+      } catch {
+        try {
+          recognition.stop();
+        } catch {
+          // Ignorado.
+        }
+      }
+    };
+
+    const scheduleRecognitionRestart = () => {
+      if (!enabledRef.current) {
+        setStatus("idle");
+        return;
+      }
+      clearPendingRestart();
+      setStatus("idle");
+      restartTimeoutRef.current = window.setTimeout(() => {
+        restartTimeoutRef.current = null;
+        if (!enabledRef.current) {
+          return;
+        }
+        try {
+          recognition.stop();
+        } catch {
+          // Ignorado: algunos navegadores lanzan si ya está detenido.
+        }
+        startRecognitionSafely();
+      }, 250);
+    };
+    scheduleRecognitionRestartRef.current = scheduleRecognitionRestart;
+
+    const executeCommand = async (parsedCommand: ParsedVoiceCommand) => {
+      if (pathnameRef.current !== parsedCommand.path) {
+        navigate(parsedCommand.path);
+      }
+
+      switch (parsedCommand.kind) {
+        case "navigate":
+          break;
+        case "robot_mode":
+          await setRobotMode(parsedCommand.mode);
+          break;
+        case "robot_stop":
+          await sendRobotCommand("STOP", 0);
+          break;
+        case "robot_move":
+          await setRobotMode("MANUAL_FREE");
+          await sendRobotCommand(parsedCommand.direction, robot.currentSpeedPercent ?? 45);
+          break;
+        case "robot_camera":
+          await switchRobotCamera(parsedCommand.camera);
+          break;
+        case "robot_search_state":
+          await searchRobotByState(parsedCommand.state, parsedCommand.orientation);
+          break;
+        case "robot_goto":
+          await goToRobotPlant(parsedCommand.targetPlantQr, parsedCommand.orientation);
+          break;
+        case "robot_speed":
+          await setRobotSpeedProfile(parsedCommand.profile);
+          break;
+        case "robot_speed_custom":
+          await setRobotSpeedProfile(`CUSTOM_${parsedCommand.percent}`);
+          break;
+      }
+    };
+
+    const processQueuedCommands = async () => {
+      if (isExecutingRef.current) {
+        return;
+      }
+
+      isExecutingRef.current = true;
+      while (commandQueueRef.current.length > 0) {
+        const nextCommand = commandQueueRef.current.shift();
+        bumpQueueTick();
+        if (!nextCommand) {
+          continue;
+        }
+
+        setLastAction(nextCommand.summary);
+        try {
+          await executeCommand(nextCommand);
+          pushToast({
+            id: crypto.randomUUID(),
+            title: `Voz: ${nextCommand.summary}`,
+            variant: "info",
+          });
+        } catch (error) {
+          const message = resolveCommandErrorMessage(error);
+          setErrorMessage(message);
+          pushToast({
+            id: crypto.randomUUID(),
+            title: `Voz: ${message}`,
+            variant: "critical",
+          });
+        }
+      }
+      isExecutingRef.current = false;
+      if (enabledRef.current) {
+        setStatus("listening");
+      }
+    };
+
     recognition.onstart = () => {
+      recognitionActiveRef.current = true;
       setStatus("listening");
       setErrorMessage(null);
     };
 
     recognition.onend = () => {
+      recognitionActiveRef.current = false;
       if (shouldRestartRef.current) {
-        recognition.start();
+        scheduleRecognitionRestart();
         return;
       }
       setStatus("idle");
     };
 
     recognition.onerror = (event) => {
+      recognitionActiveRef.current = false;
+      if (event.error === "aborted") {
+        if (enabledRef.current) {
+          scheduleRecognitionRestart();
+        } else {
+          setStatus("idle");
+        }
+        return;
+      }
       setStatus("error");
       setErrorMessage(`Reconocimiento de voz: ${event.error}`);
+      scheduleRecognitionRestart();
     };
 
     recognition.onresult = async (event) => {
@@ -110,12 +289,23 @@ export function VoiceCommandDock() {
         return;
       }
       setTranscript(spokenText);
-      if (!latest.isFinal || isExecuting) {
+      if (!latest.isFinal) {
         return;
       }
 
-      const parsedCommand = parseVoiceCommand(spokenText);
-      if (!parsedCommand) {
+      const dedupeKey = spokenText.trim().toLowerCase();
+      const now = Date.now();
+      if (
+        lastHandledPhraseRef.current &&
+        lastHandledPhraseRef.current.value === dedupeKey &&
+        now - lastHandledPhraseRef.current.at < 1200
+      ) {
+        return;
+      }
+      lastHandledPhraseRef.current = { value: dedupeKey, at: now };
+
+      const parsedCommands = parseVoiceCommandSequence(spokenText);
+      if (parsedCommands.length === 0) {
         setLastAction("Comando no reconocido");
         pushToast({
           id: crypto.randomUUID(),
@@ -125,64 +315,36 @@ export function VoiceCommandDock() {
         return;
       }
 
-      setIsExecuting(true);
-      setStatus("processing");
-      setLastAction(parsedCommand.summary);
-      try {
-        if (location.pathname !== parsedCommand.path) {
-          navigate(parsedCommand.path);
-        }
-
-        switch (parsedCommand.kind) {
-          case "navigate":
-            break;
-          case "robot_mode":
-            await setRobotMode(parsedCommand.mode);
-            break;
-          case "robot_stop":
-            await sendRobotCommand("STOP", 0);
-            break;
-          case "robot_camera":
-            await switchRobotCamera(parsedCommand.camera);
-            break;
-          case "robot_search_state":
-            await searchRobotByState(parsedCommand.state, parsedCommand.orientation);
-            break;
-          case "robot_goto":
-            await goToRobotPlant(parsedCommand.targetPlantQr, parsedCommand.orientation);
-            break;
-          case "robot_speed":
-            await setRobotSpeedProfile(parsedCommand.profile);
-            break;
-        }
-
+      commandQueueRef.current.push(...parsedCommands);
+      bumpQueueTick();
+      setLastAction(
+        parsedCommands.length > 1
+          ? `En cola ${parsedCommands.length} comandos de voz`
+          : `En cola: ${parsedCommands[0].summary}`,
+      );
+      if (parsedCommands.length > 1) {
         pushToast({
           id: crypto.randomUUID(),
-          title: `Voz: ${parsedCommand.summary}`,
+          title: `Voz: ${parsedCommands.length} comandos en cola`,
           variant: "info",
         });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Error ejecutando comando de voz";
-        setStatus("error");
-        setErrorMessage(message);
-      } finally {
-        setIsExecuting(false);
-        setStatus(enabled ? "listening" : "idle");
       }
+      void processQueuedCommands();
     };
 
     recognitionRef.current = recognition;
     return () => {
       shouldRestartRef.current = false;
+      scheduleRecognitionRestartRef.current = null;
+      recognitionActiveRef.current = false;
+      clearPendingRestart();
       recognition.stop();
       recognitionRef.current = null;
     };
   }, [
-    enabled,
-    isExecuting,
-    location.pathname,
     navigate,
     pushToast,
+    robot.currentSpeedPercent,
     setErrorMessage,
     setLastAction,
     setStatus,
@@ -196,13 +358,21 @@ export function VoiceCommandDock() {
       return;
     }
 
-    shouldRestartRef.current = enabled;
     if (enabled) {
-      recognition.start();
+      scheduleRecognitionRestartRef.current?.();
       return;
     }
+    recognitionActiveRef.current = false;
     recognition.stop();
+    setStatus("idle");
   }, [enabled, supported]);
+
+  useEffect(() => {
+    if (!enabled || !supported) {
+      return;
+    }
+    scheduleRecognitionRestartRef.current?.();
+  }, [enabled, location.pathname, supported]);
 
   const toggleVoiceControl = () => {
     setEnabled(!enabled);
@@ -219,18 +389,14 @@ export function VoiceCommandDock() {
       ? "Sin soporte"
       : status === "listening"
         ? "Escuchando"
-        : status === "processing"
-          ? "Procesando"
-          : status === "error"
+        : status === "error"
             ? "Error"
             : "En espera";
 
   const indicatorClass =
     status === "listening"
       ? "bg-emerald-500"
-      : status === "processing"
-        ? "bg-amber-400"
-        : status === "error"
+      : status === "error"
           ? "bg-rose-500"
           : "bg-stone-400";
 

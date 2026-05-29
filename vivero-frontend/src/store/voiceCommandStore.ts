@@ -17,13 +17,20 @@ type VoiceCommandState = {
   setErrorMessage: (errorMessage: string | null) => void;
 };
 
-const persisted = (() => {
+const readPersistedVoiceState = () => {
   try {
     return JSON.parse(localStorage.getItem("vivero-voice-command") ?? "{}");
   } catch {
     return {};
   }
-})();
+};
+
+const writePersistedVoiceState = (partial: Record<string, unknown>) => {
+  const current = readPersistedVoiceState();
+  localStorage.setItem("vivero-voice-command", JSON.stringify({ ...current, ...partial }));
+};
+
+const persisted = readPersistedVoiceState();
 
 export const useVoiceCommandStore = create<VoiceCommandState>((set) => ({
   enabled: Boolean(persisted.enabled),
@@ -34,12 +41,12 @@ export const useVoiceCommandStore = create<VoiceCommandState>((set) => ({
   errorMessage: null,
   setEnabled: (enabled) =>
     set((state) => {
-      localStorage.setItem("vivero-voice-command", JSON.stringify({ ...persisted, enabled, supported: state.supported }));
+      writePersistedVoiceState({ enabled, supported: state.supported });
       return { enabled };
     }),
   setSupported: (supported) =>
     set((state) => {
-      localStorage.setItem("vivero-voice-command", JSON.stringify({ ...persisted, enabled: state.enabled, supported }));
+      writePersistedVoiceState({ enabled: state.enabled, supported });
       return { supported };
     }),
   setStatus: (status) => set({ status }),
