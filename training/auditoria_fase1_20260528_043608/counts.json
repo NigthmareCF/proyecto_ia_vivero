@@ -1,0 +1,22 @@
+{
+  "raw": {
+    "atencion": 867,
+    "peligro": 1213,
+    "sano": 1230
+  },
+  "train": {
+    "atencion": 804,
+    "peligro": 887,
+    "sano": 907
+  },
+  "validation": {
+    "atencion": 229,
+    "peligro": 253,
+    "sano": 259
+  },
+  "test": {
+    "atencion": 116,
+    "peligro": 128,
+    "sano": 131
+  }
+}

@@ -1,0 +1,13 @@
+code,path,reason,decision,notes
+06-01,dataset/raw/atencion/atencion_06629.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-02,dataset/raw/atencion/atencion_03687.jpg,duplicado exacto con etiqueta conflictiva,,
+06-03,dataset/raw/atencion/atencion_01813.jpg,duplicado exacto con etiqueta conflictiva,,
+06-04,dataset/raw/atencion/atencion_05296.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-05,dataset/raw/atencion/atencion_00012.jpg,duplicado exacto con etiqueta conflictiva,,
+06-06,dataset/raw/atencion/atencion_00202.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-07,dataset/raw/atencion/atencion_01551.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-08,dataset/raw/atencion/atencion_04016.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-09,dataset/raw/atencion/atencion_01377.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-10,dataset/raw/atencion/atencion_07549.jpg,similaridad perceptual con etiqueta conflictiva,,
+06-11,dataset/raw/atencion/atencion_01591.jpg,duplicado exacto con etiqueta conflictiva,,
+06-12,dataset/raw/atencion/atencion_01372.jpg,duplicado exacto con etiqueta conflictiva,,

@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-05-29T00:37:11",
+  "base_dataset": "C:\\Proyecto_IA_Vivero\\dataset_curado",
+  "output_dataset": "C:\\Proyecto_IA_Vivero\\dataset_curado_v3",
+  "counts": {
+    "train": {
+      "atencion": 559,
+      "peligro": 559,
+      "sano": 559
+    },
+    "validation": {
+      "atencion": 160,
+      "peligro": 160,
+      "sano": 160
+    },
+    "test": {
+      "atencion": 81,
+      "peligro": 81,
+      "sano": 81
+    }
+  },
+  "recovered_total": 210,
+  "recovered_atencion": 70
+}

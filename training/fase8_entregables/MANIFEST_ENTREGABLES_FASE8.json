@@ -1,0 +1,503 @@
+{
+  "generated_at": "2026-05-28 23:23:13",
+  "expected_deliverables": [
+    {
+      "path": "modelos/modelo_vivero_v2.keras",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 9680608,
+      "file_count": 1,
+      "sha256": "a6197e28857f7be9f4d44026270f99270bfd4bb3c95ae457bfb7d04d8ff565e9"
+    },
+    {
+      "path": "modelos/modelo_vivero_v2.tflite",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 4518612,
+      "file_count": 1,
+      "sha256": "65c5569a229bcb566f8f9e0505d28168d2d9f26192421d65c62010ef398641a7"
+    },
+    {
+      "path": "modelos/labels.txt",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 25,
+      "file_count": 1,
+      "sha256": "b8bbd9cf526693c36cc73ebcf9d1894dacaa641b6c92260aeda5d6c00484097f"
+    },
+    {
+      "path": "training/reporte_modelo_v2.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 1337,
+      "file_count": 1,
+      "sha256": "ad1d11a9c733409a46a82743dc83d0d31ea2b2805645b10d09cd8c94eb296a03"
+    },
+    {
+      "path": "training/metrics_modelo_v2.json",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 9725,
+      "file_count": 1,
+      "sha256": "90015750e353e1957bb8238c73f71438a17a8d4d4192b0ba08863f9a0999e948"
+    },
+    {
+      "path": "training/confusion_matrix_modelo_v2.csv",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 86,
+      "file_count": 1,
+      "sha256": "cadb5c7c032927bb03df13e150c5803833d295aaf1288411282b924898a36d68"
+    },
+    {
+      "path": "dataset_curado",
+      "exists": true,
+      "kind": "directory",
+      "size_bytes": 87112802,
+      "file_count": 3313,
+      "sha256": null
+    }
+  ],
+  "phase_reports": [
+    {
+      "path": "training/auditoria_fase1_20260528_043608/REPORTE_AUDITORIA_FASE1.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 2356,
+      "file_count": 1,
+      "sha256": "778863d1eff58077bf2ab0399bbcf53fb8a9b4f1682b3a0aae98c4fb64a25d40"
+    },
+    {
+      "path": "training/fase2_reglas_etiquetado/REGLAS_ETIQUETADO_FASE2.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 3717,
+      "file_count": 1,
+      "sha256": "92a5198cfd56b82b7fa76464d8246f624e1f94285dcf99ce6ff5afa49110dd49"
+    },
+    {
+      "path": "dataset_curado/REPORTE_FASE3_DATASET_CURADO.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 1431,
+      "file_count": 1,
+      "sha256": "f8b029afe2f87c8a6f20f46c0780ad47311c420d70759abe0252f1b4890d2ca6"
+    },
+    {
+      "path": "training/reporte_modelo_v2.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 1337,
+      "file_count": 1,
+      "sha256": "ad1d11a9c733409a46a82743dc83d0d31ea2b2805645b10d09cd8c94eb296a03"
+    },
+    {
+      "path": "training/fase5_criterio_aceptacion/REPORTE_CRITERIO_ACEPTACION_FASE5.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 1433,
+      "file_count": 1,
+      "sha256": "c2fb72f23827242a1550e6ec5ab2c4f07f9bd24d2203fce7638948a2b1de2ccc"
+    },
+    {
+      "path": "training/fase6_decision_confianza/REPORTE_DECISION_CONFIANZA_FASE6.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 2987,
+      "file_count": 1,
+      "sha256": "8ee68ca9b8c9aaaed3f5f341a6c0e1a8ce505354579b2cc59d22d740a9efbf23"
+    },
+    {
+      "path": "training/fase7_flujo_gemini/REPORTE_FLUJO_GEMINI_FASE7.md",
+      "exists": true,
+      "kind": "file",
+      "size_bytes": 6068,
+      "file_count": 1,
+      "sha256": "e56cf44df2030ebed1ebe70ce5afc8c4934f0c3365a84b16a0420a717c11c32f"
+    }
+  ],
+  "model_decision": {
+    "best_trained_model": {
+      "model": "mobilenetv2",
+      "test_loss": 0.8830031156539917,
+      "test_accuracy": 0.6351351141929626,
+      "macro_f1": 0.6172472988115446,
+      "weighted_f1": 0.6172472988115446,
+      "class_metrics": {
+        "atencion": {
+          "precision": 0.6756756756756757,
+          "recall": 0.33783783783783783,
+          "f1-score": 0.45045045045045046,
+          "support": 74.0
+        },
+        "peligro": {
+          "precision": 0.5523809523809524,
+          "recall": 0.7837837837837838,
+          "f1-score": 0.6480446927374302,
+          "support": 74.0
+        },
+        "sano": {
+          "precision": 0.725,
+          "recall": 0.7837837837837838,
+          "f1-score": 0.7532467532467533,
+          "support": 74.0
+        },
+        "accuracy": 0.6351351351351351,
+        "macro avg": {
+          "precision": 0.6510188760188761,
+          "recall": 0.6351351351351351,
+          "f1-score": 0.6172472988115446,
+          "support": 222.0
+        },
+        "weighted avg": {
+          "precision": 0.6510188760188761,
+          "recall": 0.6351351351351351,
+          "f1-score": 0.6172472988115446,
+          "support": 222.0
+        }
+      },
+      "confidence_mean": 0.6596129419835838,
+      "confidence_p25": 0.5130248814821243,
+      "confidence_p50": 0.6526687741279602,
+      "confidence_p75": 0.8013853430747986,
+      "keras_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\mobilenetv2\\mobilenetv2.keras",
+      "tflite_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\mobilenetv2\\mobilenetv2.tflite",
+      "tflite_size_bytes": 4518612,
+      "elapsed_seconds": 471.51,
+      "promotable": true
+    },
+    "best_overall_model": {
+      "model": "baseline_modelo_vivero_tflite",
+      "test_accuracy": 0.6846846846846847,
+      "macro_f1": 0.6753568614748193,
+      "weighted_f1": 0.6753568614748193,
+      "class_metrics": {
+        "atencion": {
+          "precision": 0.7291666666666666,
+          "recall": 0.47297297297297297,
+          "f1-score": 0.5737704918032787,
+          "support": 74.0
+        },
+        "peligro": {
+          "precision": 0.6547619047619048,
+          "recall": 0.7432432432432432,
+          "f1-score": 0.6962025316455697,
+          "support": 74.0
+        },
+        "sano": {
+          "precision": 0.6888888888888889,
+          "recall": 0.8378378378378378,
+          "f1-score": 0.7560975609756098,
+          "support": 74.0
+        },
+        "accuracy": 0.6846846846846847,
+        "macro avg": {
+          "precision": 0.6909391534391535,
+          "recall": 0.6846846846846847,
+          "f1-score": 0.6753568614748193,
+          "support": 222.0
+        },
+        "weighted avg": {
+          "precision": 0.6909391534391534,
+          "recall": 0.6846846846846847,
+          "f1-score": 0.6753568614748193,
+          "support": 222.0
+        }
+      },
+      "confidence_mean": 0.7202197184433808,
+      "source_path": "C:\\Proyecto_IA_Vivero\\modelos\\modelo_vivero.tflite",
+      "promotable": false
+    },
+    "accepted_as_replacement": false,
+    "candidates": [
+      {
+        "model": "baseline_modelo_vivero_tflite",
+        "test_accuracy": 0.6846846846846847,
+        "macro_f1": 0.6753568614748193,
+        "weighted_f1": 0.6753568614748193,
+        "class_metrics": {
+          "atencion": {
+            "precision": 0.7291666666666666,
+            "recall": 0.47297297297297297,
+            "f1-score": 0.5737704918032787,
+            "support": 74.0
+          },
+          "peligro": {
+            "precision": 0.6547619047619048,
+            "recall": 0.7432432432432432,
+            "f1-score": 0.6962025316455697,
+            "support": 74.0
+          },
+          "sano": {
+            "precision": 0.6888888888888889,
+            "recall": 0.8378378378378378,
+            "f1-score": 0.7560975609756098,
+            "support": 74.0
+          },
+          "accuracy": 0.6846846846846847,
+          "macro avg": {
+            "precision": 0.6909391534391535,
+            "recall": 0.6846846846846847,
+            "f1-score": 0.6753568614748193,
+            "support": 222.0
+          },
+          "weighted avg": {
+            "precision": 0.6909391534391534,
+            "recall": 0.6846846846846847,
+            "f1-score": 0.6753568614748193,
+            "support": 222.0
+          }
+        },
+        "confidence_mean": 0.7202197184433808,
+        "source_path": "C:\\Proyecto_IA_Vivero\\modelos\\modelo_vivero.tflite",
+        "promotable": false
+      },
+      {
+        "model": "mobilenetv2",
+        "test_loss": 0.8830031156539917,
+        "test_accuracy": 0.6351351141929626,
+        "macro_f1": 0.6172472988115446,
+        "weighted_f1": 0.6172472988115446,
+        "class_metrics": {
+          "atencion": {
+            "precision": 0.6756756756756757,
+            "recall": 0.33783783783783783,
+            "f1-score": 0.45045045045045046,
+            "support": 74.0
+          },
+          "peligro": {
+            "precision": 0.5523809523809524,
+            "recall": 0.7837837837837838,
+            "f1-score": 0.6480446927374302,
+            "support": 74.0
+          },
+          "sano": {
+            "precision": 0.725,
+            "recall": 0.7837837837837838,
+            "f1-score": 0.7532467532467533,
+            "support": 74.0
+          },
+          "accuracy": 0.6351351351351351,
+          "macro avg": {
+            "precision": 0.6510188760188761,
+            "recall": 0.6351351351351351,
+            "f1-score": 0.6172472988115446,
+            "support": 222.0
+          },
+          "weighted avg": {
+            "precision": 0.6510188760188761,
+            "recall": 0.6351351351351351,
+            "f1-score": 0.6172472988115446,
+            "support": 222.0
+          }
+        },
+        "confidence_mean": 0.6596129419835838,
+        "confidence_p25": 0.5130248814821243,
+        "confidence_p50": 0.6526687741279602,
+        "confidence_p75": 0.8013853430747986,
+        "keras_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\mobilenetv2\\mobilenetv2.keras",
+        "tflite_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\mobilenetv2\\mobilenetv2.tflite",
+        "tflite_size_bytes": 4518612,
+        "elapsed_seconds": 471.51,
+        "promotable": true
+      },
+      {
+        "model": "mobilenetv3small",
+        "test_loss": 0.8886017799377441,
+        "test_accuracy": 0.6126126050949097,
+        "macro_f1": 0.610449901917307,
+        "weighted_f1": 0.6104499019173069,
+        "class_metrics": {
+          "atencion": {
+            "precision": 0.6440677966101694,
+            "recall": 0.5135135135135135,
+            "f1-score": 0.5714285714285714,
+            "support": 74.0
+          },
+          "peligro": {
+            "precision": 0.55,
+            "recall": 0.7432432432432432,
+            "f1-score": 0.632183908045977,
+            "support": 74.0
+          },
+          "sano": {
+            "precision": 0.6825396825396826,
+            "recall": 0.581081081081081,
+            "f1-score": 0.6277372262773723,
+            "support": 74.0
+          },
+          "accuracy": 0.6126126126126126,
+          "macro avg": {
+            "precision": 0.625535826383284,
+            "recall": 0.6126126126126126,
+            "f1-score": 0.610449901917307,
+            "support": 222.0
+          },
+          "weighted avg": {
+            "precision": 0.625535826383284,
+            "recall": 0.6126126126126126,
+            "f1-score": 0.6104499019173069,
+            "support": 222.0
+          }
+        },
+        "confidence_mean": 0.6084288189540038,
+        "confidence_p25": 0.4897824600338936,
+        "confidence_p50": 0.567333996295929,
+        "confidence_p75": 0.725526973605156,
+        "keras_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\mobilenetv3small\\mobilenetv3small.keras",
+        "tflite_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\mobilenetv3small\\mobilenetv3small.tflite",
+        "tflite_size_bytes": 1955812,
+        "elapsed_seconds": 308.91,
+        "promotable": true
+      },
+      {
+        "model": "efficientnetv2b0",
+        "test_loss": 0.8611224293708801,
+        "test_accuracy": 0.5945945978164673,
+        "macro_f1": 0.5874835265844934,
+        "weighted_f1": 0.5874835265844933,
+        "class_metrics": {
+          "atencion": {
+            "precision": 0.5849056603773585,
+            "recall": 0.4189189189189189,
+            "f1-score": 0.4881889763779528,
+            "support": 74.0
+          },
+          "peligro": {
+            "precision": 0.5714285714285714,
+            "recall": 0.6486486486486487,
+            "f1-score": 0.6075949367088608,
+            "support": 74.0
+          },
+          "sano": {
+            "precision": 0.6235294117647059,
+            "recall": 0.7162162162162162,
+            "f1-score": 0.6666666666666666,
+            "support": 74.0
+          },
+          "accuracy": 0.5945945945945946,
+          "macro avg": {
+            "precision": 0.5932878811902119,
+            "recall": 0.5945945945945946,
+            "f1-score": 0.5874835265844934,
+            "support": 222.0
+          },
+          "weighted avg": {
+            "precision": 0.593287881190212,
+            "recall": 0.5945945945945946,
+            "f1-score": 0.5874835265844933,
+            "support": 222.0
+          }
+        },
+        "confidence_mean": 0.6130792627463469,
+        "confidence_p25": 0.4843960478901863,
+        "confidence_p50": 0.5894129872322083,
+        "confidence_p75": 0.7304085791110992,
+        "keras_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\efficientnetv2b0\\efficientnetv2b0.keras",
+        "tflite_path": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_comparativo\\efficientnetv2b0\\efficientnetv2b0.tflite",
+        "tflite_size_bytes": 11849988,
+        "elapsed_seconds": 1029.98,
+        "promotable": true
+      }
+    ]
+  },
+  "phase5_decision": {
+    "generated_at": "2026-05-28 06:28:12",
+    "metrics_path": "C:\\Proyecto_IA_Vivero\\training\\metrics_modelo_v2.json",
+    "minimum": {
+      "accuracy": 0.8,
+      "atencion": 0.7,
+      "peligro": 0.8
+    },
+    "ideal": {
+      "accuracy": 0.85,
+      "atencion": 0.8,
+      "peligro": 0.85
+    },
+    "results": [
+      {
+        "model": "baseline_modelo_vivero_tflite",
+        "accuracy": 0.6846846846846847,
+        "atencion": 0.47297297297297297,
+        "peligro": 0.7432432432432432,
+        "sano": 0.8378378378378378,
+        "macro_f1": 0.6753568614748193,
+        "passes_minimum": false,
+        "passes_ideal": false
+      },
+      {
+        "model": "mobilenetv2",
+        "accuracy": 0.6351351141929626,
+        "atencion": 0.33783783783783783,
+        "peligro": 0.7837837837837838,
+        "sano": 0.7837837837837838,
+        "macro_f1": 0.6172472988115446,
+        "passes_minimum": false,
+        "passes_ideal": false
+      },
+      {
+        "model": "mobilenetv3small",
+        "accuracy": 0.6126126050949097,
+        "atencion": 0.5135135135135135,
+        "peligro": 0.7432432432432432,
+        "sano": 0.581081081081081,
+        "macro_f1": 0.610449901917307,
+        "passes_minimum": false,
+        "passes_ideal": false
+      },
+      {
+        "model": "efficientnetv2b0",
+        "accuracy": 0.5945945978164673,
+        "atencion": 0.4189189189189189,
+        "peligro": 0.6486486486486487,
+        "sano": 0.7162162162162162,
+        "macro_f1": 0.5874835265844934,
+        "passes_minimum": false,
+        "passes_ideal": false
+      }
+    ],
+    "decision": {
+      "accepted_models": [],
+      "best_model": "baseline_modelo_vivero_tflite",
+      "best_trained_model": "mobilenetv2",
+      "approved_for_final_diagnosis": false,
+      "approved_for_backend_replacement": false,
+      "recommended_use": "filtro_rapido_por_grupo_no_diagnostico_final",
+      "reason": "Ningun modelo alcanza accuracy>=80%, atencion>=70% y peligro>=80%."
+    }
+  },
+  "dataset_curado": {
+    "generated_at": "2026-05-28T04:52:11",
+    "audit_dir": "C:\\Proyecto_IA_Vivero\\training\\auditoria_fase1_20260528_043608",
+    "output_dir": "C:\\Proyecto_IA_Vivero\\dataset_curado",
+    "selected_before_balance": {
+      "atencion": 730,
+      "peligro": 1073,
+      "sano": 1133
+    },
+    "split_counts": {
+      "train": {
+        "atencion": 510,
+        "peligro": 510,
+        "sano": 510
+      },
+      "validation": {
+        "atencion": 146,
+        "peligro": 146,
+        "sano": 146
+      },
+      "test": {
+        "atencion": 74,
+        "peligro": 74,
+        "sano": 74
+      }
+    },
+    "review_counts": {
+      "similaridad perceptual con etiqueta conflictiva": 202,
+      "duplicado exacto con etiqueta conflictiva": 172,
+      "excedente por balance de clases": 746
+    },
+    "total_curated": 2190,
+    "total_review": 1120
+  }
+}

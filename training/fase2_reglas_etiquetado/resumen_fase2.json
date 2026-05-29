@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-05-28T04:46:18",
+  "audit_dir": "C:\\Proyecto_IA_Vivero\\training\\auditoria_fase1_20260528_043608",
+  "review_rows": 967,
+  "by_priority": {
+    "critica": 132,
+    "alta": 746,
+    "media": 89
+  },
+  "by_source": {
+    "duplicado_exacto": 132,
+    "modelo_error_atencion": 183,
+    "similaridad_perceptual_entre_clases": 652
+  }
+}

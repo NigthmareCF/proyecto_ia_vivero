@@ -1,0 +1,4 @@
+real/predicha,atencion,peligro,sano
+atencion,25,36,13
+peligro,7,58,9
+sano,5,11,58

@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-05-29T00:32:42",
+  "source_dataset": "C:\\Proyecto_IA_Vivero\\dataset_curado",
+  "output_dataset": "C:\\Proyecto_IA_Vivero\\dataset_curado_v2",
+  "confidence_threshold": 0.8,
+  "attention_candidates": 3,
+  "recovered_total": 9,
+  "counts": {
+    "train": {
+      "atencion": 512,
+      "peligro": 512,
+      "sano": 512
+    },
+    "validation": {
+      "atencion": 146,
+      "peligro": 146,
+      "sano": 146
+    },
+    "test": {
+      "atencion": 75,
+      "peligro": 75,
+      "sano": 75
+    }
+  }
+}

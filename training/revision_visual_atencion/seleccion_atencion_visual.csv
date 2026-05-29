@@ -1,0 +1,71 @@
+code,decision,notes
+01-01,keep_atencion,mancha foliar localizada
+01-03,keep_atencion,manchas foliares leves
+01-04,keep_atencion,hoja con deformacion leve
+01-08,keep_atencion,amarillamiento foliar visible
+01-09,keep_atencion,amarillamiento foliar parcial
+01-10,keep_atencion,manchas leves en hojas
+01-12,keep_atencion,hoja con dano moderado
+01-16,keep_atencion,amarillamiento leve en planta
+01-17,keep_atencion,manchas foliares localizadas
+01-22,keep_atencion,hoja con dano moderado
+01-25,keep_atencion,lesion foliar localizada
+02-01,keep_atencion,lesiones en fruto localizadas
+02-04,keep_atencion,hoja con deformacion leve
+02-06,keep_atencion,mancha foliar localizada
+02-07,keep_atencion,plantula con estres leve
+02-15,keep_atencion,presencia puntual en hoja
+02-16,keep_atencion,hoja enrollada o estresada
+02-19,keep_atencion,mancha foliar localizada
+02-20,keep_atencion,hojas con deformacion visible
+02-22,keep_atencion,clorosis o moteado foliar
+02-23,keep_atencion,moteado foliar visible
+02-25,keep_atencion,clorosis foliar marcada
+03-01,keep_atencion,manchas foliares leves
+03-03,keep_atencion,borde foliar deteriorado
+03-05,keep_atencion,hoja con estres moderado
+03-07,keep_atencion,mancha foliar localizada
+03-10,keep_atencion,clorosis y moteado foliar
+03-13,keep_atencion,lesion localizada en fruto
+03-14,keep_atencion,perforacion o mancha foliar leve
+03-17,keep_atencion,dano foliar moderado
+03-19,keep_atencion,amarillamiento foliar
+03-20,keep_atencion,manchas foliares localizadas
+03-21,keep_atencion,amarillamiento y moteado foliar
+03-22,keep_atencion,clorosis visible en planta
+03-25,keep_atencion,signos leves en envés de hoja
+04-02,keep_atencion,manchas foliares leves
+04-04,keep_atencion,lesiones foliares multiples moderadas
+04-06,keep_atencion,mancha foliar localizada
+04-09,keep_atencion,manchas foliares localizadas
+04-12,keep_atencion,lesiones foliares moderadas
+04-13,keep_atencion,clorosis foliar leve
+04-14,keep_atencion,amarillamiento foliar visible
+04-15,keep_atencion,hoja con deformacion leve
+04-16,keep_atencion,manchas foliares moderadas
+04-17,keep_atencion,hoja enrollada o estresada
+04-20,keep_atencion,clorosis en planta
+04-21,keep_atencion,dano foliar localizado
+04-24,keep_atencion,manchas foliares moderadas
+05-01,keep_atencion,manchas foliares localizadas
+05-03,keep_atencion,plantula con amarillamiento
+05-05,keep_atencion,manchas foliares leves
+05-06,keep_atencion,amarillamiento foliar visible
+05-07,keep_atencion,presencia de plaga leve
+05-08,keep_atencion,manchas foliares localizadas
+05-10,keep_atencion,manchas foliares leves
+05-11,keep_atencion,manchas lineales en hoja
+05-13,keep_atencion,lesiones localizadas en fruto
+05-17,keep_atencion,amarillamiento en planta
+05-18,keep_atencion,hoja con palidez o estres
+05-22,keep_atencion,mancha foliar localizada
+05-24,keep_atencion,moteado foliar visible
+05-25,keep_atencion,clorosis foliar moderada
+06-02,keep_atencion,lesion localizada en fruto
+06-04,keep_atencion,moteado o mancha foliar
+06-06,keep_atencion,amarillamiento asociado a fruto
+06-07,keep_atencion,signo localizado en fruto/hoja
+06-08,keep_atencion,mancha foliar o fruto leve
+06-10,keep_atencion,posible dano localizado en tallo
+06-11,keep_atencion,clorosis visible en planta
+06-12,keep_atencion,amarillamiento foliar moderado

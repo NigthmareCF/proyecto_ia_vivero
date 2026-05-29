@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-05-28 06:30:06",
+  "predictions_path": "C:\\Proyecto_IA_Vivero\\training\\auditoria_fase3_dataset_curado\\predictions_validation_test.csv",
+  "acceptance_path": "C:\\Proyecto_IA_Vivero\\training\\fase5_criterio_aceptacion\\criterio_aceptacion_fase5.json",
+  "thresholds": {
+    "high": 0.8,
+    "mid": 0.6
+  },
+  "final_diagnosis_allowed": false,
+  "bucket_stats": [
+    {
+      "bucket": "alta",
+      "threshold": "confianza >= 0.80",
+      "total": 270,
+      "correct": 222,
+      "accuracy": 0.8222222222222222
+    },
+    {
+      "bucket": "media",
+      "threshold": "0.60 <= confianza < 0.80",
+      "total": 228,
+      "correct": 158,
+      "accuracy": 0.6929824561403509
+    },
+    {
+      "bucket": "baja",
+      "threshold": "confianza < 0.60",
+      "total": 162,
+      "correct": 86,
+      "accuracy": 0.5308641975308642
+    }
+  ],
+  "actions": {
+    "captura_adicional_revision_o_gemini": 162,
+    "clasificacion_preliminar_no_final": 163,
+    "agregar_con_otras_imagenes_del_grupo": 228,
+    "alerta_preliminar_y_confirmar_con_gemini": 107
+  },
+  "class_bucket_stats": [
+    {
+      "predicted_class": "atencion",
+      "bucket": "alta",
+      "total": 43,
+      "correct": 41,
+      "accuracy": 0.9534883720930233
+    },
+    {
+      "predicted_class": "atencion",
+      "bucket": "baja",
+      "total": 57,
+      "correct": 30,
+      "accuracy": 0.5263157894736842
+    },
+    {
+      "predicted_class": "atencion",
+      "bucket": "media",
+      "total": 70,
+      "correct": 53,
+      "accuracy": 0.7571428571428571
+    },
+    {
+      "predicted_class": "peligro",
+      "bucket": "alta",
+      "total": 107,
+      "correct": 81,
+      "accuracy": 0.7570093457943925
+    },
+    {
+      "predicted_class": "peligro",
+      "bucket": "baja",
+      "total": 48,
+      "correct": 27,
+      "accuracy": 0.5625
+    },
+    {
+      "predicted_class": "peligro",
+      "bucket": "media",
+      "total": 76,
+      "correct": 52,
+      "accuracy": 0.6842105263157895
+    },
+    {
+      "predicted_class": "sano",
+      "bucket": "alta",
+      "total": 120,
+      "correct": 100,
+      "accuracy": 0.8333333333333334
+    },
+    {
+      "predicted_class": "sano",
+      "bucket": "baja",
+      "total": 57,
+      "correct": 29,
+      "accuracy": 0.5087719298245614
+    },
+    {
+      "predicted_class": "sano",
+      "bucket": "media",
+      "total": 82,
+      "correct": 53,
+      "accuracy": 0.6463414634146342
+    }
+  ],
+  "group_policy": {
+    "group_key": "planta + maceta + lado",
+    "minimum_images": 3,
+    "recommended_images": 5,
+    "local_acceptance": {
+      "all_required": [
+        "modelo_aprobado_en_fase5 == true",
+        ">= 3 imagenes del grupo",
+        "clase ganadora por promedio/voto",
+        "confianza_promedio >= 0.80",
+        "sin contradiccion fuerte entre sano y peligro"
+      ]
+    },
+    "current_project_decision": {
+      "modelo_aprobado_en_fase5": false,
+      "local_final_diagnosis_allowed": false,
+      "local_role": "filtro_rapido_para_priorizar_y_decidir_escalamiento"
+    },
+    "escalation_rules": [
+      "Si aparece peligro con confianza alta, generar alerta preliminar y confirmar con Gemini o revision.",
+      "Si las imagenes del grupo mezclan sano y peligro, no decidir localmente.",
+      "Si la mayoria cae en atencion, pedir confirmacion porque es la clase debil.",
+      "Si confianza promedio < 0.60, solicitar captura adicional o revision manual."
+    ]
+  }
+}

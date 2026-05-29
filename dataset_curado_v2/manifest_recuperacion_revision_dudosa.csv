@@ -1,0 +1,10 @@
+split,target_class,source_path,dest_path,reason,predicted_class,confidence
+train,atencion,dataset/raw/atencion/atencion_00665.jpg,dataset_curado_v2/train/atencion/recuperada_atencion_00665.jpg,similaridad perceptual con etiqueta conflictiva,atencion,0.881307
+train,atencion,dataset/raw/atencion/atencion_09857.jpg,dataset_curado_v2/train/atencion/recuperada_atencion_09857.jpg,duplicado exacto con etiqueta conflictiva,atencion,0.854655
+test,atencion,dataset/raw/atencion/atencion_01361.jpg,dataset_curado_v2/test/atencion/recuperada_atencion_01361.jpg,duplicado exacto con etiqueta conflictiva,atencion,0.822203
+train,peligro,dataset/raw/peligro/peligro_02539.jpg,dataset_curado_v2/train/peligro/recuperada_peligro_02539.jpg,excedente por balance recuperado para mantener balance,,
+train,peligro,dataset/raw/peligro/peligro_12040.jpg,dataset_curado_v2/train/peligro/recuperada_peligro_12040.jpg,excedente por balance recuperado para mantener balance,,
+test,peligro,dataset/raw/peligro/peligro_00584.jpg,dataset_curado_v2/test/peligro/recuperada_peligro_00584.jpg,excedente por balance recuperado para mantener balance,,
+train,sano,dataset/raw/sano/sano_02448.jpg,dataset_curado_v2/train/sano/recuperada_sano_02448.jpg,excedente por balance recuperado para mantener balance,,
+train,sano,dataset/raw/sano/sano_05508.jpg,dataset_curado_v2/train/sano/recuperada_sano_05508.jpg,excedente por balance recuperado para mantener balance,,
+test,sano,dataset/raw/sano/sano_02663.jpg,dataset_curado_v2/test/sano/recuperada_sano_02663.jpg,excedente por balance recuperado para mantener balance,,

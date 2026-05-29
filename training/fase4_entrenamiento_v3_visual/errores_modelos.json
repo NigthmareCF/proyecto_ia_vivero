@@ -1,0 +1,6 @@
+[
+  {
+    "model": "mobilenetv3small",
+    "error": "OSError: [Errno 22] Invalid argument"
+  }
+]

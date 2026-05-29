@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-05-28T04:52:11",
+  "audit_dir": "C:\\Proyecto_IA_Vivero\\training\\auditoria_fase1_20260528_043608",
+  "output_dir": "C:\\Proyecto_IA_Vivero\\dataset_curado",
+  "selected_before_balance": {
+    "atencion": 730,
+    "peligro": 1073,
+    "sano": 1133
+  },
+  "split_counts": {
+    "train": {
+      "atencion": 510,
+      "peligro": 510,
+      "sano": 510
+    },
+    "validation": {
+      "atencion": 146,
+      "peligro": 146,
+      "sano": 146
+    },
+    "test": {
+      "atencion": 74,
+      "peligro": 74,
+      "sano": 74
+    }
+  },
+  "review_counts": {
+    "similaridad perceptual con etiqueta conflictiva": 202,
+    "duplicado exacto con etiqueta conflictiva": 172,
+    "excedente por balance de clases": 746
+  },
+  "total_curated": 2190,
+  "total_review": 1120
+}

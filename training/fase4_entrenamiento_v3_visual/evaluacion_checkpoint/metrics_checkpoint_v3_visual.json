@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-05-29T01:56:35",
+  "dataset": "C:\\Proyecto_IA_Vivero\\dataset_curado_v3",
+  "checkpoint": "C:\\Proyecto_IA_Vivero\\training\\fase4_entrenamiento_v3_visual\\mobilenetv3small\\mobilenetv3small.best.keras",
+  "test_loss": 0.8843306303024292,
+  "test_accuracy": 0.596707820892334,
+  "macro_f1": 0.5853762960481004,
+  "weighted_f1": 0.5853762960481004,
+  "class_metrics": {
+    "atencion": {
+      "precision": 0.6521739130434783,
+      "recall": 0.37037037037037035,
+      "f1-score": 0.47244094488188976,
+      "support": 81.0
+    },
+    "peligro": {
+      "precision": 0.5420560747663551,
+      "recall": 0.7160493827160493,
+      "f1-score": 0.6170212765957447,
+      "support": 81.0
+    },
+    "sano": {
+      "precision": 0.6333333333333333,
+      "recall": 0.7037037037037037,
+      "f1-score": 0.6666666666666666,
+      "support": 81.0
+    },
+    "accuracy": 0.5967078189300411,
+    "macro avg": {
+      "precision": 0.6091877737143889,
+      "recall": 0.5967078189300411,
+      "f1-score": 0.5853762960481004,
+      "support": 243.0
+    },
+    "weighted avg": {
+      "precision": 0.6091877737143888,
+      "recall": 0.5967078189300411,
+      "f1-score": 0.5853762960481004,
+      "support": 243.0
+    }
+  },
+  "confidence_mean": 0.6116193220203305,
+  "confidence_p25": 0.47882241010665894,
+  "confidence_p50": 0.5969483852386475,
+  "confidence_p75": 0.7364972531795502
+}

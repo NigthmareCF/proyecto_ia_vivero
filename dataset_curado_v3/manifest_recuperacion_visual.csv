@@ -1,0 +1,211 @@
+split,target_class,source_path,dest_path,decision,notes,review_code
+train,atencion,dataset/raw/atencion/atencion_01293.jpg,dataset_curado_v3/train/atencion/visual_atencion_01293.jpg,keep_atencion,mancha foliar localizada,01-01
+train,atencion,dataset/raw/atencion/atencion_01573.jpg,dataset_curado_v3/train/atencion/visual_atencion_01573.jpg,keep_atencion,manchas foliares leves,01-03
+train,atencion,dataset/raw/atencion/atencion_01630.jpg,dataset_curado_v3/train/atencion/visual_atencion_01630.jpg,keep_atencion,hoja con deformacion leve,01-04
+train,atencion,dataset/raw/atencion/atencion_02462.jpg,dataset_curado_v3/train/atencion/visual_atencion_02462.jpg,keep_atencion,amarillamiento foliar visible,01-08
+train,atencion,dataset/raw/atencion/atencion_02640.jpg,dataset_curado_v3/train/atencion/visual_atencion_02640.jpg,keep_atencion,amarillamiento foliar parcial,01-09
+train,atencion,dataset/raw/atencion/atencion_02013.jpg,dataset_curado_v3/train/atencion/visual_atencion_02013.jpg,keep_atencion,manchas leves en hojas,01-10
+train,atencion,dataset/raw/atencion/atencion_02086.jpg,dataset_curado_v3/train/atencion/visual_atencion_02086.jpg,keep_atencion,hoja con dano moderado,01-12
+train,atencion,dataset/raw/atencion/atencion_08131.jpg,dataset_curado_v3/train/atencion/visual_atencion_08131.jpg,keep_atencion,amarillamiento leve en planta,01-16
+train,atencion,dataset/raw/atencion/atencion_01765.jpg,dataset_curado_v3/train/atencion/visual_atencion_01765.jpg,keep_atencion,manchas foliares localizadas,01-17
+train,atencion,dataset/raw/atencion/atencion_01747.jpg,dataset_curado_v3/train/atencion/visual_atencion_01747.jpg,keep_atencion,hoja con dano moderado,01-22
+train,atencion,dataset/raw/atencion/atencion_00700.jpg,dataset_curado_v3/train/atencion/visual_atencion_00700.jpg,keep_atencion,lesion foliar localizada,01-25
+train,atencion,dataset/raw/atencion/atencion_05758.jpg,dataset_curado_v3/train/atencion/visual_atencion_05758.jpg,keep_atencion,lesiones en fruto localizadas,02-01
+train,atencion,dataset/raw/atencion/atencion_01248.jpg,dataset_curado_v3/train/atencion/visual_atencion_01248.jpg,keep_atencion,hoja con deformacion leve,02-04
+train,atencion,dataset/raw/atencion/atencion_00004.jpg,dataset_curado_v3/train/atencion/visual_atencion_00004.jpg,keep_atencion,mancha foliar localizada,02-06
+train,atencion,dataset/raw/atencion/atencion_00580.jpg,dataset_curado_v3/train/atencion/visual_atencion_00580.jpg,keep_atencion,plantula con estres leve,02-07
+train,atencion,dataset/raw/atencion/atencion_04737.jpg,dataset_curado_v3/train/atencion/visual_atencion_04737.jpg,keep_atencion,presencia puntual en hoja,02-15
+train,atencion,dataset/raw/atencion/atencion_00574.jpg,dataset_curado_v3/train/atencion/visual_atencion_00574.jpg,keep_atencion,hoja enrollada o estresada,02-16
+train,atencion,dataset/raw/atencion/atencion_02031.jpg,dataset_curado_v3/train/atencion/visual_atencion_02031.jpg,keep_atencion,mancha foliar localizada,02-19
+train,atencion,dataset/raw/atencion/atencion_01208.jpg,dataset_curado_v3/train/atencion/visual_atencion_01208.jpg,keep_atencion,hojas con deformacion visible,02-20
+train,atencion,dataset/raw/atencion/atencion_01269.jpg,dataset_curado_v3/train/atencion/visual_atencion_01269.jpg,keep_atencion,clorosis o moteado foliar,02-22
+train,atencion,dataset/raw/atencion/atencion_01621.jpg,dataset_curado_v3/train/atencion/visual_atencion_01621.jpg,keep_atencion,moteado foliar visible,02-23
+train,atencion,dataset/raw/atencion/atencion_01236.jpg,dataset_curado_v3/train/atencion/visual_atencion_01236.jpg,keep_atencion,clorosis foliar marcada,02-25
+train,atencion,dataset/raw/atencion/atencion_04687.jpg,dataset_curado_v3/train/atencion/visual_atencion_04687.jpg,keep_atencion,manchas foliares leves,03-01
+train,atencion,dataset/raw/atencion/atencion_01361.jpg,dataset_curado_v3/train/atencion/visual_atencion_01361.jpg,keep_atencion,borde foliar deteriorado,03-03
+train,atencion,dataset/raw/atencion/atencion_00619.jpg,dataset_curado_v3/train/atencion/visual_atencion_00619.jpg,keep_atencion,hoja con estres moderado,03-05
+train,atencion,dataset/raw/atencion/atencion_02541.jpg,dataset_curado_v3/train/atencion/visual_atencion_02541.jpg,keep_atencion,mancha foliar localizada,03-07
+train,atencion,dataset/raw/atencion/atencion_02102.jpg,dataset_curado_v3/train/atencion/visual_atencion_02102.jpg,keep_atencion,clorosis y moteado foliar,03-10
+train,atencion,dataset/raw/atencion/atencion_05135.jpg,dataset_curado_v3/train/atencion/visual_atencion_05135.jpg,keep_atencion,lesion localizada en fruto,03-13
+train,atencion,dataset/raw/atencion/atencion_00630.jpg,dataset_curado_v3/train/atencion/visual_atencion_00630.jpg,keep_atencion,perforacion o mancha foliar leve,03-14
+train,atencion,dataset/raw/atencion/atencion_03246.jpg,dataset_curado_v3/train/atencion/visual_atencion_03246.jpg,keep_atencion,dano foliar moderado,03-17
+train,atencion,dataset/raw/atencion/atencion_02872.jpg,dataset_curado_v3/train/atencion/visual_atencion_02872.jpg,keep_atencion,amarillamiento foliar,03-19
+train,atencion,dataset/raw/atencion/atencion_05751.jpg,dataset_curado_v3/train/atencion/visual_atencion_05751.jpg,keep_atencion,manchas foliares localizadas,03-20
+train,atencion,dataset/raw/atencion/atencion_01775.jpg,dataset_curado_v3/train/atencion/visual_atencion_01775.jpg,keep_atencion,amarillamiento y moteado foliar,03-21
+train,atencion,dataset/raw/atencion/atencion_03518.jpg,dataset_curado_v3/train/atencion/visual_atencion_03518.jpg,keep_atencion,clorosis visible en planta,03-22
+train,atencion,dataset/raw/atencion/atencion_01606.jpg,dataset_curado_v3/train/atencion/visual_atencion_01606.jpg,keep_atencion,signos leves en envés de hoja,03-25
+train,atencion,dataset/raw/atencion/atencion_01643.jpg,dataset_curado_v3/train/atencion/visual_atencion_01643.jpg,keep_atencion,manchas foliares leves,04-02
+train,atencion,dataset/raw/atencion/atencion_01180.jpg,dataset_curado_v3/train/atencion/visual_atencion_01180.jpg,keep_atencion,lesiones foliares multiples moderadas,04-04
+train,atencion,dataset/raw/atencion/atencion_02316.jpg,dataset_curado_v3/train/atencion/visual_atencion_02316.jpg,keep_atencion,mancha foliar localizada,04-06
+train,atencion,dataset/raw/atencion/atencion_01586.jpg,dataset_curado_v3/train/atencion/visual_atencion_01586.jpg,keep_atencion,manchas foliares localizadas,04-09
+train,atencion,dataset/raw/atencion/atencion_01399.jpg,dataset_curado_v3/train/atencion/visual_atencion_01399.jpg,keep_atencion,lesiones foliares moderadas,04-12
+train,atencion,dataset/raw/atencion/atencion_02094.jpg,dataset_curado_v3/train/atencion/visual_atencion_02094.jpg,keep_atencion,clorosis foliar leve,04-13
+train,atencion,dataset/raw/atencion/atencion_01427.jpg,dataset_curado_v3/train/atencion/visual_atencion_01427.jpg,keep_atencion,amarillamiento foliar visible,04-14
+train,atencion,dataset/raw/atencion/atencion_00606.jpg,dataset_curado_v3/train/atencion/visual_atencion_00606.jpg,keep_atencion,hoja con deformacion leve,04-15
+train,atencion,dataset/raw/atencion/atencion_01587.jpg,dataset_curado_v3/train/atencion/visual_atencion_01587.jpg,keep_atencion,manchas foliares moderadas,04-16
+train,atencion,dataset/raw/atencion/atencion_01260.jpg,dataset_curado_v3/train/atencion/visual_atencion_01260.jpg,keep_atencion,hoja enrollada o estresada,04-17
+train,atencion,dataset/raw/atencion/atencion_07452.jpg,dataset_curado_v3/train/atencion/visual_atencion_07452.jpg,keep_atencion,clorosis en planta,04-20
+train,atencion,dataset/raw/atencion/atencion_02626.jpg,dataset_curado_v3/train/atencion/visual_atencion_02626.jpg,keep_atencion,dano foliar localizado,04-21
+train,atencion,dataset/raw/atencion/atencion_01594.jpg,dataset_curado_v3/train/atencion/visual_atencion_01594.jpg,keep_atencion,manchas foliares moderadas,04-24
+train,atencion,dataset/raw/atencion/atencion_01842.jpg,dataset_curado_v3/train/atencion/visual_atencion_01842.jpg,keep_atencion,manchas foliares localizadas,05-01
+validation,atencion,dataset/raw/atencion/atencion_01465.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01465.jpg,keep_atencion,plantula con amarillamiento,05-03
+validation,atencion,dataset/raw/atencion/atencion_01560.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01560.jpg,keep_atencion,manchas foliares leves,05-05
+validation,atencion,dataset/raw/atencion/atencion_01422.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01422.jpg,keep_atencion,amarillamiento foliar visible,05-06
+validation,atencion,dataset/raw/atencion/atencion_01543.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01543.jpg,keep_atencion,presencia de plaga leve,05-07
+validation,atencion,dataset/raw/atencion/atencion_01268.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01268.jpg,keep_atencion,manchas foliares localizadas,05-08
+validation,atencion,dataset/raw/atencion/atencion_01535.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01535.jpg,keep_atencion,manchas foliares leves,05-10
+validation,atencion,dataset/raw/atencion/atencion_00732.jpg,dataset_curado_v3/validation/atencion/visual_atencion_00732.jpg,keep_atencion,manchas lineales en hoja,05-11
+validation,atencion,dataset/raw/atencion/atencion_03340.jpg,dataset_curado_v3/validation/atencion/visual_atencion_03340.jpg,keep_atencion,lesiones localizadas en fruto,05-13
+validation,atencion,dataset/raw/atencion/atencion_02510.jpg,dataset_curado_v3/validation/atencion/visual_atencion_02510.jpg,keep_atencion,amarillamiento en planta,05-17
+validation,atencion,dataset/raw/atencion/atencion_01214.jpg,dataset_curado_v3/validation/atencion/visual_atencion_01214.jpg,keep_atencion,hoja con palidez o estres,05-18
+validation,atencion,dataset/raw/atencion/atencion_07034.jpg,dataset_curado_v3/validation/atencion/visual_atencion_07034.jpg,keep_atencion,mancha foliar localizada,05-22
+validation,atencion,dataset/raw/atencion/atencion_05788.jpg,dataset_curado_v3/validation/atencion/visual_atencion_05788.jpg,keep_atencion,moteado foliar visible,05-24
+validation,atencion,dataset/raw/atencion/atencion_05764.jpg,dataset_curado_v3/validation/atencion/visual_atencion_05764.jpg,keep_atencion,clorosis foliar moderada,05-25
+validation,atencion,dataset/raw/atencion/atencion_03687.jpg,dataset_curado_v3/validation/atencion/visual_atencion_03687.jpg,keep_atencion,lesion localizada en fruto,06-02
+test,atencion,dataset/raw/atencion/atencion_05296.jpg,dataset_curado_v3/test/atencion/visual_atencion_05296.jpg,keep_atencion,moteado o mancha foliar,06-04
+test,atencion,dataset/raw/atencion/atencion_00202.jpg,dataset_curado_v3/test/atencion/visual_atencion_00202.jpg,keep_atencion,amarillamiento asociado a fruto,06-06
+test,atencion,dataset/raw/atencion/atencion_01551.jpg,dataset_curado_v3/test/atencion/visual_atencion_01551.jpg,keep_atencion,signo localizado en fruto/hoja,06-07
+test,atencion,dataset/raw/atencion/atencion_04016.jpg,dataset_curado_v3/test/atencion/visual_atencion_04016.jpg,keep_atencion,mancha foliar o fruto leve,06-08
+test,atencion,dataset/raw/atencion/atencion_07549.jpg,dataset_curado_v3/test/atencion/visual_atencion_07549.jpg,keep_atencion,posible dano localizado en tallo,06-10
+test,atencion,dataset/raw/atencion/atencion_01591.jpg,dataset_curado_v3/test/atencion/visual_atencion_01591.jpg,keep_atencion,clorosis visible en planta,06-11
+test,atencion,dataset/raw/atencion/atencion_01372.jpg,dataset_curado_v3/test/atencion/visual_atencion_01372.jpg,keep_atencion,amarillamiento foliar moderado,06-12
+train,peligro,dataset/raw/peligro/peligro_02539.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02539.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_12040.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_12040.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00584.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00584.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_05559.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_05559.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_05378.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_05378.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00544.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00544.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_06708.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_06708.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01263.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01263.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01033.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01033.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_10161.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_10161.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_06446.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_06446.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01084.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01084.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02140.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02140.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01762.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01762.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00934.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00934.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_09532.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_09532.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01954.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01954.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02141.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02141.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00852.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00852.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_09197.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_09197.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_12800.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_12800.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_09019.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_09019.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01319.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01319.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_07156.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_07156.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02364.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02364.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_07646.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_07646.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00137.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00137.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02004.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02004.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02623.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02623.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02584.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02584.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_10279.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_10279.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01869.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01869.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_05662.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_05662.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_03236.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_03236.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00071.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00071.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_13445.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_13445.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02152.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02152.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02220.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02220.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_06111.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_06111.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01349.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01349.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_02049.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_02049.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00980.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00980.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_08295.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_08295.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_00642.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_00642.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_09257.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_09257.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01297.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01297.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_01696.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_01696.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_05047.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_05047.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,peligro,dataset/raw/peligro/peligro_07462.jpg,dataset_curado_v3/train/peligro/visual_balance_peligro_07462.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_03098.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_03098.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_07031.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_07031.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_01377.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_01377.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_08826.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_08826.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_01352.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_01352.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_02063.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_02063.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_00176.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_00176.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_06385.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_06385.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_00731.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_00731.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_03920.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_03920.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_01371.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_01371.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_01308.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_01308.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_10205.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_10205.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,peligro,dataset/raw/peligro/peligro_00678.jpg,dataset_curado_v3/validation/peligro/visual_balance_peligro_00678.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_00506.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_00506.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_00788.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_00788.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_01247.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_01247.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_00171.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_00171.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_01520.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_01520.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_02461.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_02461.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,peligro,dataset/raw/peligro/peligro_10122.jpg,dataset_curado_v3/test/peligro/visual_balance_peligro_10122.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02448.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02448.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_05508.jpg,dataset_curado_v3/train/sano/visual_balance_sano_05508.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02663.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02663.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02373.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02373.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_04286.jpg,dataset_curado_v3/train/sano/visual_balance_sano_04286.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12430.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12430.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_05228.jpg,dataset_curado_v3/train/sano/visual_balance_sano_05228.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_00143.jpg,dataset_curado_v3/train/sano/visual_balance_sano_00143.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_01560.jpg,dataset_curado_v3/train/sano/visual_balance_sano_01560.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_01008.jpg,dataset_curado_v3/train/sano/visual_balance_sano_01008.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_03922.jpg,dataset_curado_v3/train/sano/visual_balance_sano_03922.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12398.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12398.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_07588.jpg,dataset_curado_v3/train/sano/visual_balance_sano_07588.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_11570.jpg,dataset_curado_v3/train/sano/visual_balance_sano_11570.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02243.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02243.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_00954.jpg,dataset_curado_v3/train/sano/visual_balance_sano_00954.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_07323.jpg,dataset_curado_v3/train/sano/visual_balance_sano_07323.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_01589.jpg,dataset_curado_v3/train/sano/visual_balance_sano_01589.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02253.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02253.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_08742.jpg,dataset_curado_v3/train/sano/visual_balance_sano_08742.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_09710.jpg,dataset_curado_v3/train/sano/visual_balance_sano_09710.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_00306.jpg,dataset_curado_v3/train/sano/visual_balance_sano_00306.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_10066.jpg,dataset_curado_v3/train/sano/visual_balance_sano_10066.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_04372.jpg,dataset_curado_v3/train/sano/visual_balance_sano_04372.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12428.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12428.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12560.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12560.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02024.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02024.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12419.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12419.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12363.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12363.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12555.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12555.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_01766.jpg,dataset_curado_v3/train/sano/visual_balance_sano_01766.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_00668.jpg,dataset_curado_v3/train/sano/visual_balance_sano_00668.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_03436.jpg,dataset_curado_v3/train/sano/visual_balance_sano_03436.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_00936.jpg,dataset_curado_v3/train/sano/visual_balance_sano_00936.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_01577.jpg,dataset_curado_v3/train/sano/visual_balance_sano_01577.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_02613.jpg,dataset_curado_v3/train/sano/visual_balance_sano_02613.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_09491.jpg,dataset_curado_v3/train/sano/visual_balance_sano_09491.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_01840.jpg,dataset_curado_v3/train/sano/visual_balance_sano_01840.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_03492.jpg,dataset_curado_v3/train/sano/visual_balance_sano_03492.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_03008.jpg,dataset_curado_v3/train/sano/visual_balance_sano_03008.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_09635.jpg,dataset_curado_v3/train/sano/visual_balance_sano_09635.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12370.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12370.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_05921.jpg,dataset_curado_v3/train/sano/visual_balance_sano_05921.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12499.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12499.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12548.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12548.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12457.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12457.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12423.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12423.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_00149.jpg,dataset_curado_v3/train/sano/visual_balance_sano_00149.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+train,sano,dataset/raw/sano/sano_12511.jpg,dataset_curado_v3/train/sano/visual_balance_sano_12511.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_11137.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_11137.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_02129.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_02129.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_12540.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_12540.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_03082.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_03082.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_12362.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_12362.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_03753.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_03753.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_03658.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_03658.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_08870.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_08870.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_01327.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_01327.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_05992.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_05992.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_12374.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_12374.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_00790.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_00790.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_06874.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_06874.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+validation,sano,dataset/raw/sano/sano_06580.jpg,dataset_curado_v3/validation/sano/visual_balance_sano_06580.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_05272.jpg,dataset_curado_v3/test/sano/visual_balance_sano_05272.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_02082.jpg,dataset_curado_v3/test/sano/visual_balance_sano_02082.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_04273.jpg,dataset_curado_v3/test/sano/visual_balance_sano_04273.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_01429.jpg,dataset_curado_v3/test/sano/visual_balance_sano_01429.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_02380.jpg,dataset_curado_v3/test/sano/visual_balance_sano_02380.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_04790.jpg,dataset_curado_v3/test/sano/visual_balance_sano_04790.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
+test,sano,dataset/raw/sano/sano_12481.jpg,dataset_curado_v3/test/sano/visual_balance_sano_12481.jpg,balance_extra,excedente usado para mantener balance con atencion recuperada,
