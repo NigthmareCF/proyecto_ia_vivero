@@ -67,3 +67,27 @@ Ese stack:
 - proxyea `/api` y `/api/ws` al backend interno
 - deja al backend sin exposición pública directa
 - usa la misma configuracion Nginx validada localmente
+
+## 8. VLM local en VM GPU
+
+El compose de VM incluye `vlm-qwen` como servicio interno. No se descarga nada en la laptop al editar el proyecto; la imagen `vllm/vllm-openai` y el modelo Qwen se descargan cuando se levanta el stack en la VM:
+
+```bash
+docker compose --env-file .env.vm -f docker-compose.vm.yml up --build -d
+```
+
+Valores por defecto en `.env.vm.example`:
+
+- `VLM_QWEN_MODEL=Qwen/Qwen2.5-VL-7B-Instruct-AWQ`
+- `VLM_SERVED_MODEL_NAME=qwen-vl-local`
+- `VISION_LOCAL_VLM_URL=http://vlm-qwen:8000/v1`
+- `VISION_API_MODEL=gemini-2.5-flash`
+- `VISION_PATROL_CLASSIFIER_ENABLED=true`
+- `VISION_PATROL_GEMINI_REPORT_ENABLED=true`
+
+Requisitos de la VM:
+
+- GPU NVIDIA disponible para Docker
+- driver NVIDIA operativo (`nvidia-smi`)
+- NVIDIA Container Toolkit instalado
+- no exponer el puerto `8000` a internet; solo lo usa el backend dentro de la red Docker

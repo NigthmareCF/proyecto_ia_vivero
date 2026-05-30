@@ -81,6 +81,14 @@ vision:
     gemini:
       key: ${GEMINI_API_KEY:}
       url: ${GEMINI_API_URL:https://generativelanguage.googleapis.com/v1beta/models}
+    local-vlm:
+      enabled: ${VISION_LOCAL_VLM_ENABLED:false}
+      url: ${VISION_LOCAL_VLM_URL:http://localhost:8000/v1}
+      model: ${VISION_LOCAL_VLM_MODEL:qwen-vl-local}
+      timeout-seconds: ${VISION_LOCAL_VLM_TIMEOUT_SECONDS:120}
+    patrol:
+      classifier-enabled: ${VISION_PATROL_CLASSIFIER_ENABLED:true}
+      gemini-report-enabled: ${VISION_PATROL_GEMINI_REPORT_ENABLED:true}
 
 management:
   endpoints:

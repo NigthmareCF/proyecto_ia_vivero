@@ -5,6 +5,8 @@ export const getRobotPatrolAnalysis = (patrolId: string) =>
   api.get(`/robot/patrols/${patrolId}/analysis`).then((res) => res.data.data);
 export const getRobotPatrolObservations = (patrolId: string) =>
   api.get(`/robot/patrols/${patrolId}/observations`).then((res) => res.data.data);
+export const finalizeRobotPatrolAnalysis = (patrolId: string, robotId = "ROBOT-001") =>
+  api.post(`/robot/patrols/${patrolId}/analysis/finalize`, null, { params: { robotId } }).then((res) => res.data.data);
 
 export type SearchStartOrientation = "FORWARD" | "REVERSE";
 export type RobotSearchState = "SANO" | "ATENCION" | "PELIGRO" | "INCONCLUSA";

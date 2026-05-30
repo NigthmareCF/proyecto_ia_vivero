@@ -1,24 +1,8 @@
 import { useState } from "react";
 import { analizarPlanta } from "../../api/analisisApi";
 import { useAnalisisWebSocket } from "../../hooks/useAnalisisWebSocket";
+import { fileToAnalysisImage } from "./analysisUtils";
 import { PlantReportCard } from "./PlantReportCard";
-
-function toBase64(file: File) {
-  return new Promise<{ mimeType: string; imagenBase64: string }>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = String(reader.result);
-      const [, payload] = result.split(",");
-      if (!payload) {
-        reject(new Error("No se pudo convertir la imagen a base64"));
-        return;
-      }
-      resolve({ mimeType: file.type, imagenBase64: payload });
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 export function AnalisisPlanta() {
   const [result, setResult] = useState<any>(null);
@@ -35,7 +19,7 @@ export function AnalisisPlanta() {
     setErrorMessage(null);
 
     try {
-      const image = await toBase64(file);
+      const image = await fileToAnalysisImage(file);
       const response = await analizarPlanta({
         ...image,
         observacionesOperador: observaciones,

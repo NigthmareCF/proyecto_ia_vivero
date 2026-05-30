@@ -1,6 +1,8 @@
 package com.vivero.module.analisis.dto;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -29,6 +31,16 @@ public class ManualPlantAnalysisRequestDto {
 
     @NotBlank
     private String reporteManual;
+
+    @DecimalMin("0.0")
+    @DecimalMax("1.0")
+    private Double confianza;
+
+    private List<String> hallazgos = new ArrayList<>();
+
+    private List<String> recomendaciones = new ArrayList<>();
+
+    private String operatorNotes;
 
     private Long patrolId;
 
