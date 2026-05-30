@@ -1,9 +1,7 @@
-version: "3.9"
-
 services:
   robot:
     build:
-      context: ./robot-pi
+      context: .
       dockerfile: Dockerfile
     container_name: agrotech-robot
     restart: unless-stopped
@@ -12,8 +10,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./robot-pi/models:/app/models
-      - ./robot-pi-data:/app/data
+      - ./models:/app/models
+      - ./data:/app/data
       - /dev:/dev
     devices:
       - /dev/video0:/dev/video0

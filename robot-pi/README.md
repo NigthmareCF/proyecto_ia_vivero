@@ -104,8 +104,8 @@ Indicadores
 
 ## Instalacion
 
-Consulta la guia rapida en [ROBOT_PI_INSTALACION_DOCKER.md](C:/Proyecto_IA_Vivero/worktrees/robot-pi/ROBOT_PI_INSTALACION_DOCKER.md).
+Consulta la guia rapida en [ROBOT_PI_INSTALACION_DOCKER.md](./ROBOT_PI_INSTALACION_DOCKER.md).
 
 ## Flujo vigente
 
-Consulta el flujo operativo vigente en [SAGA_FLOW.md](C:/Proyecto_IA_Vivero/worktrees/robot-pi/SAGA_FLOW.md).
+Consulta el flujo operativo vigente en [SAGA_FLOW.md](./SAGA_FLOW.md).

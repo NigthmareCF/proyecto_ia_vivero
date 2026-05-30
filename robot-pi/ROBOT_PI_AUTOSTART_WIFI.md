@@ -42,7 +42,7 @@ Wants=network-online.target docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/pi/proyecto_ia_vivero/worktrees/robot-pi
+WorkingDirectory=/home/pi/proyecto_ia_vivero/robot-pi
 ExecStart=/usr/bin/docker compose up -d --build
 ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0
