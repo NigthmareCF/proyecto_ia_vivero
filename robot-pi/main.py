@@ -22,6 +22,7 @@ from src.display import buzzer_handler, lcd_handler, led_handler
 from src.navigation import line_follower, motor_controller, obstacle_detector
 from src.state_machine import RobotState, RobotStateMachine
 from src.vision.camera_handler import CameraHandler
+from src.vision.plant_roi import compute_plant_roi, crop_frames_to_roi
 from src.vision.qr_detector import detect_qr_candidates
 from src.vision.stream_sender import StreamSender
 
@@ -88,6 +89,7 @@ def main() -> None:
         "last_qr_resolution_ms": None,
         "last_qr_camera": None,
         "last_qr_candidate_order": [],
+        "last_qr_roi": None,
         "target_plant_qr": None,
         "target_group_key": None,
         "target_exact_qr_label": None,
@@ -558,6 +560,8 @@ def main() -> None:
                 "height": settings.camera_height,
             },
             "activeCamera": str(runtime_context["active_camera"]).upper(),
+            "lastQrCamera": runtime_context["last_qr_camera"],
+            "lastQrRoi": runtime_context["last_qr_roi"],
             "controlProfile": str(runtime_context["control_profile"]).upper(),
             "speedProfile": str(runtime_context["speed_profile"]).upper(),
         }
@@ -1090,8 +1094,14 @@ def main() -> None:
 
     def select_qr_candidate(left_frame: np.ndarray | None, right_frame: np.ndarray | None) -> dict[str, Any] | None:
         ordered_candidates: list[dict[str, Any]] = []
-        ordered_candidates.extend(order_qr_candidates_for_camera("left", detect_qr_candidates(left_frame)))
-        ordered_candidates.extend(order_qr_candidates_for_camera("right", detect_qr_candidates(right_frame)))
+        left_candidates = order_qr_candidates_for_camera("left", detect_qr_candidates(left_frame))
+        right_candidates = order_qr_candidates_for_camera("right", detect_qr_candidates(right_frame))
+        for candidate in left_candidates:
+            candidate["detection_frame"] = left_frame
+        for candidate in right_candidates:
+            candidate["detection_frame"] = right_frame
+        ordered_candidates.extend(left_candidates)
+        ordered_candidates.extend(right_candidates)
 
         runtime_context["last_qr_candidate_order"] = [
             f"{str(candidate.get('camera'))}:{str(candidate.get('payload'))}@x={float(candidate.get('center_x', 0.0)):.1f}"
@@ -1108,12 +1118,23 @@ def main() -> None:
             return candidate
         return None
 
-    def capture_observation_burst(plant_qr: str) -> list[np.ndarray]:
+    def capture_observation_burst(plant_qr: str, qr_candidate: dict[str, Any]) -> list[np.ndarray]:
         motor_controller.move_forward(settings.qr_capture_speed)
-        selected_frames = camera.capture_side_burst(
-            max(settings.capture_count, 4),
+        camera_name = str(qr_candidate.get("camera") or "left").lower()
+        if camera_name not in {"left", "right", "front"}:
+            camera_name = "left"
+        detection_frame = qr_candidate.get("detection_frame")
+        selected_frames: list[np.ndarray] = []
+        if isinstance(detection_frame, np.ndarray) and detection_frame.size > 0:
+            selected_frames.append(detection_frame)
+        selected_frames.extend(camera.capture_position_burst(
+            camera_name,
+            max(settings.capture_count, 4) - len(selected_frames),
             settings.burst_frame_interval_seconds,
-        )
+        ))
+        roi = compute_plant_roi(selected_frames[0] if selected_frames else None, qr_candidate, settings)
+        runtime_context["last_qr_roi"] = roi
+        selected_frames = crop_frames_to_roi(selected_frames, roi)
         set_status_summary(f"QR detectado: {display_target_label(parse_qr_identity(plant_qr)['group'], plant_qr)}")
         lcd_handler.show_temporary_message("QR detectado", display_target_label(parse_qr_identity(plant_qr)["group"], plant_qr), duration_seconds=3.0)
         return selected_frames
@@ -1205,7 +1226,7 @@ def main() -> None:
                         capture_enabled = runtime_context["search_mode"] is None
                         frames: list[np.ndarray] = []
                         if capture_enabled:
-                            frames = capture_observation_burst(plant_qr)
+                            frames = capture_observation_burst(plant_qr, qr_candidate)
                             runtime_context["last_capture_count"] = len(frames)
                         else:
                             runtime_context["last_capture_count"] = 0

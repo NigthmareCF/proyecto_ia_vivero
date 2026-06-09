@@ -56,6 +56,20 @@ class Settings:
     camera_right_index: int
     camera_width: int
     camera_height: int
+    plant_roi_enabled: bool
+    plant_roi_orientation: str
+    plant_roi_width_factor: float
+    plant_roi_height_factor: float
+    plant_roi_vertical_width_factor: float
+    plant_roi_vertical_height_factor: float
+    plant_roi_horizontal_width_factor: float
+    plant_roi_horizontal_height_factor: float
+    plant_roi_y_offset_factor: float
+    plant_roi_left_x_offset_factor: float
+    plant_roi_right_x_offset_factor: float
+    plant_roi_front_x_offset_factor: float
+    plant_roi_min_width_px: int
+    plant_roi_min_height_px: int
     model_path: str
     labels_path: str
     ai_confidence_threshold: float
@@ -121,6 +135,20 @@ class Settings:
             camera_right_index=int(os.getenv("CAMERA_RIGHT_INDEX", "2")),
             camera_width=int(os.getenv("CAMERA_WIDTH", "640")),
             camera_height=int(os.getenv("CAMERA_HEIGHT", "480")),
+            plant_roi_enabled=os.getenv("PLANT_ROI_ENABLED", "true").lower() == "true",
+            plant_roi_orientation=os.getenv("PLANT_ROI_ORIENTATION", "adaptive").lower(),
+            plant_roi_width_factor=float(os.getenv("PLANT_ROI_WIDTH_FACTOR", "5.0")),
+            plant_roi_height_factor=float(os.getenv("PLANT_ROI_HEIGHT_FACTOR", "4.0")),
+            plant_roi_vertical_width_factor=float(os.getenv("PLANT_ROI_VERTICAL_WIDTH_FACTOR", "4.0")),
+            plant_roi_vertical_height_factor=float(os.getenv("PLANT_ROI_VERTICAL_HEIGHT_FACTOR", "6.0")),
+            plant_roi_horizontal_width_factor=float(os.getenv("PLANT_ROI_HORIZONTAL_WIDTH_FACTOR", os.getenv("PLANT_ROI_WIDTH_FACTOR", "5.0"))),
+            plant_roi_horizontal_height_factor=float(os.getenv("PLANT_ROI_HORIZONTAL_HEIGHT_FACTOR", os.getenv("PLANT_ROI_HEIGHT_FACTOR", "4.0"))),
+            plant_roi_y_offset_factor=float(os.getenv("PLANT_ROI_Y_OFFSET_FACTOR", "0.4")),
+            plant_roi_left_x_offset_factor=float(os.getenv("PLANT_ROI_LEFT_X_OFFSET_FACTOR", "1.6")),
+            plant_roi_right_x_offset_factor=float(os.getenv("PLANT_ROI_RIGHT_X_OFFSET_FACTOR", "-1.6")),
+            plant_roi_front_x_offset_factor=float(os.getenv("PLANT_ROI_FRONT_X_OFFSET_FACTOR", "0.0")),
+            plant_roi_min_width_px=int(os.getenv("PLANT_ROI_MIN_WIDTH_PX", "260")),
+            plant_roi_min_height_px=int(os.getenv("PLANT_ROI_MIN_HEIGHT_PX", "260")),
             model_path=os.getenv("MODEL_PATH", "/app/models/modelo_vivero.tflite"),
             labels_path=os.getenv("LABELS_PATH", "/app/models/labels.txt"),
             ai_confidence_threshold=float(os.getenv("AI_CONFIDENCE_THRESHOLD", "0.65")),

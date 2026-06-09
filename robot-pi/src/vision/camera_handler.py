@@ -79,6 +79,18 @@ class CameraHandler:
                 time.sleep(max(interval_seconds, 0.01))
         return frames
 
+    def capture_position_burst(self, position: str, n: int, interval_seconds: float) -> list[np.ndarray]:
+        frames: list[np.ndarray] = []
+        if n <= 0:
+            return frames
+        for index in range(n):
+            frame = self.capture_frame(position)
+            if frame is not None:
+                frames.append(frame)
+            if index < n - 1:
+                time.sleep(max(interval_seconds, 0.01))
+        return frames
+
     def frame_to_base64(self, frame: np.ndarray) -> str:
         ok, encoded = cv2.imencode(
             ".jpg",

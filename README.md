@@ -61,6 +61,42 @@ right -> /dev/video2
 front -> /dev/video4
 ```
 
+## ROI de planta asociada al QR
+
+El runtime recorta la evidencia de planta usando una ROI relativa al QR elegido.
+Esto evita enviar el frame lateral completo cuando aparecen varias plantas o varios
+QR en la misma imagen.
+
+Variables principales:
+
+```text
+PLANT_ROI_ENABLED=true
+PLANT_ROI_ORIENTATION=adaptive
+PLANT_ROI_WIDTH_FACTOR=5.0
+PLANT_ROI_HEIGHT_FACTOR=4.0
+PLANT_ROI_VERTICAL_WIDTH_FACTOR=4.0
+PLANT_ROI_VERTICAL_HEIGHT_FACTOR=6.0
+PLANT_ROI_HORIZONTAL_WIDTH_FACTOR=5.0
+PLANT_ROI_HORIZONTAL_HEIGHT_FACTOR=4.0
+PLANT_ROI_Y_OFFSET_FACTOR=0.4
+PLANT_ROI_LEFT_X_OFFSET_FACTOR=1.6
+PLANT_ROI_RIGHT_X_OFFSET_FACTOR=-1.6
+PLANT_ROI_FRONT_X_OFFSET_FACTOR=0.0
+PLANT_ROI_MIN_WIDTH_PX=260
+PLANT_ROI_MIN_HEIGHT_PX=260
+```
+
+Los offsets son multiplicadores del tamano detectado del QR. Para la camara
+izquierda el recorte queda por defecto hacia la derecha del QR; para la camara
+derecha queda hacia la izquierda. Si el montaje fisico ubica la planta al lado
+opuesto del QR, invierte el signo del offset correspondiente en `.env`.
+
+`PLANT_ROI_ORIENTATION` acepta `adaptive`, `vertical` u `horizontal`. En modo
+adaptativo el runtime prueba ambos formatos y usa el que conserva mejor el
+recorte dentro del frame mientras sigue el centro del QR. Con un QR de `60x60`
+y los valores por defecto, el perfil vertical mide `260x360`; el horizontal
+mide `300x260`.
+
 ## Requisitos previos en la Raspberry Pi
 
 1. Raspberry Pi OS 64-bit instalado.
