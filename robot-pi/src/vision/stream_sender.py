@@ -5,6 +5,7 @@ import logging
 import threading
 import time
 from typing import Callable
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import base64
 import cv2
@@ -44,7 +45,10 @@ class StreamSender:
         while not self._stop_event.is_set():
             ws = None
             try:
-                ws = create_connection(self._resolve_stream_url(), timeout=5)
+                kwargs = {"timeout": 5}
+                if self.settings.backend_ws_origin:
+                    kwargs["origin"] = self.settings.backend_ws_origin
+                ws = create_connection(self._resolve_stream_url(), **kwargs)
                 while not self._stop_event.is_set():
                     frame = self.frame_provider()
                     self.send_frame(frame, ws)
@@ -82,8 +86,14 @@ class StreamSender:
             LOGGER.warning("WS de stream cerrado")
 
     def _resolve_stream_url(self) -> str:
-        base_url = self.settings.backend_ws_url
-        if "role=" in base_url:
-            return base_url
-        separator = "&" if "?" in base_url else "?"
-        return f"{base_url}{separator}role=robot&robotId={self.settings.robot_id}"
+        split_url = urlsplit(self.settings.backend_ws_url)
+        query = dict(parse_qsl(split_url.query, keep_blank_values=True))
+        query.setdefault("role", "robot")
+        query.setdefault("robotId", self.settings.robot_id)
+        return urlunsplit((
+            split_url.scheme,
+            split_url.netloc,
+            split_url.path,
+            urlencode(query),
+            split_url.fragment,
+        ))

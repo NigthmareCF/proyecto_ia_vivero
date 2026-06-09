@@ -46,6 +46,7 @@ N_CAPTURES = 6
 class Settings:
     backend_base_url: str
     backend_ws_url: str
+    backend_ws_origin: str | None
     heartbeat_path: str
     observation_path: str
     command_next_path: str
@@ -126,6 +127,7 @@ class Settings:
         return cls(
             backend_base_url=backend_base_url,
             backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:3000/api/ws/robot-stream"),
+            backend_ws_origin=os.getenv("BACKEND_WS_ORIGIN"),
             heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
             observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
             command_next_path=os.getenv("COMMAND_NEXT_PATH", "/robot/commands/next"),
