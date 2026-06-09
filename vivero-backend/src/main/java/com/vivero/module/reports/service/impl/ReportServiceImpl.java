@@ -96,20 +96,21 @@ public class ReportServiceImpl implements ReportService {
 
         reportRepository.save(report);
         report.setPdfPath(pdfReportGenerator.generateAndStore(report));
+        reportRepository.save(report);
 
         log.info("Reporte generado para patrullaje {} por {}", report.getPatrolId(), currentUser.getEmail());
         return reportMapper.toResponse(report);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public byte[] getReportPdf(Long id) {
         Report report = findReportOrThrow(id);
         return readPdfBytes(report, "report id: " + id);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public byte[] getPublicReportPdf(String publicShareToken) {
         Report report = reportRepository.findByPublicShareToken(publicShareToken)
                 .orElseThrow(() -> new ResourceNotFoundException("Public report not found"));
@@ -315,14 +316,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private byte[] readPdfBytes(Report report, String reference) {
-        if (report.getPdfPath() == null || report.getPdfPath().isBlank()) {
-            throw new ResourceNotFoundException("PDF not found for " + reference);
-        }
-
         try {
+            if (report.getPdfPath() == null
+                    || report.getPdfPath().isBlank()
+                    || !Files.exists(Path.of(report.getPdfPath()))) {
+                report.setPdfPath(pdfReportGenerator.generateAndStore(report));
+                reportRepository.save(report);
+            }
             return Files.readAllBytes(Path.of(report.getPdfPath()));
         } catch (Exception ex) {
-            throw new ResourceNotFoundException("PDF file is missing for " + reference);
+            throw new BusinessException("Could not generate or read PDF for " + reference, "PDF_READ_ERROR");
         }
     }
 

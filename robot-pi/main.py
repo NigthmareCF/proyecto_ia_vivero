@@ -690,6 +690,17 @@ def main() -> None:
         offline_queue.enqueue(payload)
         return False
 
+    def finalize_patrol_on_backend(patrol_id: str | None) -> None:
+        if not patrol_id:
+            return
+        runtime_context["last_observation_status"] = "finalizing_patrol"
+        if backend_client.finalize_patrol_analysis(patrol_id):
+            runtime_context["last_observation_status"] = "patrol_finalized"
+            set_status_summary("Patrullaje finalizado")
+            return
+        runtime_context["last_observation_status"] = "patrol_finalize_failed"
+        set_status_summary("Cierre pendiente")
+
     def process_observation_event(event: dict[str, Any]) -> None:
         snapshot = state_machine.snapshot()
         frames = event["frames"]
@@ -996,6 +1007,7 @@ def main() -> None:
         motor_controller.stop()
 
     def finish_row_and_wait_for_patrol() -> None:
+        active_patrol_id = state_machine.snapshot().patrol_id
         runtime_context["awaiting_patrol_approval"] = True
         runtime_context["last_observation_status"] = "awaiting_patrol_approval"
         set_status_summary("Fin de linea")
@@ -1016,6 +1028,7 @@ def main() -> None:
         motor_controller.stop()
         led_handler.set_attention()
         buzzer_handler.countdown_go()
+        finalize_patrol_on_backend(active_patrol_id)
         state_machine.stop()
 
     def has_reached_target_qr(plant_qr: str) -> bool:

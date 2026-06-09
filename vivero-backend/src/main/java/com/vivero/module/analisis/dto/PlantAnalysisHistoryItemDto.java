@@ -16,6 +16,7 @@ public class PlantAnalysisHistoryItemDto {
     private String urgencia;
     private double confianza;
     private String summaryText;
+    private String operatorNotes;
     private List<String> hallazgos;
     private List<String> recomendaciones;
     private String modeloIa;

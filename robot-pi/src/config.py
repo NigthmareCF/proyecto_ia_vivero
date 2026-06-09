@@ -46,6 +46,7 @@ class Settings:
     backend_ws_url: str
     heartbeat_path: str
     observation_path: str
+    patrol_finalize_path_template: str
     command_next_path: str
     command_ack_path_template: str
     camera_type: str
@@ -111,6 +112,10 @@ class Settings:
             backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://34.27.75.170/api/ws/robot-stream"),
             heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
             observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
+            patrol_finalize_path_template=os.getenv(
+                "PATROL_FINALIZE_PATH_TEMPLATE",
+                "/robot/patrols/{patrolId}/analysis/finalize",
+            ),
             command_next_path=os.getenv("COMMAND_NEXT_PATH", "/robot/commands/next"),
             command_ack_path_template=os.getenv("COMMAND_ACK_PATH_TEMPLATE", "/robot/commands/{commandId}/ack"),
             camera_type=os.getenv("CAMERA_TYPE", "usb").lower(),

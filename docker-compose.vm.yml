@@ -26,8 +26,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    env_file:
-      - .env
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       SERVER_PORT: ${SERVER_PORT:-8080}
@@ -42,6 +40,18 @@ services:
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost,http://localhost:80}
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost}
       IMAGES_PATH: ${IMAGES_PATH:-/app/images}
+      VISION_API_ENABLED: ${VISION_API_ENABLED:-false}
+      VISION_API_PROVIDER: ${VISION_API_PROVIDER:-gemini}
+      VISION_API_MODEL: ${VISION_API_MODEL:-gemini-2.5-flash}
+      VISION_API_TIMEOUT_SECONDS: ${VISION_API_TIMEOUT_SECONDS:-45}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_API_URL: ${GEMINI_API_URL:-https://generativelanguage.googleapis.com/v1beta/models}
+      VISION_LOCAL_VLM_ENABLED: ${VISION_LOCAL_VLM_ENABLED:-true}
+      VISION_LOCAL_VLM_URL: ${VISION_LOCAL_VLM_URL:-http://vlm-qwen:8000/v1}
+      VISION_LOCAL_VLM_MODEL: ${VISION_LOCAL_VLM_MODEL:-qwen-vl-local}
+      VISION_LOCAL_VLM_TIMEOUT_SECONDS: ${VISION_LOCAL_VLM_TIMEOUT_SECONDS:-120}
+      VISION_PATROL_CLASSIFIER_ENABLED: ${VISION_PATROL_CLASSIFIER_ENABLED:-true}
+      VISION_PATROL_GEMINI_REPORT_ENABLED: ${VISION_PATROL_GEMINI_REPORT_ENABLED:-true}
       MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
       MAIL_PORT: ${MAIL_PORT:-587}
       MAIL_USERNAME: ${MAIL_USERNAME:-}
@@ -55,6 +65,39 @@ services:
       timeout: 10s
       start_period: 90s
       retries: 3
+    networks:
+      - vivero_network
+
+  vlm-qwen:
+    image: ${VLM_IMAGE:-vllm/vllm-openai:latest}
+    container_name: vivero_vlm_qwen
+    restart: unless-stopped
+    ipc: host
+    gpus: all
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HUGGING_FACE_HUB_TOKEN:-}
+      HF_HOME: /root/.cache/huggingface
+      VLLM_WORKER_MULTIPROC_METHOD: spawn
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --model
+      - ${VLM_QWEN_MODEL:-Qwen/Qwen2.5-VL-7B-Instruct-AWQ}
+      - --served-model-name
+      - ${VLM_SERVED_MODEL_NAME:-qwen-vl-local}
+      - --quantization
+      - ${VLM_QUANTIZATION:-awq}
+      - --trust-remote-code
+      - --max-model-len
+      - ${VLM_MAX_MODEL_LEN:-8192}
+      - --limit-mm-per-prompt
+      - '{"image":3,"video":0}'
+    volumes:
+      - hf_cache:/root/.cache/huggingface
+    expose:
+      - "8000"
     networks:
       - vivero_network
 
@@ -79,6 +122,8 @@ volumes:
   postgres_data:
     driver: local
   images_data:
+    driver: local
+  hf_cache:
     driver: local
 
 networks:
