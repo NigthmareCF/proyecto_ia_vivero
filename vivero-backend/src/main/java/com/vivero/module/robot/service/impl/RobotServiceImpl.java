@@ -158,6 +158,9 @@ public class RobotServiceImpl implements RobotService {
         status.setActiveCamera(normalizeToken(heartbeat.getActiveCamera(), status.getActiveCamera()));
         status.setControlProfile(normalizeToken(heartbeat.getControlProfile(), status.getControlProfile()));
         status.setSpeedProfile(normalizeToken(heartbeat.getSpeedProfile(), status.getSpeedProfile()));
+        status.setCurrentSpeedPercent(heartbeat.getCurrentSpeedPercent());
+        status.setRearObstacleDetected(heartbeat.isRearObstacleDetected());
+        status.setLastWatchdogReason(normalizeBlank(heartbeat.getLastWatchdogReason()));
         status.setConnected(true);
         status.setLastSeenAt(LocalDateTime.now());
         status.setLastCommand("HEARTBEAT");
@@ -413,6 +416,9 @@ public class RobotServiceImpl implements RobotService {
                 .activeCamera("FRONT")
                 .controlProfile("IDLE")
                 .speedProfile("MEDIUM")
+                .currentSpeedPercent(null)
+                .rearObstacleDetected(false)
+                .lastWatchdogReason(null)
                 .lastSeenAt(LocalDateTime.now())
                 .lastCommand("INIT")
                 .build();

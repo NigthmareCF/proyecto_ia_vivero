@@ -12,6 +12,7 @@ Ajusta como mínimo:
 
 - `JWT_SECRET`
 - `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM`
+- `MAIL_SMTP_AUTH`, `MAIL_SMTP_STARTTLS_ENABLE`, `MAIL_SMTP_STARTTLS_REQUIRED`
 - `CORS_ALLOWED_ORIGINS`
 - `VITE_API_URL`
 - `VITE_WS_URL`
@@ -91,3 +92,22 @@ Requisitos de la VM:
 - driver NVIDIA operativo (`nvidia-smi`)
 - NVIDIA Container Toolkit instalado
 - no exponer el puerto `8000` a internet; solo lo usa el backend dentro de la red Docker
+
+## 9. SMTP Relay por IP
+
+Para Google Workspace SMTP Relay por IP, el backend debe levantarse con:
+
+```bash
+MAIL_HOST=smtp-relay.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM=reportes@tu-dominio-workspace.com
+MAIL_SMTP_AUTH=false
+MAIL_SMTP_STARTTLS_ENABLE=true
+MAIL_SMTP_STARTTLS_REQUIRED=true
+MAIL_SMTP_ENVELOPE_FROM=reportes@tu-dominio-workspace.com
+MAIL_SMTP_LOCALHOST=tu-dominio-workspace.com
+```
+
+Si Google devuelve `550-5.7.1 Invalid credentials for relay`, el backend ya llego al relay, pero la IP publica, el dominio del remitente o el EHLO/envelope-from no coincide con lo autorizado en Google Workspace.

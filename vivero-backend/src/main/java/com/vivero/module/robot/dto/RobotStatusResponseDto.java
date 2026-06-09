@@ -31,6 +31,9 @@ public class RobotStatusResponseDto {
     private String activeCamera;
     private String controlProfile;
     private String speedProfile;
+    private Integer currentSpeedPercent;
+    private boolean rearObstacleDetected;
+    private String lastWatchdogReason;
     private LocalDateTime lastSeenAt;
     private String lastCommand;
 }
