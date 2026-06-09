@@ -1,0 +1,1 @@
+@reboot /bin/sleep 25 && /home/fer-dev/ROBOT-PI-EJECUTION/start-robot-at-boot.sh

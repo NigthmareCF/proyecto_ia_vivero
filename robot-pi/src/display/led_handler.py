@@ -20,7 +20,33 @@ _blue_worker: threading.Thread | None = None
 _blue_lock = threading.Lock()
 _blue_stop_event = threading.Event()
 _blue_manual_event = threading.Event()
+_acro_stop_event = threading.Event()
+_acro_worker: threading.Thread | None = None
+_acro_lock = threading.Lock()
 _settings: Settings | None = None
+
+ACRO_CHRISTMAS_FRAMES: tuple[tuple[float, tuple[bool, bool, bool, bool]], ...] = (
+    (0.12, (True, False, False, False)),
+    (0.12, (False, True, False, False)),
+    (0.12, (False, False, True, False)),
+    (0.22, (False, False, False, True)),
+    (0.16, (True, False, True, False)),
+    (0.16, (False, True, False, True)),
+    (0.16, (True, False, True, False)),
+    (0.26, (False, True, False, True)),
+    (0.09, (True, True, True, True)),
+    (0.08, (False, False, False, False)),
+    (0.09, (True, True, True, True)),
+    (0.08, (False, False, False, False)),
+    (0.13, (False, False, False, True)),
+    (0.13, (False, False, True, False)),
+    (0.13, (False, True, False, False)),
+    (0.23, (True, False, False, False)),
+    (0.15, (True, True, False, False)),
+    (0.15, (False, False, True, True)),
+    (0.09, (True, True, True, True)),
+    (0.16, (False, False, False, False)),
+)
 
 
 def setup(settings: Settings) -> None:
@@ -46,6 +72,11 @@ def _set(green: bool, yellow: bool, red: bool) -> None:
     GPIO.output(LED_GREEN, GPIO.HIGH if green else GPIO.LOW)
     GPIO.output(LED_YELLOW, GPIO.HIGH if yellow else GPIO.LOW)
     GPIO.output(LED_RED, GPIO.HIGH if red else GPIO.LOW)
+
+
+def _set_all(green: bool, yellow: bool, red: bool, blue: bool) -> None:
+    _set(green, yellow, red)
+    _set_blue_duty(100.0 if blue else 0.0)
 
 
 def set_healthy() -> None:
@@ -74,17 +105,13 @@ def _stop_blue_pwm_for_manual_control() -> bool:
     if not _enabled or GPIO is None or _blue_pwm is None:
         return False
     _set_blue_duty(0.0)
-    _blue_pwm.stop()
-    GPIO.output(LED_BLUE, GPIO.LOW)
     return True
 
 
 def _restart_blue_pwm_after_manual_control(was_running: bool) -> None:
-    global _blue_pwm
     if not was_running or not _enabled or GPIO is None:
         return
-    _blue_pwm = GPIO.PWM(LED_BLUE, 100)
-    _blue_pwm.start(0)
+    _set_blue_duty(0.0)
 
 
 def pulse_blue_with(
@@ -100,20 +127,69 @@ def pulse_blue_with(
         time.sleep(0.08)
         for _ in range(max(repeats, 0)):
             if _enabled and GPIO is not None:
-                GPIO.output(LED_BLUE, GPIO.HIGH)
+                _set_blue_duty(100.0)
             started_at = time.monotonic()
             action(on_duration)
             remaining = on_duration - (time.monotonic() - started_at)
             if remaining > 0:
                 time.sleep(remaining)
             if _enabled and GPIO is not None:
-                GPIO.output(LED_BLUE, GPIO.LOW)
+                _set_blue_duty(0.0)
             time.sleep(max(off_duration, 0.0))
     finally:
         if _enabled and GPIO is not None:
-            GPIO.output(LED_BLUE, GPIO.LOW)
+            _set_blue_duty(0.0)
         _restart_blue_pwm_after_manual_control(pwm_was_running)
         _blue_manual_event.clear()
+
+
+def play_acro_christmas_sequence(repeats: int = 1, stop_event: threading.Event | None = None) -> None:
+    """Secuencia de luces tipo serie navidena para modo ACRO."""
+    _blue_manual_event.set()
+    pwm_was_running = False
+    try:
+        pwm_was_running = _stop_blue_pwm_for_manual_control()
+        time.sleep(0.04)
+        for _ in range(max(repeats, 0)):
+            for duration, leds in ACRO_CHRISTMAS_FRAMES:
+                if stop_event is not None and stop_event.is_set():
+                    return
+                _set_all(*leds)
+                if stop_event is None:
+                    time.sleep(duration)
+                elif stop_event.wait(duration):
+                    return
+    finally:
+        _set_all(False, False, False, False)
+        _restart_blue_pwm_after_manual_control(pwm_was_running)
+        _blue_manual_event.clear()
+
+
+def start_acro_christmas_loop() -> None:
+    global _acro_worker
+    with _acro_lock:
+        stop_acro_sequence()
+        _acro_stop_event.clear()
+        _acro_worker = threading.Thread(
+            target=_run_acro_christmas_loop,
+            name="acro-christmas-led-loop",
+            daemon=True,
+        )
+        _acro_worker.start()
+
+
+def _run_acro_christmas_loop() -> None:
+    while not _acro_stop_event.is_set():
+        play_acro_christmas_sequence(repeats=1, stop_event=_acro_stop_event)
+
+
+def stop_acro_sequence() -> None:
+    global _acro_worker
+    _acro_stop_event.set()
+    worker = _acro_worker
+    if worker is not None and worker.is_alive() and threading.current_thread() is not worker:
+        worker.join(timeout=1.0)
+    _acro_worker = None
 
 
 def set_heartbeat_off() -> None:
@@ -187,6 +263,7 @@ def _run_blue_effect() -> None:
 
 
 def cleanup() -> None:
+    stop_acro_sequence()
     _blue_stop_event.set()
     set_heartbeat_off()
     _set_blue_duty(0.0)

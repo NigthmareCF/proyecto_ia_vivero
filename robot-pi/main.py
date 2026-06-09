@@ -15,6 +15,7 @@ from src.ai.classifier import classify_burst
 from src.ai.model_loader import load_model
 from src.communication.backend_client import BackendClient
 from src.communication.command_listener import CommandListener
+from src.communication.local_command_listener import LocalCommandListener
 from src.communication.offline_queue import OfflineObservationQueue
 from src.communication.qr_label_resolver import QrLabelResolver
 from src.config import Settings
@@ -56,6 +57,7 @@ def main() -> None:
         interpreter, input_details, output_details = load_model(settings)
 
     command_listener: CommandListener | None = None
+    local_command_listener: LocalCommandListener | None = None
     local_ai_available = all(item is not None for item in (interpreter, input_details, output_details))
     runtime_context: dict[str, Any] = {
         "last_local_analysis": None,
@@ -774,6 +776,8 @@ def main() -> None:
         set_stream_enabled(False)
         if command_listener is not None:
             command_listener.stop()
+        if local_command_listener is not None:
+            local_command_listener.stop()
         camera.release()
         motor_controller.stop()
         lcd_handler.cleanup()
@@ -824,6 +828,7 @@ def main() -> None:
             buzzer_handler.countdown_go()
             lcd_handler.show_temporary_message("AgroBot listo", "Patrullaje ON", duration_seconds=3.0)
         elif command == "STOP":
+            led_handler.stop_acro_sequence()
             state_machine.stop()
             motor_controller.stop()
             set_stream_enabled(False)
@@ -892,12 +897,14 @@ def main() -> None:
             buzzer_handler.countdown_go()
             lcd_handler.show_temporary_message(f"{runtime_context['search_state']} buscando", f"Pend: {len(runtime_context['search_targets']):02d}", duration_seconds=4.0)
         elif command == "MANUAL_CONTROL":
+            led_handler.stop_acro_sequence()
             state_machine.enable_manual()
             runtime_context["control_profile"] = "MANUAL_FREE"
             runtime_context["last_manual_command_at"] = time.monotonic()
             set_status_summary("Control manual activo")
             lcd_handler.show_temporary_message("Modo MANUAL", "Control remoto", duration_seconds=3.0)
         elif command == "AUTO":
+            led_handler.stop_acro_sequence()
             state_machine.enable_auto()
             set_stream_enabled(False)
             runtime_context["control_profile"] = "AUTO_LINE"
@@ -1018,6 +1025,12 @@ def main() -> None:
 
     def run_acro(sequence: str) -> None:
         active_speed = current_speed_percent()
+        if sequence in {"CHRISTMAS", "NAVIDAD", "XMAS", "LED_LOOP", "LIGHTS"}:
+            motor_controller.stop()
+            led_handler.start_acro_christmas_loop()
+            lcd_handler.show_temporary_message("Acrobacia", "Luces loop", duration_seconds=3.0)
+            return
+        led_handler.stop_acro_sequence()
         if sequence == "SPIN":
             motor_controller.turn_left(min(active_speed + 20, 100))
             time.sleep(0.8)
@@ -1140,6 +1153,7 @@ def main() -> None:
         return selected_frames
 
     command_listener = CommandListener(settings, on_command, shutdown_event)
+    local_command_listener = LocalCommandListener(settings.local_command_socket_path, on_command, shutdown_event)
 
     status_thread = threading.Thread(target=status_sender, name="status-sender", daemon=True)
     observation_thread = threading.Thread(target=observation_worker, name="observation-worker", daemon=True)
@@ -1150,6 +1164,7 @@ def main() -> None:
     qr_resolution_thread.start()
     offline_thread.start()
     command_listener.start()
+    local_command_listener.start()
 
     try:
         while not shutdown_event.is_set():

@@ -115,6 +115,7 @@ class Settings:
     lcd_rotation_interval_seconds: float
     search_history_tolerance_scans: int
     state_search_pause_seconds: float
+    local_command_socket_path: str
 
     @classmethod
     def load(cls) -> "Settings":
@@ -194,4 +195,5 @@ class Settings:
             lcd_rotation_interval_seconds=float(os.getenv("LCD_ROTATION_INTERVAL_SECONDS", "2.4")),
             search_history_tolerance_scans=int(os.getenv("SEARCH_HISTORY_TOLERANCE_SCANS", "2")),
             state_search_pause_seconds=float(os.getenv("STATE_SEARCH_PAUSE_SECONDS", "5.0")),
+            local_command_socket_path=os.getenv("LOCAL_COMMAND_SOCKET_PATH", "/app/data/manual-control.sock"),
         )

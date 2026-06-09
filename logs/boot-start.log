@@ -1,0 +1,3014 @@
+==== 2026-04-28T06:06:38-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.7s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.32kB done
+#5 DONE 0.0s
+
+#6 [robot 4/9] COPY requirements.txt .
+#6 CACHED
+
+#7 [robot 6/9] COPY main.py .
+#7 CACHED
+
+#8 [robot 7/9] COPY src ./src
+#8 CACHED
+
+#9 [robot 8/9] COPY models ./models
+#9 CACHED
+
+#10 [robot 3/9] WORKDIR /app
+#10 CACHED
+
+#11 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:35bd1cd6fa6fee5d5e51af084b65e357ba98506df0aa34bccca8b0f97382d6d5 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 9 minutes
+==== 2026-04-28T06:14:21-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.32kB done
+#5 DONE 0.0s
+
+#6 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#7 CACHED
+
+#8 [robot 6/9] COPY main.py .
+#8 CACHED
+
+#9 [robot 7/9] COPY src ./src
+#9 CACHED
+
+#10 [robot 3/9] WORKDIR /app
+#10 CACHED
+
+#11 [robot 4/9] COPY requirements.txt .
+#11 CACHED
+
+#12 [robot 8/9] COPY models ./models
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:35bd1cd6fa6fee5d5e51af084b65e357ba98506df0aa34bccca8b0f97382d6d5 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 12 seconds
+==== 2026-05-01T01:17:42-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.32kB done
+#5 DONE 0.1s
+
+#6 [robot 7/9] COPY src ./src
+#6 CACHED
+
+#7 [robot 8/9] COPY models ./models
+#7 CACHED
+
+#8 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [robot 4/9] COPY requirements.txt .
+#9 CACHED
+
+#10 [robot 3/9] WORKDIR /app
+#10 CACHED
+
+#11 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#11 CACHED
+
+#12 [robot 6/9] COPY main.py .
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:35bd1cd6fa6fee5d5e51af084b65e357ba98506df0aa34bccca8b0f97382d6d5 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Created
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-01T08:48:20-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.32kB done
+#5 DONE 0.0s
+
+#6 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot 3/9] WORKDIR /app
+#7 CACHED
+
+#8 [robot 4/9] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot 6/9] COPY main.py .
+#9 CACHED
+
+#10 [robot 7/9] COPY src ./src
+#10 CACHED
+
+#11 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#11 CACHED
+
+#12 [robot 8/9] COPY models ./models
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:35bd1cd6fa6fee5d5e51af084b65e357ba98506df0aa34bccca8b0f97382d6d5 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.1s
+ Container agrotech-robot  Created
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-01T09:27:37-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.32kB done
+#5 DONE 0.1s
+
+#6 [robot 8/9] COPY models ./models
+#6 CACHED
+
+#7 [robot 4/9] COPY requirements.txt .
+#7 CACHED
+
+#8 [robot 3/9] WORKDIR /app
+#8 CACHED
+
+#9 [robot 6/9] COPY main.py .
+#9 CACHED
+
+#10 [robot 7/9] COPY src ./src
+#10 CACHED
+
+#11 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:35bd1cd6fa6fee5d5e51af084b65e357ba98506df0aa34bccca8b0f97382d6d5 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 13 seconds
+==== 2026-05-01T13:00:42-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 1.6s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 31.27kB done
+#5 DONE 0.0s
+
+#6 [robot  8/11] COPY qr_visual_test.py .
+#6 CACHED
+
+#7 [robot  9/11] COPY src ./src
+#7 CACHED
+
+#8 [robot  7/11] COPY qr_test_mode.py .
+#8 CACHED
+
+#9 [robot  6/11] COPY main.py .
+#9 CACHED
+
+#10 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [robot  3/11] WORKDIR /app
+#11 CACHED
+
+#12 [robot 10/11] COPY models ./models
+#12 CACHED
+
+#13 [robot  4/11] COPY requirements.txt .
+#13 CACHED
+
+#14 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:623c5605e57dd7e338af67ae747fc5bf14721002b43f1645b0e647675f59a28e done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.1s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-01T13:29:01-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 6.97kB done
+#5 DONE 0.0s
+
+#6 [robot  3/11] WORKDIR /app
+#6 CACHED
+
+#7 [robot  4/11] COPY requirements.txt .
+#7 CACHED
+
+#8 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot  6/11] COPY main.py .
+#9 CACHED
+
+#10 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [robot  7/11] COPY qr_test_mode.py .
+#11 CACHED
+
+#12 [robot  8/11] COPY qr_visual_test.py .
+#12 CACHED
+
+#13 [robot  9/11] COPY src ./src
+#13 DONE 0.1s
+
+#14 [robot 10/11] COPY models ./models
+#14 DONE 0.2s
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 DONE 63727.1s
+
+#16 [robot] exporting to image
+#16 exporting layers
+#16 exporting layers 0.3s done
+#16 writing image sha256:a4c4084fda5a280a1af3f9e9983152b5c65a1b956ab58bebba03ccfbac725fb5 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.3s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-02T09:19:17-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.39kB done
+#5 DONE 0.1s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot  8/11] COPY qr_visual_test.py .
+#7 CACHED
+
+#8 [robot  4/11] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [robot  6/11] COPY main.py .
+#10 CACHED
+
+#11 [robot  7/11] COPY qr_test_mode.py .
+#11 CACHED
+
+#12 [robot  9/11] COPY src ./src
+#12 CACHED
+
+#13 [robot  3/11] WORKDIR /app
+#13 CACHED
+
+#14 [robot 10/11] COPY models ./models
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:a4c4084fda5a280a1af3f9e9983152b5c65a1b956ab58bebba03ccfbac725fb5 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Created
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-02T12:48:05-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.39kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  9/11] COPY src ./src
+#6 CACHED
+
+#7 [robot 10/11] COPY models ./models
+#7 CACHED
+
+#8 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot  3/11] WORKDIR /app
+#9 CACHED
+
+#10 [robot  4/11] COPY requirements.txt .
+#10 CACHED
+
+#11 [robot  6/11] COPY main.py .
+#11 CACHED
+
+#12 [robot  7/11] COPY qr_test_mode.py .
+#12 CACHED
+
+#13 [robot  8/11] COPY qr_visual_test.py .
+#13 CACHED
+
+#14 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:a4c4084fda5a280a1af3f9e9983152b5c65a1b956ab58bebba03ccfbac725fb5 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 13 seconds
+==== 2026-05-03T01:53:33-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 192.168.1.1:53: dial udp 192.168.1.1:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 192.168.1.1:53: dial udp 192.168.1.1:53: connect: network is unreachable
+==== 2026-05-03T02:44:00-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 343576.2s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.39kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  7/11] COPY qr_test_mode.py .
+#6 CACHED
+
+#7 [robot  4/11] COPY requirements.txt .
+#7 CACHED
+
+#8 [robot  8/11] COPY qr_visual_test.py .
+#8 CACHED
+
+#9 [robot 10/11] COPY models ./models
+#9 CACHED
+
+#10 [robot  6/11] COPY main.py .
+#10 CACHED
+
+#11 [robot  9/11] COPY src ./src
+#11 CACHED
+
+#12 [robot  3/11] WORKDIR /app
+#12 CACHED
+
+#13 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#13 CACHED
+
+#14 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:a4c4084fda5a280a1af3f9e9983152b5c65a1b956ab58bebba03ccfbac725fb5 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.1s
+ Container agrotech-robot  Running
+status=Up 3 days
+==== 2026-05-07T02:24:07-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:ee710afcfb733f4a750d9be683cf054b5cd247b6c5f5237a6849ea568b90ab15
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.39kB done
+#5 DONE 0.1s
+
+#6 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#6 CACHED
+
+#7 [robot  7/11] COPY qr_test_mode.py .
+#7 CACHED
+
+#8 [robot  3/11] WORKDIR /app
+#8 CACHED
+
+#9 [robot  9/11] COPY src ./src
+#9 CACHED
+
+#10 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [robot  4/11] COPY requirements.txt .
+#11 CACHED
+
+#12 [robot  6/11] COPY main.py .
+#12 CACHED
+
+#13 [robot  8/11] COPY qr_visual_test.py .
+#13 CACHED
+
+#14 [robot 10/11] COPY models ./models
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:a4c4084fda5a280a1af3f9e9983152b5c65a1b956ab58bebba03ccfbac725fb5 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 13 seconds
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ==== 2026-05-07T06:04:58-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+==== 2026-05-07T06:10:03-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+==== 2026-05-09T17:53:22-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 678B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to authorize: failed to fetch anonymous token: Get "https://auth.docker.io/token?scope=repository%3Alibrary%2Fpython%3Apull&service=registry.docker.io": tls: failed to verify certificate: x509: certificate has expired or is not yet valid: current time 2026-05-09T17:53:25-06:00 is before 2026-05-10T01:30:49Z
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to authorize: failed to fetch anonymous token: Get "https://auth.docker.io/token?scope=repository%3Alibrary%2Fpython%3Apull&service=registry.docker.io": tls: failed to verify certificate: x509: certificate has expired or is not yet valid: current time 2026-05-09T17:53:25-06:00 is before 2026-05-10T01:30:49Z
+==== 2026-05-11T04:41:24-06:00 starting robot runtime ====
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ==== 2026-05-13T12:06:30-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:cd67330292a51e2963156f74ff340455d66b2172e9190e99f40dff9357471177
+#4 resolve docker.io/library/python:3.11-slim-bookworm@sha256:cd67330292a51e2963156f74ff340455d66b2172e9190e99f40dff9357471177 0.1s done
+#4 sha256:cd67330292a51e2963156f74ff340455d66b2172e9190e99f40dff9357471177 9.13kB / 9.13kB done
+#4 sha256:2710bf1a79616f50d74261893d5d77cf614cc0de6fe4eabd5087053d7d80b23d 1.75kB / 1.75kB done
+#4 sha256:3331342fa6b9fb07c33a61a194cb00089cf4e1a28bb44f5ff256e89294b32fdb 5.51kB / 5.51kB done
+#4 DONE 0.2s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.39kB 0.0s done
+#5 DONE 0.1s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 0.356 exec /bin/sh: exec format error
+#6 ERROR: process "/bin/sh -c apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 1
+------
+ > [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*:
+0.356 exec /bin/sh: exec format error
+------
+failed to solve: process "/bin/sh -c apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*" did not complete successfully: exit code: 1
+==== 2026-05-14T00:45:23-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 10.214.35.10:53: dial udp 10.214.35.10:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 10.214.35.10:53: dial udp 10.214.35.10:53: connect: network is unreachable
+==== 2026-05-14T00:45:25-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 10.214.35.10:53: dial udp 10.214.35.10:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 10.214.35.10:53: dial udp 10.214.35.10:53: connect: network is unreachable
+==== 2026-05-14T00:45:26-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.2s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 10.214.35.10:53: dial udp 10.214.35.10:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on 10.214.35.10:53: dial udp 10.214.35.10:53: connect: network is unreachable
+==== 2026-05-14T00:45:28-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 1023946.5s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot internal] load build context
+#4 DONE 0.0s
+
+#5 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#5 resolve docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438 0.0s done
+#5 ...
+
+#4 [robot internal] load build context
+#4 transferring context: 1.39kB 0.0s done
+#4 DONE 0.1s
+
+#5 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#5 sha256:2ba3e0a623cfbda2153e2a0af4c301e93e1f3766d9c046ba361d506bd1c85acb 1.75kB / 1.75kB done
+#5 sha256:d9c8998514b4afbe5517a7cca405ddf59c33b9240a21c029feab133d8beaa8a4 5.51kB / 5.51kB done
+#5 sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438 9.13kB / 9.13kB done
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 0B / 28.12MB 0.1s
+#5 sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 0B / 3.35MB 0.1s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 0B / 15.87MB 0.1s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 2.10MB / 28.12MB 0.6s
+#5 sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 1.05MB / 3.35MB 0.6s
+#5 sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 2.10MB / 3.35MB 0.9s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 4.19MB / 28.12MB 1.0s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 6.29MB / 28.12MB 1.3s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 1.05MB / 15.87MB 1.3s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 8.39MB / 28.12MB 1.6s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 2.10MB / 15.87MB 1.6s
+#5 sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 3.15MB / 3.35MB 1.8s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 11.53MB / 28.12MB 2.0s
+#5 sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 3.35MB / 3.35MB 2.0s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 3.15MB / 15.87MB 2.0s
+#5 sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 3.35MB / 3.35MB 2.1s done
+#5 sha256:af711a5378390f945cb7d896ce79546204ad77a5fe3f4baaba96b50089ec3d20 0B / 250B 2.2s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 4.19MB / 15.87MB 2.3s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 14.68MB / 28.12MB 2.5s
+#5 sha256:af711a5378390f945cb7d896ce79546204ad77a5fe3f4baaba96b50089ec3d20 250B / 250B 2.3s done
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 5.24MB / 15.87MB 2.7s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 16.78MB / 28.12MB 2.9s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 6.29MB / 15.87MB 2.9s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 7.34MB / 15.87MB 3.1s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 18.87MB / 28.12MB 3.3s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 8.39MB / 15.87MB 3.4s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 20.97MB / 28.12MB 3.6s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 9.44MB / 15.87MB 3.6s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 23.07MB / 28.12MB 4.0s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 10.49MB / 15.87MB 4.0s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 11.53MB / 15.87MB 4.2s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 25.17MB / 28.12MB 4.4s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 12.58MB / 15.87MB 4.4s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 13.63MB / 15.87MB 4.6s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 27.26MB / 28.12MB 4.8s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 14.68MB / 15.87MB 4.8s
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 15.87MB / 15.87MB 5.0s
+#5 sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 28.12MB / 28.12MB 6.0s done
+#5 sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 15.87MB / 15.87MB 6.2s done
+#5 extracting sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 0.1s
+#5 extracting sha256:f400d36d7784570c9fb7558e367d2b5d38e8b2f1d6faee041815acea7f87e669 1.3s done
+#5 extracting sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375
+#5 extracting sha256:ae85f80de19a95447035673506a86aca8b0415f269b43a8535236c3320d04375 0.1s done
+#5 extracting sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 0.1s
+#5 extracting sha256:775f62d3f67010227ca1f1db54a6016a9e19b7c80ed81697a9706bcab714431a 0.7s done
+#5 extracting sha256:af711a5378390f945cb7d896ce79546204ad77a5fe3f4baaba96b50089ec3d20
+#5 extracting sha256:af711a5378390f945cb7d896ce79546204ad77a5fe3f4baaba96b50089ec3d20 done
+#5 DONE 8.9s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 0.392 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#6 0.606 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#6 0.684 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+#6 0.761 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8690 kB]
+#6 1.681 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+#6 1.806 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [303 kB]
+#6 2.667 Fetched 9254 kB in 2s (3827 kB/s)
+#6 2.667 Reading package lists...
+#6 3.293 Reading package lists...
+#6 3.903 Building dependency tree...
+#6 4.075 Reading state information...
+#6 4.428 The following additional packages will be installed:
+#6 4.428   binutils binutils-aarch64-linux-gnu binutils-common bzip2 cpp cpp-12
+#6 4.429   dpkg-dev fontconfig-config fonts-dejavu-core g++ g++-12 gcc-12
+#6 4.429   imagemagick-6-common libaom3 libasan8 libatlas3-base libatomic1 libbinutils
+#6 4.430   libbrotli1 libbsd0 libc-dev-bin libc6-dev libcamera0.0.3 libcc1-0
+#6 4.430   libcrypt-dev libctf-nobfd0 libctf0 libdav1d6 libdbus-1-3 libde265-0
+#6 4.430   libdeflate0 libdpkg-perl libdrm-amdgpu1 libdrm-common libdrm-nouveau2
+#6 4.430   libdrm-radeon1 libdrm2 libdw1 libedit2 libelf1 libexpat1 libfftw3-double3
+#6 4.430   libfontconfig1 libfreetype6 libgcc-12-dev libgdbm-compat4 libgfortran5
+#6 4.430   libgl1-mesa-dri libglapi-mesa libglvnd0 libglx-mesa0 libglx0 libgomp1
+#6 4.431   libgprofng0 libheif1 libhwasan0 libi2c0 libicu72 libisl23 libitm1
+#6 4.431   libjansson4 libjbig0 libjpeg62-turbo libkmod2 liblcms2-2 liblerc4 libllvm15
+#6 4.431   liblqr-1-0 liblsan0 libltdl7 liblttng-ust-common1 liblttng-ust-ctl5
+#6 4.431   liblttng-ust1 libmagickcore-6.q16-6 libmagickwand-6.q16-6 libmpc3 libmpfr6
+#6 4.432   libnsl-dev libnuma1 libperl5.36 libpng16-16 libsensors-config libsensors5
+#6 4.432   libstdc++-12-dev libtirpc-dev libtsan2 libubsan1 libunwind8 libv4l-0
+#6 4.432   libv4lconvert0 libwebp7 libwebpdemux2 libwebpmux3 libx11-6 libx11-data
+#6 4.432   libx11-xcb1 libx265-199 libxau6 libxcb-dri2-0 libxcb-dri3-0 libxcb-glx0
+#6 4.437   libxcb-present0 libxcb-randr0 libxcb-shm0 libxcb-sync1 libxcb-xfixes0
+#6 4.437   libxcb1 libxdmcp6 libxext6 libxfixes3 libxml2 libxshmfence1 libxxf86vm1
+#6 4.437   libyaml-0-2 libz3-4 linux-libc-dev make patch perl perl-modules-5.36
+#6 4.437   rpcsvc-proto udev xz-utils
+#6 4.437 Suggested packages:
+#6 4.437   binutils-doc bzip2-doc cpp-doc gcc-12-locales cpp-12-doc debian-keyring
+#6 4.437   gcc-12-doc gcc-multilib manpages-dev autoconf automake libtool flex bison
+#6 4.437   gdb gcc-doc libi2c-dev python3-smbus libatlas-doc liblapack-doc glibc-doc
+#6 4.437   libcamera-ipa gnupg | sq | sqop | pgpainless-cli sensible-utils git bzr
+#6 4.437   libfftw3-bin libfftw3-dev low-memory-monitor liblcms2-utils
+#6 4.437   libmagickcore-6.q16-6-extra lm-sensors libstdc++-12-doc make-doc ed
+#6 4.437   diffutils-doc perl-doc libterm-readline-gnu-perl
+#6 4.437   | libterm-readline-perl-perl libtap-harness-archive-perl zbarcam-gtk
+#6 4.437   zbarcam-qt
+#6 4.437 Recommended packages:
+#6 4.437   fakeroot gnupg | sq | sqop | pgpainless-cli libalgorithm-merge-perl
+#6 4.437   read-edid manpages manpages-dev libc-devtools dbus libfile-fcntllock-perl
+#6 4.437   liblocale-gettext-perl libglib2.0-data shared-mime-info xdg-user-dirs
+#6 4.437   ghostscript gsfonts libmagickcore-6.q16-6-extra
+#6 5.149 The following NEW packages will be installed:
+#6 5.149   binutils binutils-aarch64-linux-gnu binutils-common build-essential bzip2
+#6 5.150   cpp cpp-12 dpkg-dev fontconfig-config fonts-dejavu-core g++ g++-12 gcc
+#6 5.150   gcc-12 i2c-tools imagemagick-6-common libaom3 libasan8 libatlas-base-dev
+#6 5.150   libatlas3-base libatomic1 libbinutils libbrotli1 libbsd0 libc-dev-bin
+#6 5.150   libc6-dev libcamera-dev libcamera0.0.3 libcc1-0 libcrypt-dev libctf-nobfd0
+#6 5.151   libctf0 libdav1d6 libdbus-1-3 libde265-0 libdeflate0 libdpkg-perl
+#6 5.151   libdrm-amdgpu1 libdrm-common libdrm-nouveau2 libdrm-radeon1 libdrm2 libdw1
+#6 5.151   libedit2 libelf1 libexpat1 libfftw3-double3 libfontconfig1 libfreetype6
+#6 5.151   libgcc-12-dev libgdbm-compat4 libgfortran5 libgl1 libgl1-mesa-dri
+#6 5.151   libglapi-mesa libglib2.0-0 libglvnd0 libglx-mesa0 libglx0 libgomp1 libgpiod2
+#6 5.151   libgprofng0 libheif1 libhwasan0 libi2c0 libicu72 libisl23 libitm1
+#6 5.152   libjansson4 libjbig0 libjpeg62-turbo libkmod2 liblcms2-2 liblerc4 libllvm15
+#6 5.152   liblqr-1-0 liblsan0 libltdl7 liblttng-ust-common1 liblttng-ust-ctl5
+#6 5.152   liblttng-ust1 libmagickcore-6.q16-6 libmagickwand-6.q16-6 libmpc3 libmpfr6
+#6 5.152   libnsl-dev libnuma1 libopenjp2-7 libperl5.36 libpng16-16 libsensors-config
+#6 5.153   libsensors5 libstdc++-12-dev libtiff6 libtirpc-dev libtsan2 libubsan1
+#6 5.153   libunwind8 libv4l-0 libv4lconvert0 libwebp7 libwebpdemux2 libwebpmux3
+#6 5.153   libx11-6 libx11-data libx11-xcb1 libx265-199 libxau6 libxcb-dri2-0
+#6 5.153   libxcb-dri3-0 libxcb-glx0 libxcb-present0 libxcb-randr0 libxcb-shm0
+#6 5.153   libxcb-sync1 libxcb-xfixes0 libxcb1 libxdmcp6 libxext6 libxfixes3 libxml2
+#6 5.153   libxshmfence1 libxxf86vm1 libyaml-0-2 libz3-4 libzbar0 linux-libc-dev make
+#6 5.154   patch perl perl-modules-5.36 rpcsvc-proto udev xz-utils zbar-tools
+#6 5.322 0 upgraded, 135 newly installed, 0 to remove and 6 not upgraded.
+#6 5.322 Need to get 133 MB of archives.
+#6 5.322 After this operation, 597 MB of additional disk space will be used.
+#6 5.322 Get:1 http://deb.debian.org/debian bookworm/main arm64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2815 kB]
+#6 5.885 Get:2 http://deb.debian.org/debian bookworm/main arm64 libgdbm-compat4 arm64 1.23-3 [48.0 kB]
+#6 5.886 Get:3 http://deb.debian.org/debian bookworm/main arm64 libperl5.36 arm64 5.36.0-7+deb12u3 [4009 kB]
+#6 6.459 Get:4 http://deb.debian.org/debian bookworm/main arm64 perl arm64 5.36.0-7+deb12u3 [239 kB]
+#6 6.522 Get:5 http://deb.debian.org/debian bookworm/main arm64 libgomp1 arm64 12.2.0-14+deb12u1 [104 kB]
+#6 6.591 Get:6 http://deb.debian.org/debian bookworm/main arm64 libfftw3-double3 arm64 3.3.10-1 [326 kB]
+#6 6.594 Get:7 http://deb.debian.org/debian bookworm/main arm64 libexpat1 arm64 2.5.0-1+deb12u2 [86.3 kB]
+#6 6.598 Get:8 http://deb.debian.org/debian bookworm/main arm64 libbrotli1 arm64 1.0.9-2+b6 [269 kB]
+#6 6.600 Get:9 http://deb.debian.org/debian bookworm/main arm64 libpng16-16 arm64 1.6.39-2+deb12u5 [270 kB]
+#6 6.662 Get:10 http://deb.debian.org/debian bookworm/main arm64 libfreetype6 arm64 2.12.1+dfsg-5+deb12u4 [368 kB]
+#6 6.666 Get:11 http://deb.debian.org/debian bookworm/main arm64 fonts-dejavu-core all 2.37-6 [1068 kB]
+#6 6.731 Get:12 http://deb.debian.org/debian bookworm/main arm64 fontconfig-config arm64 2.14.1-4 [315 kB]
+#6 6.762 Get:13 http://deb.debian.org/debian bookworm/main arm64 libfontconfig1 arm64 2.14.1-4 [381 kB]
+#6 6.822 Get:14 http://deb.debian.org/debian bookworm/main arm64 libaom3 arm64 3.6.0-1+deb12u2 [1373 kB]
+#6 7.810 Get:15 http://deb.debian.org/debian bookworm/main arm64 libdav1d6 arm64 1.0.0-2+deb12u1 [275 kB]
+#6 7.811 Get:16 http://deb.debian.org/debian bookworm/main arm64 libde265-0 arm64 1.0.11-1+deb12u2 [148 kB]
+#6 7.815 Get:17 http://deb.debian.org/debian bookworm/main arm64 libnuma1 arm64 2.0.16-1 [20.3 kB]
+#6 7.818 Get:18 http://deb.debian.org/debian bookworm/main arm64 libx265-199 arm64 3.5-2+b1 [603 kB]
+#6 7.821 Get:19 http://deb.debian.org/debian bookworm/main arm64 libheif1 arm64 1.15.1-1+deb12u1 [191 kB]
+#6 7.882 Get:20 http://deb.debian.org/debian bookworm/main arm64 libjbig0 arm64 2.1-6.1 [30.0 kB]
+#6 7.885 Get:21 http://deb.debian.org/debian bookworm/main arm64 libjpeg62-turbo arm64 1:2.1.5-2 [171 kB]
+#6 7.887 Get:22 http://deb.debian.org/debian bookworm/main arm64 liblcms2-2 arm64 2.14-2+deb12u1 [144 kB]
+#6 7.889 Get:23 http://deb.debian.org/debian bookworm/main arm64 libglib2.0-0 arm64 2.74.6-2+deb12u9 [1316 kB]
+#6 7.970 Get:24 http://deb.debian.org/debian bookworm/main arm64 liblqr-1-0 arm64 0.4.2-2.1 [23.9 kB]
+#6 8.039 Get:25 http://deb.debian.org/debian bookworm/main arm64 libltdl7 arm64 2.4.7-7~deb12u1 [392 kB]
+#6 8.043 Get:26 http://deb.debian.org/debian-security bookworm-security/main arm64 libopenjp2-7 arm64 2.5.0-2+deb12u3 [176 kB]
+#6 8.048 Get:27 http://deb.debian.org/debian bookworm/main arm64 libdeflate0 arm64 1.14-1 [54.3 kB]
+#6 8.110 Get:28 http://deb.debian.org/debian bookworm/main arm64 liblerc4 arm64 4.0.0+ds-2 [138 kB]
+#6 8.117 Get:29 http://deb.debian.org/debian bookworm/main arm64 libwebp7 arm64 1.2.4-0.2+deb12u1 [260 kB]
+#6 8.119 Get:30 http://deb.debian.org/debian bookworm/main arm64 libtiff6 arm64 4.5.0-6+deb12u4 [301 kB]
+#6 8.190 Get:31 http://deb.debian.org/debian bookworm/main arm64 libwebpdemux2 arm64 1.2.4-0.2+deb12u1 [99.3 kB]
+#6 8.192 Get:32 http://deb.debian.org/debian bookworm/main arm64 libwebpmux3 arm64 1.2.4-0.2+deb12u1 [109 kB]
+#6 8.194 Get:33 http://deb.debian.org/debian bookworm/main arm64 libxau6 arm64 1:1.0.9-1 [19.7 kB]
+#6 8.195 Get:34 http://deb.debian.org/debian bookworm/main arm64 libbsd0 arm64 0.11.7-2 [115 kB]
+#6 8.196 Get:35 http://deb.debian.org/debian bookworm/main arm64 libxdmcp6 arm64 1:1.1.2-3 [25.4 kB]
+#6 8.219 Get:36 http://deb.debian.org/debian bookworm/main arm64 libxcb1 arm64 1.15-1 [143 kB]
+#6 8.221 Get:37 http://deb.debian.org/debian bookworm/main arm64 libx11-data all 2:1.8.4-2+deb12u2 [292 kB]
+#6 8.283 Get:38 http://deb.debian.org/debian bookworm/main arm64 libx11-6 arm64 2:1.8.4-2+deb12u2 [735 kB]
+#6 8.286 Get:39 http://deb.debian.org/debian bookworm/main arm64 libxext6 arm64 2:1.3.4-1+b1 [51.7 kB]
+#6 8.341 Get:40 http://deb.debian.org/debian bookworm/main arm64 libicu72 arm64 72.1-3+deb12u1 [9202 kB]
+#6 9.584 Get:41 http://deb.debian.org/debian bookworm/main arm64 libxml2 arm64 2.9.14+dfsg-1.3~deb12u5 [620 kB]
+#6 9.587 Get:42 http://deb.debian.org/debian bookworm/main arm64 imagemagick-6-common all 8:6.9.11.60+dfsg-1.6+deb12u9 [172 kB]
+#6 9.653 Get:43 http://deb.debian.org/debian bookworm/main arm64 libmagickcore-6.q16-6 arm64 8:6.9.11.60+dfsg-1.6+deb12u9 [1602 kB]
+#6 9.733 Get:44 http://deb.debian.org/debian bookworm/main arm64 libmagickwand-6.q16-6 arm64 8:6.9.11.60+dfsg-1.6+deb12u9 [356 kB]
+#6 9.737 Get:45 http://deb.debian.org/debian bookworm/main arm64 libkmod2 arm64 30+20221128-1 [54.4 kB]
+#6 9.742 Get:46 http://deb.debian.org/debian bookworm/main arm64 udev arm64 252.39-1~deb12u2 [1656 kB]
+#6 9.842 Get:47 http://deb.debian.org/debian bookworm/main arm64 bzip2 arm64 1.0.8-5+b1 [48.9 kB]
+#6 9.902 Get:48 http://deb.debian.org/debian bookworm/main arm64 xz-utils arm64 5.4.1-1 [469 kB]
+#6 9.904 Get:49 http://deb.debian.org/debian bookworm/main arm64 binutils-common arm64 2.40-2 [2487 kB]
+#6 10.08 Get:50 http://deb.debian.org/debian bookworm/main arm64 libbinutils arm64 2.40-2 [645 kB]
+#6 10.11 Get:51 http://deb.debian.org/debian bookworm/main arm64 libctf-nobfd0 arm64 2.40-2 [144 kB]
+#6 10.18 Get:52 http://deb.debian.org/debian bookworm/main arm64 libctf0 arm64 2.40-2 [79.2 kB]
+#6 10.25 Get:53 http://deb.debian.org/debian bookworm/main arm64 libgprofng0 arm64 2.40-2 [680 kB]
+#6 10.32 Get:54 http://deb.debian.org/debian bookworm/main arm64 libjansson4 arm64 2.14-2 [40.2 kB]
+#6 10.32 Get:55 http://deb.debian.org/debian bookworm/main arm64 binutils-aarch64-linux-gnu arm64 2.40-2 [2637 kB]
+#6 10.61 Get:56 http://deb.debian.org/debian bookworm/main arm64 binutils arm64 2.40-2 [64.9 kB]
+#6 10.67 Get:57 http://deb.debian.org/debian bookworm/main arm64 libc-dev-bin arm64 2.36-9+deb12u14 [47.2 kB]
+#6 10.68 Get:58 http://deb.debian.org/debian-security bookworm-security/main arm64 linux-libc-dev arm64 6.1.172-1 [2247 kB]
+#6 10.75 Get:59 http://deb.debian.org/debian bookworm/main arm64 libcrypt-dev arm64 1:4.4.33-2 [121 kB]
+#6 10.76 Get:60 http://deb.debian.org/debian bookworm/main arm64 libtirpc-dev arm64 1.3.3+ds-1 [194 kB]
+#6 10.76 Get:61 http://deb.debian.org/debian bookworm/main arm64 libnsl-dev arm64 1.3.0-2 [66.1 kB]
+#6 10.82 Get:62 http://deb.debian.org/debian bookworm/main arm64 rpcsvc-proto arm64 1.4.3-1 [59.7 kB]
+#6 10.82 Get:63 http://deb.debian.org/debian bookworm/main arm64 libc6-dev arm64 2.36-9+deb12u14 [1436 kB]
+#6 10.90 Get:64 http://deb.debian.org/debian bookworm/main arm64 libisl23 arm64 0.25-1.1 [610 kB]
+#6 10.90 Get:65 http://deb.debian.org/debian bookworm/main arm64 libmpfr6 arm64 4.2.0-1 [600 kB]
+#6 10.97 Get:66 http://deb.debian.org/debian bookworm/main arm64 libmpc3 arm64 1.3.1-1 [49.2 kB]
+#6 10.97 Get:67 http://deb.debian.org/debian bookworm/main arm64 cpp-12 arm64 12.2.0-14+deb12u1 [8228 kB]
+#6 12.10 Get:68 http://deb.debian.org/debian bookworm/main arm64 cpp arm64 4:12.2.0-3 [6832 B]
+#6 12.10 Get:69 http://deb.debian.org/debian bookworm/main arm64 libcc1-0 arm64 12.2.0-14+deb12u1 [37.7 kB]
+#6 12.10 Get:70 http://deb.debian.org/debian bookworm/main arm64 libitm1 arm64 12.2.0-14+deb12u1 [24.0 kB]
+#6 12.10 Get:71 http://deb.debian.org/debian bookworm/main arm64 libatomic1 arm64 12.2.0-14+deb12u1 [9568 B]
+#6 12.10 Get:72 http://deb.debian.org/debian bookworm/main arm64 libasan8 arm64 12.2.0-14+deb12u1 [2096 kB]
+#6 12.23 Get:73 http://deb.debian.org/debian bookworm/main arm64 liblsan0 arm64 12.2.0-14+deb12u1 [926 kB]
+#6 12.24 Get:74 http://deb.debian.org/debian bookworm/main arm64 libtsan2 arm64 12.2.0-14+deb12u1 [2178 kB]
+#6 12.53 Get:75 http://deb.debian.org/debian bookworm/main arm64 libubsan1 arm64 12.2.0-14+deb12u1 [862 kB]
+#6 12.56 Get:76 http://deb.debian.org/debian bookworm/main arm64 libhwasan0 arm64 12.2.0-14+deb12u1 [999 kB]
+#6 12.64 Get:77 http://deb.debian.org/debian bookworm/main arm64 libgcc-12-dev arm64 12.2.0-14+deb12u1 [956 kB]
+#6 12.71 Get:78 http://deb.debian.org/debian bookworm/main arm64 gcc-12 arm64 12.2.0-14+deb12u1 [16.3 MB]
+#6 14.98 Get:79 http://deb.debian.org/debian bookworm/main arm64 gcc arm64 4:12.2.0-3 [5244 B]
+#6 14.98 Get:80 http://deb.debian.org/debian bookworm/main arm64 libstdc++-12-dev arm64 12.2.0-14+deb12u1 [2007 kB]
+#6 14.99 Get:81 http://deb.debian.org/debian bookworm/main arm64 g++-12 arm64 12.2.0-14+deb12u1 [9072 kB]
+#6 15.96 Get:82 http://deb.debian.org/debian bookworm/main arm64 g++ arm64 4:12.2.0-3 [1336 B]
+#6 16.03 Get:83 http://deb.debian.org/debian bookworm/main arm64 make arm64 4.3-4.1 [391 kB]
+#6 16.03 Get:84 http://deb.debian.org/debian bookworm/main arm64 libdpkg-perl all 1.21.23 [604 kB]
+#6 16.04 Get:85 http://deb.debian.org/debian bookworm/main arm64 patch arm64 2.7.6-7 [121 kB]
+#6 16.11 Get:86 http://deb.debian.org/debian bookworm/main arm64 dpkg-dev all 1.21.23 [1354 kB]
+#6 16.19 Get:87 http://deb.debian.org/debian bookworm/main arm64 build-essential arm64 12.9 [7704 B]
+#6 16.19 Get:88 http://deb.debian.org/debian bookworm/main arm64 libi2c0 arm64 4.3-2+b3 [9456 B]
+#6 16.19 Get:89 http://deb.debian.org/debian bookworm/main arm64 i2c-tools arm64 4.3-2+b3 [78.6 kB]
+#6 16.20 Get:90 http://deb.debian.org/debian bookworm/main arm64 libgfortran5 arm64 12.2.0-14+deb12u1 [340 kB]
+#6 16.20 Get:91 http://deb.debian.org/debian bookworm/main arm64 libatlas3-base arm64 3.10.3-13 [2537 kB]
+#6 16.35 Get:92 http://deb.debian.org/debian bookworm/main arm64 libatlas-base-dev arm64 3.10.3-13 [2655 kB]
+#6 16.58 Get:93 http://deb.debian.org/debian bookworm/main arm64 libelf1 arm64 0.188-2.1 [173 kB]
+#6 16.61 Get:94 http://deb.debian.org/debian bookworm/main arm64 libdw1 arm64 0.188-2.1 [219 kB]
+#6 16.62 Get:95 http://deb.debian.org/debian bookworm/main arm64 liblttng-ust-common1 arm64 2.13.5-1 [60.3 kB]
+#6 16.69 Get:96 http://deb.debian.org/debian bookworm/main arm64 liblttng-ust-ctl5 arm64 2.13.5-1 [111 kB]
+#6 16.69 Get:97 http://deb.debian.org/debian bookworm/main arm64 liblttng-ust1 arm64 2.13.5-1 [206 kB]
+#6 16.69 Get:98 http://deb.debian.org/debian bookworm/main arm64 libunwind8 arm64 1.6.2-3 [47.4 kB]
+#6 16.69 Get:99 http://deb.debian.org/debian bookworm/main arm64 libyaml-0-2 arm64 0.2.5-1 [50.4 kB]
+#6 16.79 Get:100 http://deb.debian.org/debian bookworm/main arm64 libcamera0.0.3 arm64 0.0.3-6 [498 kB]
+#6 16.88 Get:101 http://deb.debian.org/debian bookworm/main arm64 libcamera-dev arm64 0.0.3-6 [36.4 kB]
+#6 16.90 Get:102 http://deb.debian.org/debian bookworm/main arm64 libdbus-1-3 arm64 1.14.10-1~deb12u1 [193 kB]
+#6 16.90 Get:103 http://deb.debian.org/debian bookworm/main arm64 libdrm-common all 2.4.114-1 [7112 B]
+#6 16.90 Get:104 http://deb.debian.org/debian bookworm/main arm64 libdrm2 arm64 2.4.114-1+b1 [36.7 kB]
+#6 16.97 Get:105 http://deb.debian.org/debian bookworm/main arm64 libdrm-amdgpu1 arm64 2.4.114-1+b1 [20.4 kB]
+#6 16.97 Get:106 http://deb.debian.org/debian bookworm/main arm64 libdrm-nouveau2 arm64 2.4.114-1+b1 [18.4 kB]
+#6 16.97 Get:107 http://deb.debian.org/debian bookworm/main arm64 libdrm-radeon1 arm64 2.4.114-1+b1 [20.9 kB]
+#6 16.97 Get:108 http://deb.debian.org/debian bookworm/main arm64 libedit2 arm64 3.1-20221030-2 [88.1 kB]
+#6 16.97 Get:109 http://deb.debian.org/debian bookworm/main arm64 libglvnd0 arm64 1.6.0-1 [41.4 kB]
+#6 16.98 Get:110 http://deb.debian.org/debian bookworm/main arm64 libglapi-mesa arm64 22.3.6-1+deb12u1 [44.7 kB]
+#6 16.98 Get:111 http://deb.debian.org/debian bookworm/main arm64 libx11-xcb1 arm64 2:1.8.4-2+deb12u2 [192 kB]
+#6 17.02 Get:112 http://deb.debian.org/debian bookworm/main arm64 libxcb-dri2-0 arm64 1.15-1 [107 kB]
+#6 17.02 Get:113 http://deb.debian.org/debian bookworm/main arm64 libxcb-dri3-0 arm64 1.15-1 [107 kB]
+#6 17.02 Get:114 http://deb.debian.org/debian bookworm/main arm64 libxcb-glx0 arm64 1.15-1 [123 kB]
+#6 17.08 Get:115 http://deb.debian.org/debian bookworm/main arm64 libxcb-present0 arm64 1.15-1 [106 kB]
+#6 17.09 Get:116 http://deb.debian.org/debian bookworm/main arm64 libxcb-randr0 arm64 1.15-1 [117 kB]
+#6 17.15 Get:117 http://deb.debian.org/debian bookworm/main arm64 libxcb-shm0 arm64 1.15-1 [106 kB]
+#6 17.15 Get:118 http://deb.debian.org/debian bookworm/main arm64 libxcb-sync1 arm64 1.15-1 [109 kB]
+#6 17.16 Get:119 http://deb.debian.org/debian bookworm/main arm64 libxcb-xfixes0 arm64 1.15-1 [110 kB]
+#6 17.16 Get:120 http://deb.debian.org/debian bookworm/main arm64 libxfixes3 arm64 1:6.0.0-2 [22.9 kB]
+#6 17.16 Get:121 http://deb.debian.org/debian bookworm/main arm64 libxshmfence1 arm64 1.3-1 [8712 B]
+#6 17.16 Get:122 http://deb.debian.org/debian bookworm/main arm64 libxxf86vm1 arm64 1:1.1.4-1+b2 [20.1 kB]
+#6 17.16 Get:123 http://deb.debian.org/debian bookworm/main arm64 libz3-4 arm64 4.8.12-3.1 [6282 kB]
+#6 17.89 Get:124 http://deb.debian.org/debian bookworm/main arm64 libllvm15 arm64 1:15.0.6-4+b1 [20.7 MB]
+#6 20.15 Get:125 http://deb.debian.org/debian bookworm/main arm64 libsensors-config all 1:3.6.0-7.1 [14.3 kB]
+#6 20.15 Get:126 http://deb.debian.org/debian bookworm/main arm64 libsensors5 arm64 1:3.6.0-7.1 [33.3 kB]
+#6 20.15 Get:127 http://deb.debian.org/debian bookworm/main arm64 libgl1-mesa-dri arm64 22.3.6-1+deb12u1 [6278 kB]
+#6 20.79 Get:128 http://deb.debian.org/debian bookworm/main arm64 libglx-mesa0 arm64 22.3.6-1+deb12u1 [146 kB]
+#6 20.80 Get:129 http://deb.debian.org/debian bookworm/main arm64 libglx0 arm64 1.6.0-1 [30.8 kB]
+#6 20.80 Get:130 http://deb.debian.org/debian bookworm/main arm64 libgl1 arm64 1.6.0-1 [90.2 kB]
+#6 20.82 Get:131 http://deb.debian.org/debian bookworm/main arm64 libgpiod2 arm64 1.6.3-1+b3 [37.6 kB]
+#6 20.82 Get:132 http://deb.debian.org/debian bookworm/main arm64 libv4lconvert0 arm64 1.22.1-5+b2 [141 kB]
+#6 20.91 Get:133 http://deb.debian.org/debian bookworm/main arm64 libv4l-0 arm64 1.22.1-5+b2 [107 kB]
+#6 20.91 Get:134 http://deb.debian.org/debian bookworm/main arm64 libzbar0 arm64 0.23.92-7+deb12u1 [118 kB]
+#6 21.01 Get:135 http://deb.debian.org/debian bookworm/main arm64 zbar-tools arm64 0.23.92-7+deb12u1 [36.1 kB]
+#6 22.12 debconf: delaying package configuration, since apt-utils is not installed
+#6 22.16 Fetched 133 MB in 16s (8375 kB/s)
+#6 22.25 Selecting previously unselected package perl-modules-5.36.
+#6 22.25 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6689 files and directories currently installed.)
+#6 22.25 Preparing to unpack .../000-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
+#6 22.26 Unpacking perl-modules-5.36 (5.36.0-7+deb12u3) ...
+#6 22.63 Selecting previously unselected package libgdbm-compat4:arm64.
+#6 22.63 Preparing to unpack .../001-libgdbm-compat4_1.23-3_arm64.deb ...
+#6 22.64 Unpacking libgdbm-compat4:arm64 (1.23-3) ...
+#6 22.75 Selecting previously unselected package libperl5.36:arm64.
+#6 22.75 Preparing to unpack .../002-libperl5.36_5.36.0-7+deb12u3_arm64.deb ...
+#6 22.75 Unpacking libperl5.36:arm64 (5.36.0-7+deb12u3) ...
+#6 23.17 Selecting previously unselected package perl.
+#6 23.17 Preparing to unpack .../003-perl_5.36.0-7+deb12u3_arm64.deb ...
+#6 23.18 Unpacking perl (5.36.0-7+deb12u3) ...
+#6 23.24 Selecting previously unselected package libgomp1:arm64.
+#6 23.24 Preparing to unpack .../004-libgomp1_12.2.0-14+deb12u1_arm64.deb ...
+#6 23.24 Unpacking libgomp1:arm64 (12.2.0-14+deb12u1) ...
+#6 23.32 Selecting previously unselected package libfftw3-double3:arm64.
+#6 23.32 Preparing to unpack .../005-libfftw3-double3_3.3.10-1_arm64.deb ...
+#6 23.32 Unpacking libfftw3-double3:arm64 (3.3.10-1) ...
+#6 23.39 Selecting previously unselected package libexpat1:arm64.
+#6 23.39 Preparing to unpack .../006-libexpat1_2.5.0-1+deb12u2_arm64.deb ...
+#6 23.39 Unpacking libexpat1:arm64 (2.5.0-1+deb12u2) ...
+#6 23.50 Selecting previously unselected package libbrotli1:arm64.
+#6 23.50 Preparing to unpack .../007-libbrotli1_1.0.9-2+b6_arm64.deb ...
+#6 23.50 Unpacking libbrotli1:arm64 (1.0.9-2+b6) ...
+#6 23.56 Selecting previously unselected package libpng16-16:arm64.
+#6 23.56 Preparing to unpack .../008-libpng16-16_1.6.39-2+deb12u5_arm64.deb ...
+#6 23.56 Unpacking libpng16-16:arm64 (1.6.39-2+deb12u5) ...
+#6 23.62 Selecting previously unselected package libfreetype6:arm64.
+#6 23.62 Preparing to unpack .../009-libfreetype6_2.12.1+dfsg-5+deb12u4_arm64.deb ...
+#6 23.63 Unpacking libfreetype6:arm64 (2.12.1+dfsg-5+deb12u4) ...
+#6 23.74 Selecting previously unselected package fonts-dejavu-core.
+#6 23.74 Preparing to unpack .../010-fonts-dejavu-core_2.37-6_all.deb ...
+#6 23.75 Unpacking fonts-dejavu-core (2.37-6) ...
+#6 23.88 Selecting previously unselected package fontconfig-config.
+#6 23.88 Preparing to unpack .../011-fontconfig-config_2.14.1-4_arm64.deb ...
+#6 23.96 Unpacking fontconfig-config (2.14.1-4) ...
+#6 24.07 Selecting previously unselected package libfontconfig1:arm64.
+#6 24.07 Preparing to unpack .../012-libfontconfig1_2.14.1-4_arm64.deb ...
+#6 24.08 Unpacking libfontconfig1:arm64 (2.14.1-4) ...
+#6 24.12 Selecting previously unselected package libaom3:arm64.
+#6 24.12 Preparing to unpack .../013-libaom3_3.6.0-1+deb12u2_arm64.deb ...
+#6 24.13 Unpacking libaom3:arm64 (3.6.0-1+deb12u2) ...
+#6 24.26 Selecting previously unselected package libdav1d6:arm64.
+#6 24.27 Preparing to unpack .../014-libdav1d6_1.0.0-2+deb12u1_arm64.deb ...
+#6 24.27 Unpacking libdav1d6:arm64 (1.0.0-2+deb12u1) ...
+#6 24.39 Selecting previously unselected package libde265-0:arm64.
+#6 24.39 Preparing to unpack .../015-libde265-0_1.0.11-1+deb12u2_arm64.deb ...
+#6 24.39 Unpacking libde265-0:arm64 (1.0.11-1+deb12u2) ...
+#6 24.44 Selecting previously unselected package libnuma1:arm64.
+#6 24.44 Preparing to unpack .../016-libnuma1_2.0.16-1_arm64.deb ...
+#6 24.45 Unpacking libnuma1:arm64 (2.0.16-1) ...
+#6 24.55 Selecting previously unselected package libx265-199:arm64.
+#6 24.55 Preparing to unpack .../017-libx265-199_3.5-2+b1_arm64.deb ...
+#6 24.55 Unpacking libx265-199:arm64 (3.5-2+b1) ...
+#6 24.64 Selecting previously unselected package libheif1:arm64.
+#6 24.64 Preparing to unpack .../018-libheif1_1.15.1-1+deb12u1_arm64.deb ...
+#6 24.64 Unpacking libheif1:arm64 (1.15.1-1+deb12u1) ...
+#6 24.70 Selecting previously unselected package libjbig0:arm64.
+#6 24.70 Preparing to unpack .../019-libjbig0_2.1-6.1_arm64.deb ...
+#6 24.70 Unpacking libjbig0:arm64 (2.1-6.1) ...
+#6 24.80 Selecting previously unselected package libjpeg62-turbo:arm64.
+#6 24.80 Preparing to unpack .../020-libjpeg62-turbo_1%3a2.1.5-2_arm64.deb ...
+#6 24.81 Unpacking libjpeg62-turbo:arm64 (1:2.1.5-2) ...
+#6 24.86 Selecting previously unselected package liblcms2-2:arm64.
+#6 24.86 Preparing to unpack .../021-liblcms2-2_2.14-2+deb12u1_arm64.deb ...
+#6 24.87 Unpacking liblcms2-2:arm64 (2.14-2+deb12u1) ...
+#6 24.98 Selecting previously unselected package libglib2.0-0:arm64.
+#6 24.98 Preparing to unpack .../022-libglib2.0-0_2.74.6-2+deb12u9_arm64.deb ...
+#6 24.99 Unpacking libglib2.0-0:arm64 (2.74.6-2+deb12u9) ...
+#6 25.12 Selecting previously unselected package liblqr-1-0:arm64.
+#6 25.12 Preparing to unpack .../023-liblqr-1-0_0.4.2-2.1_arm64.deb ...
+#6 25.12 Unpacking liblqr-1-0:arm64 (0.4.2-2.1) ...
+#6 25.16 Selecting previously unselected package libltdl7:arm64.
+#6 25.17 Preparing to unpack .../024-libltdl7_2.4.7-7~deb12u1_arm64.deb ...
+#6 25.23 Unpacking libltdl7:arm64 (2.4.7-7~deb12u1) ...
+#6 25.27 Selecting previously unselected package libopenjp2-7:arm64.
+#6 25.27 Preparing to unpack .../025-libopenjp2-7_2.5.0-2+deb12u3_arm64.deb ...
+#6 25.28 Unpacking libopenjp2-7:arm64 (2.5.0-2+deb12u3) ...
+#6 25.34 Selecting previously unselected package libdeflate0:arm64.
+#6 25.34 Preparing to unpack .../026-libdeflate0_1.14-1_arm64.deb ...
+#6 25.34 Unpacking libdeflate0:arm64 (1.14-1) ...
+#6 25.44 Selecting previously unselected package liblerc4:arm64.
+#6 25.44 Preparing to unpack .../027-liblerc4_4.0.0+ds-2_arm64.deb ...
+#6 25.45 Unpacking liblerc4:arm64 (4.0.0+ds-2) ...
+#6 25.49 Selecting previously unselected package libwebp7:arm64.
+#6 25.49 Preparing to unpack .../028-libwebp7_1.2.4-0.2+deb12u1_arm64.deb ...
+#6 25.50 Unpacking libwebp7:arm64 (1.2.4-0.2+deb12u1) ...
+#6 25.58 Selecting previously unselected package libtiff6:arm64.
+#6 25.58 Preparing to unpack .../029-libtiff6_4.5.0-6+deb12u4_arm64.deb ...
+#6 25.59 Unpacking libtiff6:arm64 (4.5.0-6+deb12u4) ...
+#6 25.64 Selecting previously unselected package libwebpdemux2:arm64.
+#6 25.64 Preparing to unpack .../030-libwebpdemux2_1.2.4-0.2+deb12u1_arm64.deb ...
+#6 25.65 Unpacking libwebpdemux2:arm64 (1.2.4-0.2+deb12u1) ...
+#6 25.78 Selecting previously unselected package libwebpmux3:arm64.
+#6 25.78 Preparing to unpack .../031-libwebpmux3_1.2.4-0.2+deb12u1_arm64.deb ...
+#6 25.78 Unpacking libwebpmux3:arm64 (1.2.4-0.2+deb12u1) ...
+#6 25.82 Selecting previously unselected package libxau6:arm64.
+#6 25.83 Preparing to unpack .../032-libxau6_1%3a1.0.9-1_arm64.deb ...
+#6 25.83 Unpacking libxau6:arm64 (1:1.0.9-1) ...
+#6 25.87 Selecting previously unselected package libbsd0:arm64.
+#6 25.87 Preparing to unpack .../033-libbsd0_0.11.7-2_arm64.deb ...
+#6 25.88 Unpacking libbsd0:arm64 (0.11.7-2) ...
+#6 25.98 Selecting previously unselected package libxdmcp6:arm64.
+#6 25.98 Preparing to unpack .../034-libxdmcp6_1%3a1.1.2-3_arm64.deb ...
+#6 25.99 Unpacking libxdmcp6:arm64 (1:1.1.2-3) ...
+#6 26.03 Selecting previously unselected package libxcb1:arm64.
+#6 26.03 Preparing to unpack .../035-libxcb1_1.15-1_arm64.deb ...
+#6 26.03 Unpacking libxcb1:arm64 (1.15-1) ...
+#6 26.07 Selecting previously unselected package libx11-data.
+#6 26.07 Preparing to unpack .../036-libx11-data_2%3a1.8.4-2+deb12u2_all.deb ...
+#6 26.08 Unpacking libx11-data (2:1.8.4-2+deb12u2) ...
+#6 26.50 Selecting previously unselected package libx11-6:arm64.
+#6 26.50 Preparing to unpack .../037-libx11-6_2%3a1.8.4-2+deb12u2_arm64.deb ...
+#6 26.50 Unpacking libx11-6:arm64 (2:1.8.4-2+deb12u2) ...
+#6 26.64 Selecting previously unselected package libxext6:arm64.
+#6 26.64 Preparing to unpack .../038-libxext6_2%3a1.3.4-1+b1_arm64.deb ...
+#6 26.65 Unpacking libxext6:arm64 (2:1.3.4-1+b1) ...
+#6 26.69 Selecting previously unselected package libicu72:arm64.
+#6 26.69 Preparing to unpack .../039-libicu72_72.1-3+deb12u1_arm64.deb ...
+#6 26.70 Unpacking libicu72:arm64 (72.1-3+deb12u1) ...
+#6 29.23 Selecting previously unselected package libxml2:arm64.
+#6 29.23 Preparing to unpack .../040-libxml2_2.9.14+dfsg-1.3~deb12u5_arm64.deb ...
+#6 29.24 Unpacking libxml2:arm64 (2.9.14+dfsg-1.3~deb12u5) ...
+#6 29.33 Selecting previously unselected package imagemagick-6-common.
+#6 29.33 Preparing to unpack .../041-imagemagick-6-common_8%3a6.9.11.60+dfsg-1.6+deb12u9_all.deb ...
+#6 29.33 Unpacking imagemagick-6-common (8:6.9.11.60+dfsg-1.6+deb12u9) ...
+#6 29.44 Selecting previously unselected package libmagickcore-6.q16-6:arm64.
+#6 29.44 Preparing to unpack .../042-libmagickcore-6.q16-6_8%3a6.9.11.60+dfsg-1.6+deb12u9_arm64.deb ...
+#6 29.45 Unpacking libmagickcore-6.q16-6:arm64 (8:6.9.11.60+dfsg-1.6+deb12u9) ...
+#6 31.20 Selecting previously unselected package libmagickwand-6.q16-6:arm64.
+#6 31.20 Preparing to unpack .../043-libmagickwand-6.q16-6_8%3a6.9.11.60+dfsg-1.6+deb12u9_arm64.deb ...
+#6 31.20 Unpacking libmagickwand-6.q16-6:arm64 (8:6.9.11.60+dfsg-1.6+deb12u9) ...
+#6 31.26 Selecting previously unselected package libkmod2:arm64.
+#6 31.26 Preparing to unpack .../044-libkmod2_30+20221128-1_arm64.deb ...
+#6 31.27 Unpacking libkmod2:arm64 (30+20221128-1) ...
+#6 31.32 Selecting previously unselected package udev.
+#6 31.32 Preparing to unpack .../045-udev_252.39-1~deb12u2_arm64.deb ...
+#6 31.33 Unpacking udev (252.39-1~deb12u2) ...
+#6 31.52 Selecting previously unselected package bzip2.
+#6 31.52 Preparing to unpack .../046-bzip2_1.0.8-5+b1_arm64.deb ...
+#6 31.53 Unpacking bzip2 (1.0.8-5+b1) ...
+#6 31.63 Selecting previously unselected package xz-utils.
+#6 31.63 Preparing to unpack .../047-xz-utils_5.4.1-1_arm64.deb ...
+#6 31.64 Unpacking xz-utils (5.4.1-1) ...
+#6 31.72 Selecting previously unselected package binutils-common:arm64.
+#6 31.72 Preparing to unpack .../048-binutils-common_2.40-2_arm64.deb ...
+#6 31.73 Unpacking binutils-common:arm64 (2.40-2) ...
+#6 31.97 Selecting previously unselected package libbinutils:arm64.
+#6 31.97 Preparing to unpack .../049-libbinutils_2.40-2_arm64.deb ...
+#6 31.98 Unpacking libbinutils:arm64 (2.40-2) ...
+#6 32.15 Selecting previously unselected package libctf-nobfd0:arm64.
+#6 32.15 Preparing to unpack .../050-libctf-nobfd0_2.40-2_arm64.deb ...
+#6 32.16 Unpacking libctf-nobfd0:arm64 (2.40-2) ...
+#6 32.22 Selecting previously unselected package libctf0:arm64.
+#6 32.22 Preparing to unpack .../051-libctf0_2.40-2_arm64.deb ...
+#6 32.22 Unpacking libctf0:arm64 (2.40-2) ...
+#6 32.28 Selecting previously unselected package libgprofng0:arm64.
+#6 32.28 Preparing to unpack .../052-libgprofng0_2.40-2_arm64.deb ...
+#6 32.28 Unpacking libgprofng0:arm64 (2.40-2) ...
+#6 33.89 Selecting previously unselected package libjansson4:arm64.
+#6 33.89 Preparing to unpack .../053-libjansson4_2.14-2_arm64.deb ...
+#6 33.91 Unpacking libjansson4:arm64 (2.14-2) ...
+#6 35.65 Selecting previously unselected package binutils-aarch64-linux-gnu.
+#6 35.65 Preparing to unpack .../054-binutils-aarch64-linux-gnu_2.40-2_arm64.deb ...
+#6 36.06 Unpacking binutils-aarch64-linux-gnu (2.40-2) ...
+#6 37.98 Selecting previously unselected package binutils.
+#6 37.98 Preparing to unpack .../055-binutils_2.40-2_arm64.deb ...
+#6 39.40 Unpacking binutils (2.40-2) ...
+#6 40.78 Selecting previously unselected package libc-dev-bin.
+#6 40.78 Preparing to unpack .../056-libc-dev-bin_2.36-9+deb12u14_arm64.deb ...
+#6 41.91 Unpacking libc-dev-bin (2.36-9+deb12u14) ...
+#6 43.94 Selecting previously unselected package linux-libc-dev:arm64.
+#6 43.94 Preparing to unpack .../057-linux-libc-dev_6.1.172-1_arm64.deb ...
+#6 43.95 Unpacking linux-libc-dev:arm64 (6.1.172-1) ...
+#6 44.19 Selecting previously unselected package libcrypt-dev:arm64.
+#6 44.19 Preparing to unpack .../058-libcrypt-dev_1%3a4.4.33-2_arm64.deb ...
+#6 44.20 Unpacking libcrypt-dev:arm64 (1:4.4.33-2) ...
+#6 44.24 Selecting previously unselected package libtirpc-dev:arm64.
+#6 44.24 Preparing to unpack .../059-libtirpc-dev_1.3.3+ds-1_arm64.deb ...
+#6 44.24 Unpacking libtirpc-dev:arm64 (1.3.3+ds-1) ...
+#6 44.35 Selecting previously unselected package libnsl-dev:arm64.
+#6 44.35 Preparing to unpack .../060-libnsl-dev_1.3.0-2_arm64.deb ...
+#6 44.36 Unpacking libnsl-dev:arm64 (1.3.0-2) ...
+#6 44.39 Selecting previously unselected package rpcsvc-proto.
+#6 44.39 Preparing to unpack .../061-rpcsvc-proto_1.4.3-1_arm64.deb ...
+#6 44.40 Unpacking rpcsvc-proto (1.4.3-1) ...
+#6 44.44 Selecting previously unselected package libc6-dev:arm64.
+#6 44.44 Preparing to unpack .../062-libc6-dev_2.36-9+deb12u14_arm64.deb ...
+#6 44.44 Unpacking libc6-dev:arm64 (2.36-9+deb12u14) ...
+#6 44.72 Selecting previously unselected package libisl23:arm64.
+#6 44.72 Preparing to unpack .../063-libisl23_0.25-1.1_arm64.deb ...
+#6 44.73 Unpacking libisl23:arm64 (0.25-1.1) ...
+#6 44.82 Selecting previously unselected package libmpfr6:arm64.
+#6 44.82 Preparing to unpack .../064-libmpfr6_4.2.0-1_arm64.deb ...
+#6 44.83 Unpacking libmpfr6:arm64 (4.2.0-1) ...
+#6 44.95 Selecting previously unselected package libmpc3:arm64.
+#6 44.95 Preparing to unpack .../065-libmpc3_1.3.1-1_arm64.deb ...
+#6 44.95 Unpacking libmpc3:arm64 (1.3.1-1) ...
+#6 44.99 Selecting previously unselected package cpp-12.
+#6 44.99 Preparing to unpack .../066-cpp-12_12.2.0-14+deb12u1_arm64.deb ...
+#6 45.00 Unpacking cpp-12 (12.2.0-14+deb12u1) ...
+#6 45.60 Selecting previously unselected package cpp.
+#6 45.60 Preparing to unpack .../067-cpp_4%3a12.2.0-3_arm64.deb ...
+#6 45.60 Unpacking cpp (4:12.2.0-3) ...
+#6 45.70 Selecting previously unselected package libcc1-0:arm64.
+#6 45.70 Preparing to unpack .../068-libcc1-0_12.2.0-14+deb12u1_arm64.deb ...
+#6 45.71 Unpacking libcc1-0:arm64 (12.2.0-14+deb12u1) ...
+#6 45.75 Selecting previously unselected package libitm1:arm64.
+#6 45.75 Preparing to unpack .../069-libitm1_12.2.0-14+deb12u1_arm64.deb ...
+#6 45.75 Unpacking libitm1:arm64 (12.2.0-14+deb12u1) ...
+#6 45.85 Selecting previously unselected package libatomic1:arm64.
+#6 45.85 Preparing to unpack .../070-libatomic1_12.2.0-14+deb12u1_arm64.deb ...
+#6 45.86 Unpacking libatomic1:arm64 (12.2.0-14+deb12u1) ...
+#6 45.90 Selecting previously unselected package libasan8:arm64.
+#6 45.90 Preparing to unpack .../071-libasan8_12.2.0-14+deb12u1_arm64.deb ...
+#6 45.90 Unpacking libasan8:arm64 (12.2.0-14+deb12u1) ...
+#6 46.10 Selecting previously unselected package liblsan0:arm64.
+#6 46.10 Preparing to unpack .../072-liblsan0_12.2.0-14+deb12u1_arm64.deb ...
+#6 46.11 Unpacking liblsan0:arm64 (12.2.0-14+deb12u1) ...
+#6 46.27 Selecting previously unselected package libtsan2:arm64.
+#6 46.27 Preparing to unpack .../073-libtsan2_12.2.0-14+deb12u1_arm64.deb ...
+#6 46.27 Unpacking libtsan2:arm64 (12.2.0-14+deb12u1) ...
+#6 46.48 Selecting previously unselected package libubsan1:arm64.
+#6 46.48 Preparing to unpack .../074-libubsan1_12.2.0-14+deb12u1_arm64.deb ...
+#6 46.49 Unpacking libubsan1:arm64 (12.2.0-14+deb12u1) ...
+#6 46.59 Selecting previously unselected package libhwasan0:arm64.
+#6 46.59 Preparing to unpack .../075-libhwasan0_12.2.0-14+deb12u1_arm64.deb ...
+#6 46.65 Unpacking libhwasan0:arm64 (12.2.0-14+deb12u1) ...
+#6 46.76 Selecting previously unselected package libgcc-12-dev:arm64.
+#6 46.77 Preparing to unpack .../076-libgcc-12-dev_12.2.0-14+deb12u1_arm64.deb ...
+#6 46.77 Unpacking libgcc-12-dev:arm64 (12.2.0-14+deb12u1) ...
+#6 46.90 Selecting previously unselected package gcc-12.
+#6 46.90 Preparing to unpack .../077-gcc-12_12.2.0-14+deb12u1_arm64.deb ...
+#6 46.90 Unpacking gcc-12 (12.2.0-14+deb12u1) ...
+#6 47.65 Selecting previously unselected package gcc.
+#6 47.65 Preparing to unpack .../078-gcc_4%3a12.2.0-3_arm64.deb ...
+#6 47.65 Unpacking gcc (4:12.2.0-3) ...
+#6 47.69 Selecting previously unselected package libstdc++-12-dev:arm64.
+#6 47.69 Preparing to unpack .../079-libstdc++-12-dev_12.2.0-14+deb12u1_arm64.deb ...
+#6 47.70 Unpacking libstdc++-12-dev:arm64 (12.2.0-14+deb12u1) ...
+#6 47.97 Selecting previously unselected package g++-12.
+#6 47.97 Preparing to unpack .../080-g++-12_12.2.0-14+deb12u1_arm64.deb ...
+#6 47.97 Unpacking g++-12 (12.2.0-14+deb12u1) ...
+#6 48.58 Selecting previously unselected package g++.
+#6 48.58 Preparing to unpack .../081-g++_4%3a12.2.0-3_arm64.deb ...
+#6 48.59 Unpacking g++ (4:12.2.0-3) ...
+#6 48.62 Selecting previously unselected package make.
+#6 48.62 Preparing to unpack .../082-make_4.3-4.1_arm64.deb ...
+#6 48.62 Unpacking make (4.3-4.1) ...
+#6 48.74 Selecting previously unselected package libdpkg-perl.
+#6 48.75 Preparing to unpack .../083-libdpkg-perl_1.21.23_all.deb ...
+#6 48.77 Unpacking libdpkg-perl (1.21.23) ...
+#6 48.90 Selecting previously unselected package patch.
+#6 48.90 Preparing to unpack .../084-patch_2.7.6-7_arm64.deb ...
+#6 48.90 Unpacking patch (2.7.6-7) ...
+#6 48.98 Selecting previously unselected package dpkg-dev.
+#6 48.98 Preparing to unpack .../085-dpkg-dev_1.21.23_all.deb ...
+#6 48.98 Unpacking dpkg-dev (1.21.23) ...
+#6 49.09 Selecting previously unselected package build-essential.
+#6 49.09 Preparing to unpack .../086-build-essential_12.9_arm64.deb ...
+#6 49.10 Unpacking build-essential (12.9) ...
+#6 49.20 Selecting previously unselected package libi2c0:arm64.
+#6 49.20 Preparing to unpack .../087-libi2c0_4.3-2+b3_arm64.deb ...
+#6 49.21 Unpacking libi2c0:arm64 (4.3-2+b3) ...
+#6 49.25 Selecting previously unselected package i2c-tools.
+#6 49.25 Preparing to unpack .../088-i2c-tools_4.3-2+b3_arm64.deb ...
+#6 49.25 Unpacking i2c-tools (4.3-2+b3) ...
+#6 49.31 Selecting previously unselected package libgfortran5:arm64.
+#6 49.31 Preparing to unpack .../089-libgfortran5_12.2.0-14+deb12u1_arm64.deb ...
+#6 49.32 Unpacking libgfortran5:arm64 (12.2.0-14+deb12u1) ...
+#6 49.46 Selecting previously unselected package libatlas3-base:arm64.
+#6 49.46 Preparing to unpack .../090-libatlas3-base_3.10.3-13_arm64.deb ...
+#6 49.47 Unpacking libatlas3-base:arm64 (3.10.3-13) ...
+#6 49.72 Selecting previously unselected package libatlas-base-dev:arm64.
+#6 49.72 Preparing to unpack .../091-libatlas-base-dev_3.10.3-13_arm64.deb ...
+#6 49.73 Unpacking libatlas-base-dev:arm64 (3.10.3-13) ...
+#6 51.34 Selecting previously unselected package libelf1:arm64.
+#6 51.34 Preparing to unpack .../092-libelf1_0.188-2.1_arm64.deb ...
+#6 51.34 Unpacking libelf1:arm64 (0.188-2.1) ...
+#6 51.40 Selecting previously unselected package libdw1:arm64.
+#6 51.40 Preparing to unpack .../093-libdw1_0.188-2.1_arm64.deb ...
+#6 51.41 Unpacking libdw1:arm64 (0.188-2.1) ...
+#6 51.46 Selecting previously unselected package liblttng-ust-common1:arm64.
+#6 51.46 Preparing to unpack .../094-liblttng-ust-common1_2.13.5-1_arm64.deb ...
+#6 51.47 Unpacking liblttng-ust-common1:arm64 (2.13.5-1) ...
+#6 51.57 Selecting previously unselected package liblttng-ust-ctl5:arm64.
+#6 51.57 Preparing to unpack .../095-liblttng-ust-ctl5_2.13.5-1_arm64.deb ...
+#6 51.57 Unpacking liblttng-ust-ctl5:arm64 (2.13.5-1) ...
+#6 51.63 Selecting previously unselected package liblttng-ust1:arm64.
+#6 51.63 Preparing to unpack .../096-liblttng-ust1_2.13.5-1_arm64.deb ...
+#6 51.63 Unpacking liblttng-ust1:arm64 (2.13.5-1) ...
+#6 51.68 Selecting previously unselected package libunwind8:arm64.
+#6 51.68 Preparing to unpack .../097-libunwind8_1.6.2-3_arm64.deb ...
+#6 51.75 Unpacking libunwind8:arm64 (1.6.2-3) ...
+#6 51.79 Selecting previously unselected package libyaml-0-2:arm64.
+#6 51.79 Preparing to unpack .../098-libyaml-0-2_0.2.5-1_arm64.deb ...
+#6 51.80 Unpacking libyaml-0-2:arm64 (0.2.5-1) ...
+#6 51.84 Selecting previously unselected package libcamera0.0.3:arm64.
+#6 51.84 Preparing to unpack .../099-libcamera0.0.3_0.0.3-6_arm64.deb ...
+#6 51.84 Unpacking libcamera0.0.3:arm64 (0.0.3-6) ...
+#6 51.97 Selecting previously unselected package libcamera-dev:arm64.
+#6 51.97 Preparing to unpack .../100-libcamera-dev_0.0.3-6_arm64.deb ...
+#6 51.98 Unpacking libcamera-dev:arm64 (0.0.3-6) ...
+#6 52.02 Selecting previously unselected package libdbus-1-3:arm64.
+#6 52.03 Preparing to unpack .../101-libdbus-1-3_1.14.10-1~deb12u1_arm64.deb ...
+#6 52.03 Unpacking libdbus-1-3:arm64 (1.14.10-1~deb12u1) ...
+#6 52.08 Selecting previously unselected package libdrm-common.
+#6 52.08 Preparing to unpack .../102-libdrm-common_2.4.114-1_all.deb ...
+#6 52.08 Unpacking libdrm-common (2.4.114-1) ...
+#6 52.18 Selecting previously unselected package libdrm2:arm64.
+#6 52.18 Preparing to unpack .../103-libdrm2_2.4.114-1+b1_arm64.deb ...
+#6 52.18 Unpacking libdrm2:arm64 (2.4.114-1+b1) ...
+#6 52.23 Selecting previously unselected package libdrm-amdgpu1:arm64.
+#6 52.23 Preparing to unpack .../104-libdrm-amdgpu1_2.4.114-1+b1_arm64.deb ...
+#6 52.24 Unpacking libdrm-amdgpu1:arm64 (2.4.114-1+b1) ...
+#6 52.34 Selecting previously unselected package libdrm-nouveau2:arm64.
+#6 52.34 Preparing to unpack .../105-libdrm-nouveau2_2.4.114-1+b1_arm64.deb ...
+#6 52.34 Unpacking libdrm-nouveau2:arm64 (2.4.114-1+b1) ...
+#6 52.40 Selecting previously unselected package libdrm-radeon1:arm64.
+#6 52.40 Preparing to unpack .../106-libdrm-radeon1_2.4.114-1+b1_arm64.deb ...
+#6 52.41 Unpacking libdrm-radeon1:arm64 (2.4.114-1+b1) ...
+#6 52.51 Selecting previously unselected package libedit2:arm64.
+#6 52.51 Preparing to unpack .../107-libedit2_3.1-20221030-2_arm64.deb ...
+#6 52.51 Unpacking libedit2:arm64 (3.1-20221030-2) ...
+#6 52.56 Selecting previously unselected package libglvnd0:arm64.
+#6 52.56 Preparing to unpack .../108-libglvnd0_1.6.0-1_arm64.deb ...
+#6 52.57 Unpacking libglvnd0:arm64 (1.6.0-1) ...
+#6 52.67 Selecting previously unselected package libglapi-mesa:arm64.
+#6 52.67 Preparing to unpack .../109-libglapi-mesa_22.3.6-1+deb12u1_arm64.deb ...
+#6 52.68 Unpacking libglapi-mesa:arm64 (22.3.6-1+deb12u1) ...
+#6 53.66 Selecting previously unselected package libx11-xcb1:arm64.
+#6 53.66 Preparing to unpack .../110-libx11-xcb1_2%3a1.8.4-2+deb12u2_arm64.deb ...
+#6 53.67 Unpacking libx11-xcb1:arm64 (2:1.8.4-2+deb12u2) ...
+#6 53.77 Selecting previously unselected package libxcb-dri2-0:arm64.
+#6 53.77 Preparing to unpack .../111-libxcb-dri2-0_1.15-1_arm64.deb ...
+#6 53.77 Unpacking libxcb-dri2-0:arm64 (1.15-1) ...
+#6 53.82 Selecting previously unselected package libxcb-dri3-0:arm64.
+#6 53.82 Preparing to unpack .../112-libxcb-dri3-0_1.15-1_arm64.deb ...
+#6 53.83 Unpacking libxcb-dri3-0:arm64 (1.15-1) ...
+#6 53.93 Selecting previously unselected package libxcb-glx0:arm64.
+#6 53.93 Preparing to unpack .../113-libxcb-glx0_1.15-1_arm64.deb ...
+#6 53.94 Unpacking libxcb-glx0:arm64 (1.15-1) ...
+#6 53.99 Selecting previously unselected package libxcb-present0:arm64.
+#6 53.99 Preparing to unpack .../114-libxcb-present0_1.15-1_arm64.deb ...
+#6 53.99 Unpacking libxcb-present0:arm64 (1.15-1) ...
+#6 54.04 Selecting previously unselected package libxcb-randr0:arm64.
+#6 54.04 Preparing to unpack .../115-libxcb-randr0_1.15-1_arm64.deb ...
+#6 54.05 Unpacking libxcb-randr0:arm64 (1.15-1) ...
+#6 54.16 Selecting previously unselected package libxcb-shm0:arm64.
+#6 54.16 Preparing to unpack .../116-libxcb-shm0_1.15-1_arm64.deb ...
+#6 54.16 Unpacking libxcb-shm0:arm64 (1.15-1) ...
+#6 54.21 Selecting previously unselected package libxcb-sync1:arm64.
+#6 54.21 Preparing to unpack .../117-libxcb-sync1_1.15-1_arm64.deb ...
+#6 54.21 Unpacking libxcb-sync1:arm64 (1.15-1) ...
+#6 54.32 Selecting previously unselected package libxcb-xfixes0:arm64.
+#6 54.32 Preparing to unpack .../118-libxcb-xfixes0_1.15-1_arm64.deb ...
+#6 54.32 Unpacking libxcb-xfixes0:arm64 (1.15-1) ...
+#6 54.37 Selecting previously unselected package libxfixes3:arm64.
+#6 54.37 Preparing to unpack .../119-libxfixes3_1%3a6.0.0-2_arm64.deb ...
+#6 54.38 Unpacking libxfixes3:arm64 (1:6.0.0-2) ...
+#6 54.42 Selecting previously unselected package libxshmfence1:arm64.
+#6 54.42 Preparing to unpack .../120-libxshmfence1_1.3-1_arm64.deb ...
+#6 54.42 Unpacking libxshmfence1:arm64 (1.3-1) ...
+#6 54.52 Selecting previously unselected package libxxf86vm1:arm64.
+#6 54.52 Preparing to unpack .../121-libxxf86vm1_1%3a1.1.4-1+b2_arm64.deb ...
+#6 54.52 Unpacking libxxf86vm1:arm64 (1:1.1.4-1+b2) ...
+#6 54.56 Selecting previously unselected package libz3-4:arm64.
+#6 54.56 Preparing to unpack .../122-libz3-4_4.8.12-3.1_arm64.deb ...
+#6 54.59 Unpacking libz3-4:arm64 (4.8.12-3.1) ...
+#6 57.30 Selecting previously unselected package libllvm15:arm64.
+#6 57.30 Preparing to unpack .../123-libllvm15_1%3a15.0.6-4+b1_arm64.deb ...
+#6 60.29 Unpacking libllvm15:arm64 (1:15.0.6-4+b1) ...
+#6 64.56 Selecting previously unselected package libsensors-config.
+#6 64.56 Preparing to unpack .../124-libsensors-config_1%3a3.6.0-7.1_all.deb ...
+#6 64.56 Unpacking libsensors-config (1:3.6.0-7.1) ...
+#6 64.61 Selecting previously unselected package libsensors5:arm64.
+#6 64.61 Preparing to unpack .../125-libsensors5_1%3a3.6.0-7.1_arm64.deb ...
+#6 64.61 Unpacking libsensors5:arm64 (1:3.6.0-7.1) ...
+#6 64.71 Selecting previously unselected package libgl1-mesa-dri:arm64.
+#6 64.71 Preparing to unpack .../126-libgl1-mesa-dri_22.3.6-1+deb12u1_arm64.deb ...
+#6 64.72 Unpacking libgl1-mesa-dri:arm64 (22.3.6-1+deb12u1) ...
+#6 65.23 Selecting previously unselected package libglx-mesa0:arm64.
+#6 65.23 Preparing to unpack .../127-libglx-mesa0_22.3.6-1+deb12u1_arm64.deb ...
+#6 65.24 Unpacking libglx-mesa0:arm64 (22.3.6-1+deb12u1) ...
+#6 65.30 Selecting previously unselected package libglx0:arm64.
+#6 65.30 Preparing to unpack .../128-libglx0_1.6.0-1_arm64.deb ...
+#6 65.31 Unpacking libglx0:arm64 (1.6.0-1) ...
+#6 65.36 Selecting previously unselected package libgl1:arm64.
+#6 65.36 Preparing to unpack .../129-libgl1_1.6.0-1_arm64.deb ...
+#6 65.36 Unpacking libgl1:arm64 (1.6.0-1) ...
+#6 65.48 Selecting previously unselected package libgpiod2:arm64.
+#6 65.48 Preparing to unpack .../130-libgpiod2_1.6.3-1+b3_arm64.deb ...
+#6 65.49 Unpacking libgpiod2:arm64 (1.6.3-1+b3) ...
+#6 65.54 Selecting previously unselected package libv4lconvert0:arm64.
+#6 65.54 Preparing to unpack .../131-libv4lconvert0_1.22.1-5+b2_arm64.deb ...
+#6 65.54 Unpacking libv4lconvert0:arm64 (1.22.1-5+b2) ...
+#6 65.66 Selecting previously unselected package libv4l-0:arm64.
+#6 65.66 Preparing to unpack .../132-libv4l-0_1.22.1-5+b2_arm64.deb ...
+#6 65.66 Unpacking libv4l-0:arm64 (1.22.1-5+b2) ...
+#6 65.72 Selecting previously unselected package libzbar0:arm64.
+#6 65.72 Preparing to unpack .../133-libzbar0_0.23.92-7+deb12u1_arm64.deb ...
+#6 65.73 Unpacking libzbar0:arm64 (0.23.92-7+deb12u1) ...
+#6 65.78 Selecting previously unselected package zbar-tools.
+#6 65.78 Preparing to unpack .../134-zbar-tools_0.23.92-7+deb12u1_arm64.deb ...
+#6 65.79 Unpacking zbar-tools (0.23.92-7+deb12u1) ...
+#6 65.90 Setting up libexpat1:arm64 (2.5.0-1+deb12u2) ...
+#6 65.91 Setting up liblcms2-2:arm64 (2.14-2+deb12u1) ...
+#6 65.93 Setting up libaom3:arm64 (3.6.0-1+deb12u2) ...
+#6 66.00 Setting up libxau6:arm64 (1:1.0.9-1) ...
+#6 66.01 Setting up imagemagick-6-common (8:6.9.11.60+dfsg-1.6+deb12u9) ...
+#6 66.15 Setting up libicu72:arm64 (72.1-3+deb12u1) ...
+#6 66.16 Setting up liblerc4:arm64 (4.0.0+ds-2) ...
+#6 66.18 Setting up liblttng-ust-common1:arm64 (2.13.5-1) ...
+#6 66.20 Setting up libyaml-0-2:arm64 (0.2.5-1) ...
+#6 66.21 Setting up libglib2.0-0:arm64 (2.74.6-2+deb12u9) ...
+#6 66.23 No schema files found: doing nothing.
+#6 66.24 Setting up libglvnd0:arm64 (1.6.0-1) ...
+#6 66.31 Setting up libi2c0:arm64 (4.3-2+b3) ...
+#6 66.32 Setting up libbrotli1:arm64 (1.0.9-2+b6) ...
+#6 66.34 Setting up binutils-common:arm64 (2.40-2) ...
+#6 66.36 Setting up libsensors-config (1:3.6.0-7.1) ...
+#6 66.38 Setting up libdeflate0:arm64 (1.14-1) ...
+#6 66.46 Setting up linux-libc-dev:arm64 (6.1.172-1) ...
+#6 66.47 Setting up libctf-nobfd0:arm64 (2.40-2) ...
+#6 66.48 Setting up libgomp1:arm64 (12.2.0-14+deb12u1) ...
+#6 66.50 Setting up bzip2 (1.0.8-5+b1) ...
+#6 66.51 Setting up libunwind8:arm64 (1.6.2-3) ...
+#6 66.53 Setting up libjbig0:arm64 (2.1-6.1) ...
+#6 66.55 Setting up libjansson4:arm64 (2.14-2) ...
+#6 66.62 Setting up perl-modules-5.36 (5.36.0-7+deb12u3) ...
+#6 66.63 Setting up libz3-4:arm64 (4.8.12-3.1) ...
+#6 66.64 Setting up libtirpc-dev:arm64 (1.3.3+ds-1) ...
+#6 66.66 Setting up rpcsvc-proto (1.4.3-1) ...
+#6 66.67 Setting up libjpeg62-turbo:arm64 (1:2.1.5-2) ...
+#6 66.68 Setting up libx11-data (2:1.8.4-2+deb12u2) ...
+#6 66.76 Setting up make (4.3-4.1) ...
+#6 66.77 Setting up libmpfr6:arm64 (4.2.0-1) ...
+#6 66.79 Setting up libdbus-1-3:arm64 (1.14.10-1~deb12u1) ...
+#6 66.80 Setting up xz-utils (5.4.1-1) ...
+#6 66.84 update-alternatives: using /usr/bin/xz to provide /usr/bin/lzma (lzma) in auto mode
+#6 66.84 update-alternatives: warning: skip creation of /usr/share/man/man1/lzma.1.gz because associated file /usr/share/man/man1/xz.1.gz (of link group lzma) doesn't exist
+#6 66.84 update-alternatives: warning: skip creation of /usr/share/man/man1/unlzma.1.gz because associated file /usr/share/man/man1/unxz.1.gz (of link group lzma) doesn't exist
+#6 66.84 update-alternatives: warning: skip creation of /usr/share/man/man1/lzcat.1.gz because associated file /usr/share/man/man1/xzcat.1.gz (of link group lzma) doesn't exist
+#6 66.84 update-alternatives: warning: skip creation of /usr/share/man/man1/lzmore.1.gz because associated file /usr/share/man/man1/xzmore.1.gz (of link group lzma) doesn't exist
+#6 66.85 update-alternatives: warning: skip creation of /usr/share/man/man1/lzless.1.gz because associated file /usr/share/man/man1/xzless.1.gz (of link group lzma) doesn't exist
+#6 66.85 update-alternatives: warning: skip creation of /usr/share/man/man1/lzdiff.1.gz because associated file /usr/share/man/man1/xzdiff.1.gz (of link group lzma) doesn't exist
+#6 66.85 update-alternatives: warning: skip creation of /usr/share/man/man1/lzcmp.1.gz because associated file /usr/share/man/man1/xzcmp.1.gz (of link group lzma) doesn't exist
+#6 66.85 update-alternatives: warning: skip creation of /usr/share/man/man1/lzgrep.1.gz because associated file /usr/share/man/man1/xzgrep.1.gz (of link group lzma) doesn't exist
+#6 66.85 update-alternatives: warning: skip creation of /usr/share/man/man1/lzegrep.1.gz because associated file /usr/share/man/man1/xzegrep.1.gz (of link group lzma) doesn't exist
+#6 66.85 update-alternatives: warning: skip creation of /usr/share/man/man1/lzfgrep.1.gz because associated file /usr/share/man/man1/xzfgrep.1.gz (of link group lzma) doesn't exist
+#6 66.86 Setting up libpng16-16:arm64 (1.6.39-2+deb12u5) ...
+#6 66.87 Setting up libmpc3:arm64 (1.3.1-1) ...
+#6 66.89 Setting up libatomic1:arm64 (12.2.0-14+deb12u1) ...
+#6 66.90 Setting up patch (2.7.6-7) ...
+#6 66.92 Setting up fonts-dejavu-core (2.37-6) ...
+#6 67.05 Setting up libgdbm-compat4:arm64 (1.23-3) ...
+#6 67.06 Setting up libsensors5:arm64 (1:3.6.0-7.1) ...
+#6 67.13 Setting up libdav1d6:arm64 (1.0.0-2+deb12u1) ...
+#6 67.15 Setting up libltdl7:arm64 (2.4.7-7~deb12u1) ...
+#6 67.17 Setting up libfftw3-double3:arm64 (3.3.10-1) ...
+#6 67.18 Setting up libglapi-mesa:arm64 (22.3.6-1+deb12u1) ...
+#6 67.20 Setting up libgfortran5:arm64 (12.2.0-14+deb12u1) ...
+#6 67.21 Setting up libwebp7:arm64 (1.2.4-0.2+deb12u1) ...
+#6 67.28 Setting up libubsan1:arm64 (12.2.0-14+deb12u1) ...
+#6 67.29 Setting up libnuma1:arm64 (2.0.16-1) ...
+#6 67.31 Setting up liblqr-1-0:arm64 (0.4.2-2.1) ...
+#6 67.32 Setting up libnsl-dev:arm64 (1.3.0-2) ...
+#6 67.34 Setting up libxshmfence1:arm64 (1.3-1) ...
+#6 67.36 Setting up libhwasan0:arm64 (12.2.0-14+deb12u1) ...
+#6 67.37 Setting up libcrypt-dev:arm64 (1:4.4.33-2) ...
+#6 67.45 Setting up libtiff6:arm64 (4.5.0-6+deb12u4) ...
+#6 67.46 Setting up libasan8:arm64 (12.2.0-14+deb12u1) ...
+#6 67.47 Setting up libv4lconvert0:arm64 (1.22.1-5+b2) ...
+#6 67.49 Setting up libopenjp2-7:arm64 (2.5.0-2+deb12u3) ...
+#6 67.50 Setting up libgpiod2:arm64 (1.6.3-1+b3) ...
+#6 67.52 Setting up libtsan2:arm64 (12.2.0-14+deb12u1) ...
+#6 67.59 Setting up libbinutils:arm64 (2.40-2) ...
+#6 67.61 Setting up libisl23:arm64 (0.25-1.1) ...
+#6 67.62 Setting up libde265-0:arm64 (1.0.11-1+deb12u2) ...
+#6 67.64 Setting up libc-dev-bin (2.36-9+deb12u14) ...
+#6 67.65 Setting up libwebpmux3:arm64 (1.2.4-0.2+deb12u1) ...
+#6 67.66 Setting up libbsd0:arm64 (0.11.7-2) ...
+#6 67.68 Setting up libdrm-common (2.4.114-1) ...
+#6 67.76 Setting up libelf1:arm64 (0.188-2.1) ...
+#6 67.77 Setting up libxml2:arm64 (2.9.14+dfsg-1.3~deb12u5) ...
+#6 67.79 Setting up libcc1-0:arm64 (12.2.0-14+deb12u1) ...
+#6 67.80 Setting up libperl5.36:arm64 (5.36.0-7+deb12u3) ...
+#6 67.81 Setting up liblsan0:arm64 (12.2.0-14+deb12u1) ...
+#6 67.83 Setting up libitm1:arm64 (12.2.0-14+deb12u1) ...
+#6 67.90 Setting up libkmod2:arm64 (30+20221128-1) ...
+#6 67.92 Setting up libctf0:arm64 (2.40-2) ...
+#6 67.95 Setting up libdw1:arm64 (0.188-2.1) ...
+#6 67.97 Setting up libxdmcp6:arm64 (1:1.1.2-3) ...
+#6 68.04 Setting up cpp-12 (12.2.0-14+deb12u1) ...
+#6 68.06 Setting up libxcb1:arm64 (1.15-1) ...
+#6 68.07 Setting up libxcb-xfixes0:arm64 (1.15-1) ...
+#6 68.09 Setting up libatlas3-base:arm64 (3.10.3-13) ...
+#6 68.09 update-alternatives: using /usr/lib/aarch64-linux-gnu/atlas/libblas.so.3 to provide /usr/lib/aarch64-linux-gnu/libblas.so.3 (libblas.so.3-aarch64-linux-gnu) in auto mode
+#6 68.10 update-alternatives: using /usr/lib/aarch64-linux-gnu/atlas/liblapack.so.3 to provide /usr/lib/aarch64-linux-gnu/liblapack.so.3 (liblapack.so.3-aarch64-linux-gnu) in auto mode
+#6 68.11 Setting up fontconfig-config (2.14.1-4) ...
+#6 68.29 debconf: unable to initialize frontend: Dialog
+#6 68.29 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 68.29 debconf: falling back to frontend: Readline
+#6 68.29 debconf: unable to initialize frontend: Readline
+#6 68.29 debconf: (This frontend requires a controlling tty.)
+#6 68.29 debconf: falling back to frontend: Teletype
+#6 68.46 Setting up libxcb-glx0:arm64 (1.15-1) ...
+#6 68.48 Setting up libwebpdemux2:arm64 (1.2.4-0.2+deb12u1) ...
+#6 68.49 Setting up libedit2:arm64 (3.1-20221030-2) ...
+#6 68.51 Setting up libxcb-shm0:arm64 (1.15-1) ...
+#6 68.58 Setting up libatlas-base-dev:arm64 (3.10.3-13) ...
+#6 68.59 update-alternatives: using /usr/lib/aarch64-linux-gnu/atlas/libblas.so to provide /usr/lib/aarch64-linux-gnu/libblas.so (libblas.so-aarch64-linux-gnu) in auto mode
+#6 68.60 update-alternatives: using /usr/lib/aarch64-linux-gnu/atlas/liblapack.so to provide /usr/lib/aarch64-linux-gnu/liblapack.so (liblapack.so-aarch64-linux-gnu) in auto mode
+#6 68.60 Setting up libxcb-present0:arm64 (1.15-1) ...
+#6 68.62 Setting up libv4l-0:arm64 (1.22.1-5+b2) ...
+#6 68.64 Setting up perl (5.36.0-7+deb12u3) ...
+#6 68.66 Setting up libgprofng0:arm64 (2.40-2) ...
+#6 68.73 Setting up libfreetype6:arm64 (2.12.1+dfsg-5+deb12u4) ...
+#6 68.75 Setting up libxcb-sync1:arm64 (1.15-1) ...
+#6 68.76 Setting up libgcc-12-dev:arm64 (12.2.0-14+deb12u1) ...
+#6 68.77 Setting up liblttng-ust-ctl5:arm64 (2.13.5-1) ...
+#6 68.79 Setting up udev (252.39-1~deb12u2) ...
+#6 70.20 invoke-rc.d: could not determine current runlevel
+#6 70.20 invoke-rc.d: policy-rc.d denied execution of start.
+#6 70.22 Setting up libdpkg-perl (1.21.23) ...
+#6 70.24 Setting up libx265-199:arm64 (3.5-2+b1) ...
+#6 70.25 Setting up libxcb-dri2-0:arm64 (1.15-1) ...
+#6 70.26 Setting up libdrm2:arm64 (2.4.114-1+b1) ...
+#6 70.33 Setting up libxcb-randr0:arm64 (1.15-1) ...
+#6 70.35 Setting up cpp (4:12.2.0-3) ...
+#6 70.37 Setting up libllvm15:arm64 (1:15.0.6-4+b1) ...
+#6 70.38 Setting up libc6-dev:arm64 (2.36-9+deb12u14) ...
+#6 70.39 Setting up libx11-6:arm64 (2:1.8.4-2+deb12u2) ...
+#6 70.41 Setting up libfontconfig1:arm64 (2.14.1-4) ...
+#6 70.48 Setting up liblttng-ust1:arm64 (2.13.5-1) ...
+#6 70.50 Setting up libdrm-amdgpu1:arm64 (2.4.114-1+b1) ...
+#6 70.53 Setting up libxcb-dri3-0:arm64 (1.15-1) ...
+#6 70.54 Setting up libx11-xcb1:arm64 (2:1.8.4-2+deb12u2) ...
+#6 70.55 Setting up libdrm-nouveau2:arm64 (2.4.114-1+b1) ...
+#6 70.57 Setting up libstdc++-12-dev:arm64 (12.2.0-14+deb12u1) ...
+#6 70.58 Setting up libzbar0:arm64 (0.23.92-7+deb12u1) ...
+#6 70.65 Setting up libdrm-radeon1:arm64 (2.4.114-1+b1) ...
+#6 70.67 Setting up libgl1-mesa-dri:arm64 (22.3.6-1+deb12u1) ...
+#6 70.69 Setting up libheif1:arm64 (1.15.1-1+deb12u1) ...
+#6 70.70 Setting up libxext6:arm64 (2:1.3.4-1+b1) ...
+#6 70.72 Setting up binutils-aarch64-linux-gnu (2.40-2) ...
+#6 70.73 Setting up binutils (2.40-2) ...
+#6 70.79 Setting up dpkg-dev (1.21.23) ...
+#6 70.81 Setting up libxxf86vm1:arm64 (1:1.1.4-1+b2) ...
+#6 70.83 Setting up libmagickcore-6.q16-6:arm64 (8:6.9.11.60+dfsg-1.6+deb12u9) ...
+#6 70.85 Setting up gcc-12 (12.2.0-14+deb12u1) ...
+#6 70.86 Setting up libxfixes3:arm64 (1:6.0.0-2) ...
+#6 70.88 Setting up i2c-tools (4.3-2+b3) ...
+#6 71.00 Failed to send reload request: No such file or directory
+#6 71.00 i2c-1: Failed to write 'change' to '/sys/devices/platform/axi/1000120000.pcie/1f00074000.i2c/i2c-1/i2c-dev/i2c-1/uevent': Read-only file system
+#6 71.00 Setting up libcamera0.0.3:arm64 (0.0.3-6) ...
+#6 71.02 Setting up libmagickwand-6.q16-6:arm64 (8:6.9.11.60+dfsg-1.6+deb12u9) ...
+#6 71.06 Setting up g++-12 (12.2.0-14+deb12u1) ...
+#6 71.07 Setting up libglx-mesa0:arm64 (22.3.6-1+deb12u1) ...
+#6 71.08 Setting up zbar-tools (0.23.92-7+deb12u1) ...
+#6 71.10 Setting up libglx0:arm64 (1.6.0-1) ...
+#6 71.11 Setting up libcamera-dev:arm64 (0.0.3-6) ...
+#6 71.13 Setting up gcc (4:12.2.0-3) ...
+#6 71.21 Setting up libgl1:arm64 (1.6.0-1) ...
+#6 71.23 Setting up g++ (4:12.2.0-3) ...
+#6 71.24 update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+#6 71.25 Setting up build-essential (12.9) ...
+#6 71.27 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+#6 DONE 82.6s
+
+#7 [robot  3/11] WORKDIR /app
+#7 DONE 0.1s
+
+#8 [robot  4/11] COPY requirements.txt .
+#8 DONE 0.1s
+
+#9 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#9 2.323 Collecting rpi-lgpio (from -r requirements.txt (line 1))
+#9 2.663   Downloading rpi_lgpio-0.6-py3-none-any.whl.metadata (2.5 kB)
+#9 2.782 Collecting tflite-runtime==2.14.0 (from -r requirements.txt (line 2))
+#9 2.875   Downloading tflite_runtime-2.14.0-cp311-cp311-manylinux_2_34_aarch64.whl.metadata (1.4 kB)
+#9 3.130 Collecting opencv-python-headless==4.9.0.80 (from -r requirements.txt (line 3))
+#9 3.224   Downloading opencv_python_headless-4.9.0.80-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (20 kB)
+#9 3.689 Collecting numpy==1.26.4 (from -r requirements.txt (line 4))
+#9 3.785   Downloading numpy-1.26.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (62 kB)
+#9 3.888      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.3/62.3 kB 568.0 kB/s eta 0:00:00
+#9 4.269 Collecting Pillow==10.3.0 (from -r requirements.txt (line 5))
+#9 4.369   Downloading pillow-10.3.0-cp311-cp311-manylinux_2_28_aarch64.whl.metadata (9.2 kB)
+#9 4.486 Collecting pyzbar==0.1.9 (from -r requirements.txt (line 6))
+#9 4.578   Downloading pyzbar-0.1.9-py2.py3-none-any.whl.metadata (10 kB)
+#9 4.687 Collecting RPLCD==1.3.0 (from -r requirements.txt (line 7))
+#9 5.167   Downloading RPLCD-1.3.0-py2.py3-none-any.whl.metadata (6.3 kB)
+#9 5.280 Collecting smbus2==0.4.3 (from -r requirements.txt (line 8))
+#9 5.374   Downloading smbus2-0.4.3-py2.py3-none-any.whl.metadata (7.1 kB)
+#9 5.503 Collecting requests==2.31.0 (from -r requirements.txt (line 9))
+#9 5.595   Downloading requests-2.31.0-py3-none-any.whl.metadata (4.6 kB)
+#9 5.690 Collecting websocket-client==1.8.0 (from -r requirements.txt (line 10))
+#9 5.781   Downloading websocket_client-1.8.0-py3-none-any.whl.metadata (8.0 kB)
+#9 5.871 Collecting python-dotenv==1.0.1 (from -r requirements.txt (line 11))
+#9 5.962   Downloading python_dotenv-1.0.1-py3-none-any.whl.metadata (23 kB)
+#9 6.292 Collecting charset-normalizer<4,>=2 (from requests==2.31.0->-r requirements.txt (line 9))
+#9 6.382   Downloading charset_normalizer-3.4.7-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (40 kB)
+#9 6.399      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.9/40.9 kB 2.8 MB/s eta 0:00:00
+#9 6.490 Collecting idna<4,>=2.5 (from requests==2.31.0->-r requirements.txt (line 9))
+#9 6.581   Downloading idna-3.16-py3-none-any.whl.metadata (6.4 kB)
+#9 6.701 Collecting urllib3<3,>=1.21.1 (from requests==2.31.0->-r requirements.txt (line 9))
+#9 6.791   Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+#9 6.887 Collecting certifi>=2017.4.17 (from requests==2.31.0->-r requirements.txt (line 9))
+#9 6.978   Downloading certifi-2026.5.20-py3-none-any.whl.metadata (2.5 kB)
+#9 7.101 Collecting lgpio>=0.1.0.1 (from rpi-lgpio->-r requirements.txt (line 1))
+#9 7.192   Downloading lgpio-0.2.2.0-cp311-cp311-manylinux_2_34_aarch64.whl.metadata (963 bytes)
+#9 7.354 Downloading tflite_runtime-2.14.0-cp311-cp311-manylinux_2_34_aarch64.whl (2.3 MB)
+#9 7.735    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 6.2 MB/s eta 0:00:00
+#9 7.828 Downloading opencv_python_headless-4.9.0.80-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (29.0 MB)
+#9 10.46    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.0/29.0 MB 10.1 MB/s eta 0:00:00
+#9 10.57 Downloading numpy-1.26.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (14.2 MB)
+#9 12.10    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.2/14.2 MB 9.5 MB/s eta 0:00:00
+#9 12.19 Downloading pillow-10.3.0-cp311-cp311-manylinux_2_28_aarch64.whl (4.3 MB)
+#9 12.64    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.3/4.3 MB 9.7 MB/s eta 0:00:00
+#9 12.73 Downloading pyzbar-0.1.9-py2.py3-none-any.whl (32 kB)
+#9 12.86 Downloading RPLCD-1.3.0-py2.py3-none-any.whl (49 kB)
+#9 12.87    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.3/49.3 kB 33.3 MB/s eta 0:00:00
+#9 12.96 Downloading smbus2-0.4.3-py2.py3-none-any.whl (11 kB)
+#9 13.05 Downloading requests-2.31.0-py3-none-any.whl (62 kB)
+#9 13.06    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.6/62.6 kB 21.2 MB/s eta 0:00:00
+#9 13.15 Downloading websocket_client-1.8.0-py3-none-any.whl (58 kB)
+#9 13.16    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.8/58.8 kB 33.1 MB/s eta 0:00:00
+#9 13.25 Downloading python_dotenv-1.0.1-py3-none-any.whl (19 kB)
+#9 13.34 Downloading rpi_lgpio-0.6-py3-none-any.whl (11 kB)
+#9 13.44 Downloading certifi-2026.5.20-py3-none-any.whl (134 kB)
+#9 13.45    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.1/134.1 kB 13.6 MB/s eta 0:00:00
+#9 13.54 Downloading charset_normalizer-3.4.7-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (206 kB)
+#9 13.56    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 206.4/206.4 kB 13.5 MB/s eta 0:00:00
+#9 13.65 Downloading idna-3.16-py3-none-any.whl (74 kB)
+#9 13.66    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 74.2/74.2 kB 17.9 MB/s eta 0:00:00
+#9 13.75 Downloading lgpio-0.2.2.0-cp311-cp311-manylinux_2_34_aarch64.whl (364 kB)
+#9 13.78    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 364.8/364.8 kB 12.0 MB/s eta 0:00:00
+#9 13.88 Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+#9 13.89    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.1/131.1 kB 14.7 MB/s eta 0:00:00
+#9 14.15 Installing collected packages: smbus2, RPLCD, pyzbar, lgpio, websocket-client, urllib3, rpi-lgpio, python-dotenv, Pillow, numpy, idna, charset-normalizer, certifi, tflite-runtime, requests, opencv-python-headless
+#9 18.00 Successfully installed Pillow-10.3.0 RPLCD-1.3.0 certifi-2026.5.20 charset-normalizer-3.4.7 idna-3.16 lgpio-0.2.2.0 numpy-1.26.4 opencv-python-headless-4.9.0.80 python-dotenv-1.0.1 pyzbar-0.1.9 requests-2.31.0 rpi-lgpio-0.6 smbus2-0.4.3 tflite-runtime-2.14.0 urllib3-2.7.0 websocket-client-1.8.0
+#9 18.00 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#9 18.36 
+#9 18.36 [notice] A new release of pip is available: 24.0 -> 26.1.1
+#9 18.36 [notice] To update, run: pip install --upgrade pip
+#9 DONE 28.3s
+
+#10 [robot  6/11] COPY main.py .
+#10 DONE 0.1s
+
+#11 [robot  7/11] COPY qr_test_mode.py .
+#11 DONE 0.1s
+
+#12 [robot  8/11] COPY qr_visual_test.py .
+#12 DONE 0.2s
+
+#13 [robot  9/11] COPY src ./src
+#13 DONE 0.1s
+
+#14 [robot 10/11] COPY models ./models
+#14 DONE 0.1s
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 DONE 0.3s
+
+#16 [robot] exporting to image
+#16 exporting layers
+#16 exporting layers 1.8s done
+#16 writing image sha256:06ce041e89247f43fe7a48a66373611cb97a2101d4756052d75cd2a8c84fd02b done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 1.8s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-25T22:10:57-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.7s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.54kB done
+#5 DONE 0.0s
+
+#6 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#6 CACHED
+
+#7 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [robot  3/11] WORKDIR /app
+#8 CACHED
+
+#9 [robot  9/11] COPY src ./src
+#9 CACHED
+
+#10 [robot  6/11] COPY main.py .
+#10 CACHED
+
+#11 [robot  8/11] COPY qr_visual_test.py .
+#11 CACHED
+
+#12 [robot 10/11] COPY models ./models
+#12 CACHED
+
+#13 [robot  4/11] COPY requirements.txt .
+#13 CACHED
+
+#14 [robot  7/11] COPY qr_test_mode.py .
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:2b6d4b7c78952942967c5e2c04e5e3ee8ea4b43f173eae46b2fe781394f6f88f done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Creating
+ Container agrotech-robot  Created
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-25T22:19:32-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 291.4s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.54kB done
+#5 DONE 0.0s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot  4/11] COPY requirements.txt .
+#7 CACHED
+
+#8 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot  9/11] COPY src ./src
+#9 CACHED
+
+#10 [robot  3/11] WORKDIR /app
+#10 CACHED
+
+#11 [robot  6/11] COPY main.py .
+#11 CACHED
+
+#12 [robot  7/11] COPY qr_test_mode.py .
+#12 CACHED
+
+#13 [robot  8/11] COPY qr_visual_test.py .
+#13 CACHED
+
+#14 [robot 10/11] COPY models ./models
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:2b6d4b7c78952942967c5e2c04e5e3ee8ea4b43f173eae46b2fe781394f6f88f done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 5 minutes
+==== 2026-05-26T01:49:13-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 248.5s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.66kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  3/11] WORKDIR /app
+#6 CACHED
+
+#7 [robot  9/11] COPY src ./src
+#7 CACHED
+
+#8 [robot  8/11] COPY qr_visual_test.py .
+#8 CACHED
+
+#9 [robot 10/11] COPY models ./models
+#9 CACHED
+
+#10 [robot  4/11] COPY requirements.txt .
+#10 CACHED
+
+#11 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#12 CACHED
+
+#13 [robot  7/11] COPY qr_test_mode.py .
+#13 CACHED
+
+#14 [robot  6/11] COPY main.py .
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:7b476dbb0306c10e8d7336ee7a9989aa26746b871b0b0556070b13225aa83297 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Recreate
+                                                                                                                                         ==== 2026-05-26T01:53:55-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.66kB done
+#5 DONE 0.0s
+
+#6 [robot  4/11] COPY requirements.txt .
+#6 CACHED
+
+#7 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#7 CACHED
+
+#8 [robot  6/11] COPY main.py .
+#8 CACHED
+
+#9 [robot  7/11] COPY qr_test_mode.py .
+#9 CACHED
+
+#10 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [robot  3/11] WORKDIR /app
+#11 CACHED
+
+#12 [robot  8/11] COPY qr_visual_test.py .
+#12 CACHED
+
+#13 [robot  9/11] COPY src ./src
+#13 CACHED
+
+#14 [robot 10/11] COPY models ./models
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:7b476dbb0306c10e8d7336ee7a9989aa26746b871b0b0556070b13225aa83297 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 15 seconds
+==== 2026-05-26T02:02:44-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.66kB done
+#5 DONE 0.0s
+
+#6 [robot  7/11] COPY qr_test_mode.py .
+#6 CACHED
+
+#7 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#7 CACHED
+
+#8 [robot  3/11] WORKDIR /app
+#8 CACHED
+
+#9 [robot  4/11] COPY requirements.txt .
+#9 CACHED
+
+#10 [robot  8/11] COPY qr_visual_test.py .
+#10 CACHED
+
+#11 [robot  9/11] COPY src ./src
+#11 CACHED
+
+#12 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#12 CACHED
+
+#13 [robot 10/11] COPY models ./models
+#13 CACHED
+
+#14 [robot  6/11] COPY main.py .
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:7b476dbb0306c10e8d7336ee7a9989aa26746b871b0b0556070b13225aa83297 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up About an hour
+==== 2026-05-26T03:47:16-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+==== 2026-05-26T03:47:18-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 32650.0s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 15.18kB done
+#5 DONE 0.0s
+
+#6 [robot  6/11] COPY main.py .
+#6 CACHED
+
+#7 [robot  7/11] COPY qr_test_mode.py .
+#7 CACHED
+
+#8 [robot  3/11] WORKDIR /app
+#8 CACHED
+
+#9 [robot  4/11] COPY requirements.txt .
+#9 CACHED
+
+#10 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#11 CACHED
+
+#12 [robot  8/11] COPY qr_visual_test.py .
+#12 CACHED
+
+#13 [robot  9/11] COPY src ./src
+#13 DONE 0.2s
+
+#14 [robot 10/11] COPY models ./models
+#14 DONE 0.2s
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 DONE 0.5s
+
+#16 [robot] exporting to image
+#16 exporting layers
+#16 exporting layers 0.2s done
+#16 writing image sha256:8da800a243537647472b276b92c8a12a102a48690048947d6cd5588d0197b972 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.3s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-26T13:20:05-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 35.54kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  6/11] COPY main.py .
+#6 CACHED
+
+#7 [robot  7/11] COPY qr_test_mode.py .
+#7 CACHED
+
+#8 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [robot  3/11] WORKDIR /app
+#9 CACHED
+
+#10 [robot  4/11] COPY requirements.txt .
+#10 CACHED
+
+#11 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#11 CACHED
+
+#12 [robot  8/11] COPY qr_visual_test.py .
+#12 CACHED
+
+#13 [robot  9/11] COPY src ./src
+#13 DONE 0.2s
+
+#14 [robot 10/11] COPY models ./models
+#14 DONE 82690.2s
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 DONE 0.6s
+
+#16 [robot] exporting to image
+#16 exporting layers 0.1s done
+#16 writing image sha256:eb296c797407fe8a2383eea3b34c7923ea822ecda8f92af94ee66274622df4e2 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.1s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-27T12:57:27-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 198.6s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.91kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot 10/11] COPY models ./models
+#7 CACHED
+
+#8 [robot  3/11] WORKDIR /app
+#8 CACHED
+
+#9 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [robot  9/11] COPY src ./src
+#10 CACHED
+
+#11 [robot  4/11] COPY requirements.txt .
+#11 CACHED
+
+#12 [robot  7/11] COPY qr_test_mode.py .
+#12 CACHED
+
+#13 [robot  6/11] COPY main.py .
+#13 CACHED
+
+#14 [robot  8/11] COPY qr_visual_test.py .
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:eb296c797407fe8a2383eea3b34c7923ea822ecda8f92af94ee66274622df4e2 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Created
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-27T13:34:56-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 177.3s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 95.37kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot  3/11] WORKDIR /app
+#7 CACHED
+
+#8 [robot  4/11] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [robot  6/11] COPY main.py .
+#10 DONE 5.8s
+
+#11 [robot  7/11] COPY qr_test_mode.py .
+#11 DONE 0.2s
+
+#12 [robot  8/11] COPY qr_visual_test.py .
+#12 DONE 0.2s
+
+#13 [robot  9/11] COPY src ./src
+#13 DONE 0.4s
+
+#14 [robot 10/11] COPY models ./models
+#14 DONE 0.2s
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 DONE 0.5s
+
+#16 [robot] exporting to image
+#16 exporting layers
+#16 exporting layers 0.3s done
+#16 writing image sha256:ddfa6eeaf28b127533538fcfdbbbb1c41f8e8bffed238735169796cbc1b744d9 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.3s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-27T14:31:06-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 199.7s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.91kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  3/11] WORKDIR /app
+#6 CACHED
+
+#7 [robot 10/11] COPY models ./models
+#7 CACHED
+
+#8 [robot  4/11] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot  8/11] COPY qr_visual_test.py .
+#9 CACHED
+
+#10 [robot  9/11] COPY src ./src
+#10 CACHED
+
+#11 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#12 CACHED
+
+#13 [robot  6/11] COPY main.py .
+#13 CACHED
+
+#14 [robot  7/11] COPY qr_test_mode.py .
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:ddfa6eeaf28b127533538fcfdbbbb1c41f8e8bffed238735169796cbc1b744d9 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 3 minutes
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ==== 2026-05-27T14:49:56-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 1.3s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.91kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  8/11] COPY qr_visual_test.py .
+#6 CACHED
+
+#7 [robot  6/11] COPY main.py .
+#7 CACHED
+
+#8 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [robot  7/11] COPY qr_test_mode.py .
+#10 CACHED
+
+#11 [robot 10/11] COPY models ./models
+#11 CACHED
+
+#12 [robot  3/11] WORKDIR /app
+#12 CACHED
+
+#13 [robot  4/11] COPY requirements.txt .
+#13 CACHED
+
+#14 [robot  9/11] COPY src ./src
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:ddfa6eeaf28b127533538fcfdbbbb1c41f8e8bffed238735169796cbc1b744d9 done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 3 hours
+==== 2026-05-27T22:57:57-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: server misbehaving
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: server misbehaving
+==== 2026-05-28T03:47:48-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B 0.0s done
+#1 DONE 0.3s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.91kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot  4/11] COPY requirements.txt .
+#7 CACHED
+
+#8 [robot  3/11] WORKDIR /app
+#8 CACHED
+
+#9 [robot  7/11] COPY qr_test_mode.py .
+#9 CACHED
+
+#10 [robot  9/11] COPY src ./src
+#10 CACHED
+
+#11 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#11 CACHED
+
+#12 [robot  6/11] COPY main.py .
+#12 CACHED
+
+#13 [robot  8/11] COPY qr_visual_test.py .
+#13 CACHED
+
+#14 [robot 10/11] COPY models ./models
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:cab496dac1495479eee0f24dab54aaa917013cf917ede90ec33856db487b6bbe done
+#16 naming to docker.io/library/robot-pi-ejecution-robot done
+#16 DONE 0.1s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ==== 2026-05-28T13:42:45-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 678B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 43545.1s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [robot  1/11] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.91kB 0.0s done
+#5 DONE 0.1s
+
+#6 [robot 10/11] COPY models ./models
+#6 CACHED
+
+#7 [robot  2/11] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [robot  4/11] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot  6/11] COPY main.py .
+#9 CACHED
+
+#10 [robot  7/11] COPY qr_test_mode.py .
+#10 CACHED
+
+#11 [robot  8/11] COPY qr_visual_test.py .
+#11 CACHED
+
+#12 [robot  9/11] COPY src ./src
+#12 CACHED
+
+#13 [robot  3/11] WORKDIR /app
+#13 CACHED
+
+#14 [robot  5/11] RUN pip install --no-cache-dir -r requirements.txt
+#14 CACHED
+
+#15 [robot 11/11] RUN mkdir -p /app/models
+#15 CACHED
+
+#16 [robot] exporting to image
+#16 exporting layers done
+#16 writing image sha256:cab496dac1495479eee0f24dab54aaa917013cf917ede90ec33856db487b6bbe done
+#16 naming to docker.io/library/robot-pi-ejecution-robot 0.1s done
+#16 DONE 0.1s
+ Container agrotech-robot  Running
+status=Up 12 hours
+==== 2026-05-29T02:22:41-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 13178.7s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.84kB 0.0s done
+#5 DONE 0.1s
+
+#6 [robot 7/9] COPY src ./src
+#6 CACHED
+
+#7 [robot 8/9] COPY models ./models
+#7 CACHED
+
+#8 [robot 3/9] WORKDIR /app
+#8 CACHED
+
+#9 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [robot 6/9] COPY main.py .
+#10 CACHED
+
+#11 [robot 4/9] COPY requirements.txt .
+#11 CACHED
+
+#12 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:bd1a3ea16c4610255508f6b0e32c5b8c6959353ef2b7beed541baf4de5b4a3c2 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.1s
+ Container agrotech-robot  Running
+status=Up 4 hours
+==== 2026-05-29T06:42:37-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 1.3s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.84kB done
+#5 DONE 0.0s
+
+#6 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#6 CACHED
+
+#7 [robot 3/9] WORKDIR /app
+#7 CACHED
+
+#8 [robot 4/9] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot 6/9] COPY main.py .
+#9 CACHED
+
+#10 [robot 7/9] COPY src ./src
+#10 CACHED
+
+#11 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [robot 8/9] COPY models ./models
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:bd1a3ea16c4610255508f6b0e32c5b8c6959353ef2b7beed541baf4de5b4a3c2 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 1043.6s
+ Container agrotech-robot  Created
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-29T07:34:22-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 23077.8s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 1.1s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 84.57kB 0.0s done
+#5 DONE 0.1s
+
+#6 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot 3/9] WORKDIR /app
+#7 CACHED
+
+#8 [robot 4/9] COPY requirements.txt .
+#8 CACHED
+
+#9 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [robot 6/9] COPY main.py .
+#10 DONE 0.2s
+
+#11 [robot 7/9] COPY src ./src
+#11 DONE 0.3s
+
+#12 [robot 8/9] COPY models ./models
+#12 DONE 0.2s
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 DONE 0.7s
+
+#14 [robot] exporting to image
+#14 exporting layers
+#14 exporting layers 0.3s done
+#14 writing image sha256:5b30bf3dc9cc9e593ef11dcb88fd96b9bd07d7c2895ee23d3ea7aed4ae074a87 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot 0.1s done
+#14 DONE 0.4s
+ Container agrotech-robot  Recreate
+ Container agrotech-robot  Recreated
+ Container agrotech-robot  Starting
+ Container agrotech-robot  Started
+status=Up Less than a second
+==== 2026-05-30T00:05:46-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [fe80::1%eth0]:53: dial udp [fe80::1%eth0]:53: connect: network is unreachable
+==== 2026-05-30T00:05:49-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 59499.6s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.84kB done
+#5 DONE 0.0s
+
+#6 [robot 3/9] WORKDIR /app
+#6 CACHED
+
+#7 [robot 7/9] COPY src ./src
+#7 CACHED
+
+#8 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot 6/9] COPY main.py .
+#9 CACHED
+
+#10 [robot 8/9] COPY models ./models
+#10 CACHED
+
+#11 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [robot 4/9] COPY requirements.txt .
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:5b30bf3dc9cc9e593ef11dcb88fd96b9bd07d7c2895ee23d3ea7aed4ae074a87 0.1s done
+#14 naming to docker.io/library/robot-pi-ejecution-robot
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.1s
+ Container agrotech-robot  Running
+status=Up 17 hours
+==== 2026-05-30T17:06:38-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 199.1s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 1.84kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot 4/9] COPY requirements.txt .
+#6 CACHED
+
+#7 [robot 7/9] COPY src ./src
+#7 CACHED
+
+#8 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot 3/9] WORKDIR /app
+#9 CACHED
+
+#10 [robot 6/9] COPY main.py .
+#10 CACHED
+
+#11 [robot 8/9] COPY models ./models
+#11 CACHED
+
+#12 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:0796b45e9abd54228732e5efac8744b03558dcc39711945d39c5d2571b48388b done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 3 minutes
+==== 2026-05-30T17:38:44-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-30T17:38:47-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-30T18:34:16-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:19-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ==== 2026-05-31T00:32:30-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:34-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:35-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:37-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:38-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+                                                           ==== 2026-05-31T00:32:41-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.1s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:42-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:44-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:45-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 ERROR: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+------
+ > [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm:
+------
+failed to solve: python:3.11-slim-bookworm: failed to resolve source metadata for docker.io/library/python:3.11-slim-bookworm: failed to do request: Head "https://registry-1.docker.io/v2/library/python/manifests/3.11-slim-bookworm": dial tcp: lookup registry-1.docker.io on [2800:98:1b68:5718::3]:53: dial udp [2800:98:1b68:5718::3]:53: connect: network is unreachable
+==== 2026-05-31T00:32:47-06:00 starting robot runtime ====
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 630B 0.0s done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.8s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:8dca233de9f3d9bb410665f00a4da6dd06f331083137e0e98ccf227236fcc438
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 2.11kB 0.0s done
+#5 DONE 0.0s
+
+#6 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#6 CACHED
+
+#7 [robot 8/9] COPY models ./models
+#7 CACHED
+
+#8 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [robot 4/9] COPY requirements.txt .
+#9 CACHED
+
+#10 [robot 6/9] COPY main.py .
+#10 CACHED
+
+#11 [robot 7/9] COPY src ./src
+#11 CACHED
+
+#12 [robot 3/9] WORKDIR /app
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:378c697abbae7e3f1b3b0ce58d17af1ce9e4f89f72fa3c6aa48fe004bb3c50e1 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up 9 days

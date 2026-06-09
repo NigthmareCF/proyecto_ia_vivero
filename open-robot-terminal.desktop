@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Robot Pi Terminal
+Comment=Open the motor control terminal
+Exec=lxterminal --no-remote --title=Control-motores-robot --working-directory=/home/fer-dev/ROBOT-PI-EJECUTION -e /home/fer-dev/ROBOT-PI-EJECUTION/robot-pi/scripts/motor_control_terminal_launcher.sh
+Terminal=false
+X-GNOME-Autostart-enabled=true
