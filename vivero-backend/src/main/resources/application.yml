@@ -91,6 +91,9 @@ vision:
       gemini-report-enabled: ${VISION_PATROL_GEMINI_REPORT_ENABLED:true}
 
 management:
+  health:
+    mail:
+      enabled: ${MANAGEMENT_HEALTH_MAIL_ENABLED:false}
   endpoints:
     web:
       exposure:

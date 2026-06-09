@@ -57,6 +57,7 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME:-}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-noreply@vivero.com}
+      MANAGEMENT_HEALTH_MAIL_ENABLED: ${MANAGEMENT_HEALTH_MAIL_ENABLED:-false}
     volumes:
       - images_data:/app/images
     healthcheck:
@@ -115,6 +116,7 @@ services:
         condition: service_started
     ports:
       - "${VM_FRONTEND_PORT:-80}:80"
+      - "${VM_FRONTEND_EXTRA_PORT:-3000}:80"
     networks:
       - vivero_network
 
