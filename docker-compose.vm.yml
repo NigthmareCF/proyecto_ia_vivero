@@ -101,6 +101,8 @@ services:
       - ${VLM_SERVED_MODEL_NAME:-qwen-vl-local}
       - --quantization
       - ${VLM_QUANTIZATION:-awq}
+      - --dtype
+      - ${VLM_DTYPE:-float16}
       - --trust-remote-code
       - --max-model-len
       - ${VLM_MAX_MODEL_LEN:-8192}
