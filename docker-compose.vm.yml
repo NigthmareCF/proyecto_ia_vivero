@@ -79,6 +79,8 @@ services:
       - vivero_network
 
   vlm-qwen:
+    profiles:
+      - vlm
     image: ${VLM_IMAGE:-vllm/vllm-openai:latest}
     container_name: vivero_vlm_qwen
     restart: unless-stopped
