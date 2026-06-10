@@ -136,6 +136,9 @@ class RobotServiceTest {
         heartbeat.setStreamActive(true);
         heartbeat.setQueueDepth(3);
         heartbeat.setStatusSummary("Recorrido estable");
+        heartbeat.setCurrentSpeedPercent(45);
+        heartbeat.setRearObstacleDetected(true);
+        heartbeat.setLastWatchdogReason("REAR_OBSTACLE_BLOCKED_REVERSE");
 
         when(robotStatusRepository.findTopByOrderByLastSeenAtDesc()).thenReturn(Optional.of(status));
         when(robotStatusRepository.save(any(RobotStatus.class))).thenAnswer(invocation -> invocation.getArgument(0, RobotStatus.class));
@@ -148,6 +151,9 @@ class RobotServiceTest {
         assertEquals("PLANT-011", response.getCurrentPlantQr());
         assertEquals("patrol-1", response.getCurrentPatrolId());
         assertEquals("GOOD", response.getConnectionQuality());
+        assertEquals(45, response.getCurrentSpeedPercent());
+        assertEquals(true, response.isRearObstacleDetected());
+        assertEquals("REAR_OBSTACLE_BLOCKED_REVERSE", response.getLastWatchdogReason());
         verify(robotStatusRepository).save(any(RobotStatus.class));
     }
 }

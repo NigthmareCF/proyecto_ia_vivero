@@ -32,6 +32,8 @@ class ManualEmailRelaySmokeTest {
         String mailTo = required("MANUAL_MAIL_TO", "ferchocastfun15@gmail.com");
         String mailHost = required("MANUAL_MAIL_HOST", "smtp-relay.gmail.com");
         int mailPort = Integer.parseInt(required("MANUAL_MAIL_PORT", "587"));
+        String envelopeFrom = required("MANUAL_MAIL_SMTP_ENVELOPE_FROM", mailFrom);
+        String smtpLocalhost = required("MANUAL_MAIL_SMTP_LOCALHOST", domainFrom(mailFrom));
 
         AppProperties properties = new AppProperties();
         properties.getStorage().setImagesPath("target/manual-mail-artifacts");
@@ -53,6 +55,11 @@ class ManualEmailRelaySmokeTest {
         javaMailProps.put("mail.smtp.auth", "false");
         javaMailProps.put("mail.smtp.starttls.enable", "true");
         javaMailProps.put("mail.smtp.starttls.required", "true");
+        javaMailProps.put("mail.smtp.from", envelopeFrom);
+        javaMailProps.put("mail.smtp.localhost", smtpLocalhost);
+        javaMailProps.put("mail.smtp.connectiontimeout", "10000");
+        javaMailProps.put("mail.smtp.timeout", "15000");
+        javaMailProps.put("mail.smtp.writetimeout", "15000");
 
         EmailNotificationService emailNotificationService = new EmailNotificationService(mailSender, properties);
         emailNotificationService.sendReportNotification(report, buildConfig(mailTo), pdfContent);
@@ -123,5 +130,13 @@ class ManualEmailRelaySmokeTest {
             value = fallback;
         }
         return value;
+    }
+
+    private String domainFrom(String email) {
+        int atIndex = email == null ? -1 : email.indexOf('@');
+        if (atIndex < 0 || atIndex == email.length() - 1) {
+            return "localhost";
+        }
+        return email.substring(atIndex + 1);
     }
 }

@@ -85,6 +85,16 @@ public class RobotStatus extends BaseEntity {
     @Column(name = "speed_profile", length = 40)
     private String speedProfile;
 
+    @Column(name = "current_speed_percent")
+    private Integer currentSpeedPercent;
+
+    @Column(name = "rear_obstacle_detected", nullable = false)
+    @Builder.Default
+    private boolean rearObstacleDetected = false;
+
+    @Column(name = "last_watchdog_reason", length = 120)
+    private String lastWatchdogReason;
+
     @Column(name = "last_seen_at", nullable = false)
     private LocalDateTime lastSeenAt;
 

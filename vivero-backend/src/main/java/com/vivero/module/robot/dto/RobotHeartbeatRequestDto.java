@@ -60,4 +60,13 @@ public class RobotHeartbeatRequestDto {
 
     @Size(max = 40, message = "Speed profile must not exceed 40 characters")
     private String speedProfile;
+
+    @Min(value = 0, message = "Current speed must be at least 0")
+    @Max(value = 100, message = "Current speed must be at most 100")
+    private Integer currentSpeedPercent;
+
+    private boolean rearObstacleDetected;
+
+    @Size(max = 120, message = "Last watchdog reason must not exceed 120 characters")
+    private String lastWatchdogReason;
 }
