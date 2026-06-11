@@ -2,6 +2,7 @@ import { RobotSearchState, SearchStartOrientation } from "../api/robotApi";
 
 export type ParsedVoiceCommand =
   | { kind: "navigate"; path: string; summary: string }
+  | { kind: "robot_patrol_start"; summary: string; path: string }
   | { kind: "robot_mode"; mode: "AUTO_LINE" | "MANUAL_FREE" | "ACRO"; summary: string; path: string }
   | { kind: "robot_stop"; summary: string; path: string }
   | { kind: "robot_camera"; camera: "FRONT" | "LEFT" | "RIGHT"; summary: string; path: string }
@@ -20,6 +21,12 @@ const pathCommands: Array<[string, string, string]> = [
   ["usuarios", "/users", "Abrir usuarios"],
   ["robot", "/robot", "Abrir robot"],
   ["control del robot", "/robot", "Abrir robot"],
+];
+
+const patrolStartPatterns = [
+  /(?:iniciar|empezar|arrancar|comenzar|abrir|lanzar)\s+(?:patrullaje|patrullaje nuevo|recorrido)/,
+  /(?:iniciar|empezar|arrancar|comenzar)\s+(?:la\s+)?patrulla/,
+  /(?:iniciar|empezar|arrancar|comenzar)\s+patrullaje/,
 ];
 
 function normalizeText(text: string) {
@@ -66,6 +73,10 @@ export function parseVoiceCommand(rawText: string): ParsedVoiceCommand | null {
 
 function parseNormalizedVoiceCommand(text: string): ParsedVoiceCommand | null {
   if (!text) return null;
+
+  if (patrolStartPatterns.some((pattern) => pattern.test(text))) {
+    return { kind: "robot_patrol_start", summary: "Iniciar patrullaje", path: "/patrols" };
+  }
 
   for (const [keyword, path, summary] of pathCommands) {
     if (text === keyword || text.includes(`abrir ${keyword}`) || text.includes(`ir a ${keyword}`) || text.includes(`ve a ${keyword}`)) {
@@ -122,7 +133,7 @@ function parseNormalizedVoiceCommand(text: string): ParsedVoiceCommand | null {
     }
   }
 
-  if (/(buscar planta|ir a planta|goto planta|buscar qr)/.test(text)) {
+  if (/(buscar planta|ir a planta|goto planta|buscar qr|llegar a planta|ir al qr)/.test(text)) {
     const targetPlantQr = resolveQrLabel(text);
     if (targetPlantQr) {
       return {

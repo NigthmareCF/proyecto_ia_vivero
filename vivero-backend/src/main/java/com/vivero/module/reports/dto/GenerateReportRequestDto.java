@@ -54,4 +54,13 @@ public class GenerateReportRequestDto {
 
     @Valid
     private List<ReportPlantDetailDto> plantDetails = new ArrayList<>();
+
+    @Size(max = 40, message = "Analysis provider must not exceed 40 characters")
+    private String analysisProvider;
+
+    @Size(max = 80, message = "Analysis model must not exceed 80 characters")
+    private String analysisModel;
+
+    @Size(max = 1000, message = "Analysis notes must not exceed 1000 characters")
+    private String analysisNotes;
 }

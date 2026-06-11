@@ -68,6 +68,13 @@ public class PdfReportGenerator {
                     ? "Analisis manual independiente"
                     : "Patrullaje No. " + report.getPatrolId()));
             document.add(new Paragraph("Emitido por: " + report.getGeneratedBy().getFullName()));
+            document.add(new Paragraph("Proveedor IA: " + describeAnalysisProvider(report)).setFontSize(10));
+            if (report.getAnalysisModel() != null && !report.getAnalysisModel().isBlank()) {
+                document.add(new Paragraph("Modelo IA: " + report.getAnalysisModel()).setFontSize(10));
+            }
+            if (report.getAnalysisNotes() != null && !report.getAnalysisNotes().isBlank()) {
+                document.add(new Paragraph("Notas tecnicas: " + report.getAnalysisNotes()).setFontSize(10));
+            }
             document.add(new Paragraph(" "));
 
             Table table = new Table(UnitValue.createPercentArray(new float[] {1, 1, 1, 1, 1}))
@@ -145,6 +152,20 @@ public class PdfReportGenerator {
                 + report.getDangerCount() + " en peligro, "
                 + report.getManualReviewCount() + " para revision manual y "
                 + report.getInconclusiveCount() + " inconclusas.";
+    }
+
+    private String describeAnalysisProvider(Report report) {
+        String provider = report.getAnalysisProvider();
+        if (provider == null || provider.isBlank()) {
+            return "manual";
+        }
+        return switch (provider.trim().toLowerCase()) {
+            case "gemini" -> "Gemini";
+            case "qwen" -> "Qwen";
+            case "local" -> "Clasificador local";
+            case "manual" -> "Manual";
+            default -> provider.trim();
+        };
     }
 
     private java.util.List<ReportPlantDetailDto> readPlantDetails(String plantDetailsJson) {

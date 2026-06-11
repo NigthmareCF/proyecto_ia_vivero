@@ -37,6 +37,9 @@ public class ReportMapper {
                 .manualReviewCount(report.getManualReviewCount())
                 .inconclusiveCount(report.getInconclusiveCount())
                 .plantDetails(readPlantDetails(report.getPlantDetailsJson()))
+                .analysisProvider(report.getAnalysisProvider())
+                .analysisModel(report.getAnalysisModel())
+                .analysisNotes(report.getAnalysisNotes())
                 .pdfPath(report.getPdfPath())
                 .createdAt(report.getCreatedAt())
                 .build();

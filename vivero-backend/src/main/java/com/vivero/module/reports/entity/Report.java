@@ -61,6 +61,15 @@ public class Report extends BaseEntity {
     @Column(name = "plant_details_json", length = 20000)
     private String plantDetailsJson;
 
+    @Column(name = "analysis_provider", length = 40)
+    private String analysisProvider;
+
+    @Column(name = "analysis_model", length = 80)
+    private String analysisModel;
+
+    @Column(name = "analysis_notes", length = 1000)
+    private String analysisNotes;
+
     @Column(name = "pdf_path", length = 500)
     private String pdfPath;
 

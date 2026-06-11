@@ -4,6 +4,7 @@ import {
   goToRobotPlant,
   searchRobotByState,
   sendRobotCommand,
+  startRobotPatrol,
   setRobotMode,
   setRobotSpeedProfile,
   switchRobotCamera,
@@ -178,6 +179,9 @@ export function VoiceCommandDock() {
 
       switch (parsedCommand.kind) {
         case "navigate":
+          break;
+        case "robot_patrol_start":
+          await startRobotPatrol();
           break;
         case "robot_mode":
           await setRobotMode(parsedCommand.mode);
@@ -401,7 +405,7 @@ export function VoiceCommandDock() {
       <div className="mt-4 grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
         <article className="rounded-[1.5rem] bg-sand p-4">
           <p className="text-xs uppercase tracking-[0.18em] text-moss">Texto detectado</p>
-          <p className="mt-2 min-h-12 text-sm text-ink">{transcript || "Habla para lanzar navegacion o comandos del robot."}</p>
+          <p className="mt-2 min-h-12 text-sm text-ink">{transcript || "Habla para navegar, iniciar patrullaje o lanzar comandos del robot."}</p>
         </article>
         <article className="rounded-[1.5rem] bg-sand p-4">
           <p className="text-xs uppercase tracking-[0.18em] text-moss">Ultima accion</p>

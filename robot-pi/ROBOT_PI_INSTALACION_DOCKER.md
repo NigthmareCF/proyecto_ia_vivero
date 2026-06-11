@@ -40,8 +40,8 @@ nano .env
 
 Variables clave:
 
-- `BACKEND_BASE_URL=http://34.27.75.170/api`
-- `BACKEND_WS_URL=ws://34.27.75.170/api/ws/robot-stream`
+- `BACKEND_BASE_URL=http://IP_O_DOMINIO_BACKEND:3000/api`
+- `BACKEND_WS_URL=ws://IP_O_DOMINIO_BACKEND:3000/api/ws/robot-stream?role=robot&robotId=ROBOT-001`
 - `ROBOT_ID=ROBOT-001`
 - `WIFI_SSID=Redmi Note 14`
 - `WIFI_PASSWORD=tashycora`

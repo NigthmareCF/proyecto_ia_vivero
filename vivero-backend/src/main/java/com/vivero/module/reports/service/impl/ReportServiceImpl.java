@@ -90,6 +90,9 @@ public class ReportServiceImpl implements ReportService {
                         .manualReviewCount(request.getManualReviewCount())
                         .inconclusiveCount(request.getInconclusiveCount())
                         .plantDetailsJson(writePlantDetails(request.getPlantDetails()))
+                        .analysisProvider(normalizeText(request.getAnalysisProvider()))
+                        .analysisModel(normalizeText(request.getAnalysisModel()))
+                        .analysisNotes(normalizeText(request.getAnalysisNotes()))
                         .publicShareToken(generatePublicShareToken())
                         .build()
         );

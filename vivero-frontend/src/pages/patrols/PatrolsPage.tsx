@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPatrols } from "../../api/patrolsApi";
-import { getRobotStatus } from "../../api/robotApi";
+import { getRobotStatus, startRobotPatrol } from "../../api/robotApi";
 
 type PatrolRecord = {
   id?: string | number;
@@ -26,6 +26,7 @@ export function PatrolsPage() {
   const [patrols, setPatrols] = useState<PatrolRecord[]>([]);
   const [robotStatus, setRobotStatus] = useState<RobotStatus | null>(null);
   const [targetPatrolId, setTargetPatrolId] = useState("");
+  const [startingPatrol, setStartingPatrol] = useState(false);
 
   useEffect(() => {
     getPatrols().then(setPatrols).catch(() => setPatrols([]));
@@ -33,6 +34,20 @@ export function PatrolsPage() {
   }, []);
 
   const currentPatrolId = robotStatus?.currentPatrolId?.trim();
+
+  async function handleStartPatrol() {
+    if (startingPatrol) return;
+    setStartingPatrol(true);
+    try {
+      await startRobotPatrol();
+      const refreshedStatus = await getRobotStatus();
+      setRobotStatus(refreshedStatus);
+    } catch (error) {
+      console.error("No se pudo iniciar el patrullaje", error);
+    } finally {
+      setStartingPatrol(false);
+    }
+  }
 
   return (
     <section className="space-y-6">
@@ -55,6 +70,24 @@ export function PatrolsPage() {
             <p className="text-xs uppercase tracking-[0.18em] text-moss">Patrullaje actual</p>
             <p className="mt-2 text-sm font-semibold text-ink">{currentPatrolId ?? "Sin patrullaje"}</p>
           </article>
+        </div>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={handleStartPatrol}
+            disabled={startingPatrol || !robotStatus?.connected}
+            className="rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white transition hover:bg-clay disabled:bg-moss/40"
+          >
+            {startingPatrol ? "Iniciando..." : "Iniciar patrullaje"}
+          </button>
+          {currentPatrolId ? (
+            <Link
+              to={`/patrols/${encodeURIComponent(currentPatrolId)}`}
+              className="rounded-2xl border border-sand px-5 py-3 text-sm font-semibold text-ink transition hover:border-clay"
+            >
+              Abrir patrullaje actual
+            </Link>
+          ) : null}
         </div>
       </article>
 

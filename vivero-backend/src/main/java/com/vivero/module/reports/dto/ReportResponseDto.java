@@ -26,6 +26,9 @@ public class ReportResponseDto {
     private Integer manualReviewCount;
     private Integer inconclusiveCount;
     private java.util.List<ReportPlantDetailDto> plantDetails;
+    private String analysisProvider;
+    private String analysisModel;
+    private String analysisNotes;
     private String pdfPath;
     private LocalDateTime createdAt;
 }

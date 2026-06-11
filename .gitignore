@@ -9,7 +9,8 @@ vivero-backend/.mvn/
 
 # Variables locales
 .env
-!.env
+!.env.example
+!.env.vm.example
 vivero-frontend/node_modules/
 vivero-frontend/dist/
 *.tsbuildinfo

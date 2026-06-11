@@ -420,6 +420,9 @@ public class PlantAnalysisServiceImpl implements PlantAnalysisService {
                 .manualReviewCount("REVISION_MANUAL".equals(analysisRecord.getEstadoGeneral()) ? observationsCount : 0)
                 .inconclusiveCount(0)
                 .plantDetailsJson(writeReportPlantDetails(plantDetails))
+                .analysisProvider(normalizeAnalysisProvider(analysisRecord.getProveedorIa()))
+                .analysisModel(normalizeText(analysisRecord.getModeloIa()))
+                .analysisNotes(buildAnalysisNotes(analysisRecord))
                 .publicShareToken(UUID.randomUUID().toString().replace("-", ""))
                 .build();
 
@@ -608,6 +611,30 @@ public class PlantAnalysisServiceImpl implements PlantAnalysisService {
         }
         String normalized = value.trim().toUpperCase(Locale.ROOT);
         return ALLOWED_SOURCE_TYPES.contains(normalized) ? normalized : "MANUAL";
+    }
+
+    private String normalizeAnalysisProvider(String provider) {
+        if (provider == null || provider.isBlank()) {
+            return "manual";
+        }
+        return provider.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String buildAnalysisNotes(PlantAnalysisRecord analysisRecord) {
+        List<String> notes = new ArrayList<>();
+        if (analysisRecord.isFallback()) {
+            notes.add("El analisis se resolvio con fallback local.");
+        }
+        if (analysisRecord.getProveedorIa() != null && !analysisRecord.getProveedorIa().isBlank()) {
+            notes.add("Proveedor IA: " + analysisRecord.getProveedorIa().trim());
+        }
+        if (analysisRecord.getModeloIa() != null && !analysisRecord.getModeloIa().isBlank()) {
+            notes.add("Modelo IA: " + analysisRecord.getModeloIa().trim());
+        }
+        if (analysisRecord.isRequiereRevisionManual()) {
+            notes.add("El resultado recomienda revision manual.");
+        }
+        return notes.isEmpty() ? null : String.join(" ", notes);
     }
 
     private String trimTrailingSlash(String value) {

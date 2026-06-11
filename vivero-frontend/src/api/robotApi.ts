@@ -1,6 +1,8 @@
 import api from "./axiosInstance";
 
 export const getRobotStatus = () => api.get("/robot/status").then((res) => res.data.data);
+export const startRobotPatrol = () =>
+  api.post("/robot/command", { commandType: "START_PATROL" }).then((res) => res.data.data);
 export const getRobotPatrolAnalysis = (patrolId: string) =>
   api.get(`/robot/patrols/${patrolId}/analysis`).then((res) => res.data.data);
 export const getRobotPatrolObservations = (patrolId: string) =>
