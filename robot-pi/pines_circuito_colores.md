@@ -973,6 +973,36 @@ Todos los pines GPIO trabajan a **3.3V**, no 5V.
 
 ---
 
+## Módulo adicional: IMU ITG/MPU HW-123
+
+### Descripción
+El módulo HW-123 es una IMU basada en el chip MPU6050 (giroscopio + acelerómetro de 6 ejes, compatible con ITG/MPU). Permite medir orientación, aceleración y velocidad angular del robot.
+
+### Conexión
+- **VCC:** +3.3V (Naranja, pin físico 1 o 17)
+- **GND:** Negro (cualquier GND, ej. pin 6)
+- **SDA:** Verde (GPIO2, pin físico 3)
+- **SCL:** Verde (GPIO3, pin físico 5)
+
+### Ubicación sugerida en el robot
+Montar cerca del centro de masa, lejos de motores para evitar interferencia.
+
+### Ejemplo de código (Python, bus I2C)
+```python
+import smbus
+bus = smbus.SMBus(1)
+address = 0x68
+bus.write_byte_data(address, 0x6B, 0)
+# Leer acelerómetro y giroscopio
+accel_x = bus.read_word_data(address, 0x3B)
+```
+
+### Tabla de pines (actualización)
+Añadir a la tabla maestra:
+| **Verde** | I2C (SDA/SCL) | 3, 5 |
+
+---
+
 **Versión:** 4.0  
 **Última actualización:** 2025-05  
 **Responsable:** Fer (Systems Engineering, Universidad Mariano Gálvez)  
