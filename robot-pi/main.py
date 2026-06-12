@@ -20,6 +20,7 @@ from src.communication.qr_label_resolver import QrLabelResolver
 from src.config import Settings
 from src.display import buzzer_handler, lcd_handler, led_handler
 from src.navigation import line_follower, motor_controller, obstacle_detector
+from src.sensors import imu
 from src.state_machine import RobotState, RobotStateMachine
 from src.vision.camera_handler import CameraHandler
 from src.vision.qr_detector import detect_qr_candidates
@@ -557,6 +558,7 @@ def main() -> None:
                 "width": settings.camera_width,
                 "height": settings.camera_height,
             },
+            "imu": imu.health_snapshot(),
             "activeCamera": str(runtime_context["active_camera"]).upper(),
             "controlProfile": str(runtime_context["control_profile"]).upper(),
             "speedProfile": str(runtime_context["speed_profile"]).upper(),
@@ -783,6 +785,7 @@ def main() -> None:
             command_listener.stop()
         camera.release()
         motor_controller.stop()
+        imu.cleanup()
         lcd_handler.cleanup()
         led_handler.cleanup()
         buzzer_handler.cleanup()
@@ -798,6 +801,7 @@ def main() -> None:
     motor_controller.setup()
     line_follower.setup(settings)
     obstacle_detector.setup(settings)
+    imu.setup(settings)
     lcd_handler.setup(settings)
     led_handler.setup(settings)
     buzzer_handler.setup(settings)

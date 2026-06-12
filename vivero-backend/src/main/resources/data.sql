@@ -22,6 +22,24 @@ WHERE NOT EXISTS (
     WHERE email = 'admin@vivero.com'
 );
 
+-- Usuario adminMov para pruebas de acceso desde dispositivos moviles
+-- Password: AdminMov2026! (encriptado con BCrypt factor 12)
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT
+    'Mobile',
+    'Admin',
+    'adminMov@vivero.com',
+    '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG',
+    'ADMIN',
+    true,
+    NOW(),
+    NOW()
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM users
+    WHERE email = 'adminMov@vivero.com'
+);
+
 -- Configuración base de notificación para pruebas manuales del módulo reports
 INSERT INTO notification_config (user_id, channel, contact_value, active, created_at, updated_at)
 SELECT

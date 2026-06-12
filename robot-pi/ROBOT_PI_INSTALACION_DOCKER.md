@@ -7,6 +7,7 @@ Guia actualizada para levantar el runtime de `robot-pi` en Raspberry Pi 5 usando
 - Raspberry Pi OS 64-bit.
 - Docker Engine y Docker Compose Plugin.
 - I2C habilitado si usas LCD.
+- I2C adicional habilitado si usas IMU en bus dedicado.
 - Camaras visibles en `/dev/video*`.
 - Sensores y GPIO cableados segun la documentacion del circuito.
 
@@ -45,6 +46,9 @@ Variables clave:
 - `ROBOT_ID=ROBOT-001`
 - `WIFI_SSID=Redmi Note 14`
 - `WIFI_PASSWORD=tashycora`
+- `IMU_ENABLED=true`
+- `IMU_I2C_BUS=<bus_dedicado_para_mpu>`
+- `IMU_I2C_ADDRESS=104`
 
 ## 5. Verificar hardware
 
@@ -89,3 +93,4 @@ Al iniciar correctamente, el runtime:
 - Las camaras laterales se usan para QR y rafaga de fotos.
 - El backend puede cambiar la camara activa de stream con el comando `SWITCH_CAMERA`.
 - Si el backend cae, las observaciones se quedan en cola local y se reintentan despues.
+- La IMU usa un bus I2C independiente del LCD para evitar contencion de datos.

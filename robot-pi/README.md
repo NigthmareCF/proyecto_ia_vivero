@@ -16,6 +16,7 @@ Implementado hoy:
 - modos de control
 - telemetria base
 - IA local opcional
+- IMU MPU6050 opcional en bus I2C dedicado
 
 ## Formato QR operativo
 
@@ -66,8 +67,9 @@ La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` par
 1. Raspberry Pi OS 64-bit instalado.
 2. Docker y Docker Compose disponibles.
 3. I2C habilitado si usas LCD.
-4. Camaras detectadas por Linux.
-5. GPIO y sensores cableados segun la documentacion de circuito.
+4. I2C adicional habilitado si usas la IMU.
+5. Camaras detectadas por Linux.
+6. GPIO y sensores cableados segun la documentacion de circuito.
 
 ## Pinout vigente
 
@@ -94,6 +96,9 @@ Line follower
 LCD I2C
   GPIO2 <-> SDA
   GPIO3 <-> SCL
+
+IMU MPU6050
+  SDA/SCL -> bus I2C dedicado configurado por IMU_I2C_BUS
 
 Indicadores
   GPIO21 -> buzzer

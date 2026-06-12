@@ -88,6 +88,12 @@ class Settings:
     wifi_password: str
     cpu_temp_path: str
     battery_capacity_path: str | None
+    imu_enabled: bool
+    imu_i2c_bus: int
+    imu_i2c_address: int
+    imu_gyro_scale: float
+    imu_accel_scale: float
+    imu_sample_cooldown_seconds: float
     lcd_enabled: bool
     led_enabled: bool
     buzzer_enabled: bool
@@ -157,6 +163,12 @@ class Settings:
             wifi_password=os.getenv("WIFI_PASSWORD", "tashycora"),
             cpu_temp_path=os.getenv("CPU_TEMP_PATH", "/sys/class/thermal/thermal_zone0/temp"),
             battery_capacity_path=os.getenv("BATTERY_CAPACITY_PATH"),
+            imu_enabled=os.getenv("IMU_ENABLED", "false").lower() == "true",
+            imu_i2c_bus=int(os.getenv("IMU_I2C_BUS", "2")),
+            imu_i2c_address=int(os.getenv("IMU_I2C_ADDRESS", "104")),
+            imu_gyro_scale=float(os.getenv("IMU_GYRO_SCALE", "131.0")),
+            imu_accel_scale=float(os.getenv("IMU_ACCEL_SCALE", "16384.0")),
+            imu_sample_cooldown_seconds=float(os.getenv("IMU_SAMPLE_COOLDOWN_SECONDS", "0.15")),
             lcd_enabled=os.getenv("LCD_ENABLED", "true").lower() == "true",
             led_enabled=os.getenv("LED_ENABLED", "true").lower() == "true",
             buzzer_enabled=os.getenv("BUZZER_ENABLED", "true").lower() == "true",

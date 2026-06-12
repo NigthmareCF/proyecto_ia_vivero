@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import axios from "axios";
 import { login, register } from "../../api/authApi";
 import { useAuthStore } from "../../store/authStore";
 
@@ -29,11 +30,24 @@ export function LoginForm() {
 
       setSession(session);
     } catch (err) {
-      setError(
-        mode === "login"
-          ? "No fue posible iniciar sesion con correo y contraseña."
-          : "No fue posible registrar la cuenta con los datos ingresados.",
-      );
+      if (mode === "login") {
+        const fallback = "No fue posible iniciar sesion con correo y contraseña.";
+        if (axios.isAxiosError(err)) {
+          const responseMessage =
+            typeof err.response?.data?.message === "string" ? err.response.data.message : null;
+          const responseError =
+            typeof err.response?.data?.error === "string" ? err.response.data.error : null;
+          const status = err.response?.status ? `HTTP ${err.response.status}` : null;
+          const detail = responseMessage ?? responseError ?? status;
+          setError(detail ? `${fallback} Detalle: ${detail}.` : fallback);
+        } else if (err instanceof Error && err.message) {
+          setError(`${fallback} Detalle: ${err.message}.`);
+        } else {
+          setError(fallback);
+        }
+      } else {
+        setError("No fue posible registrar la cuenta con los datos ingresados.");
+      }
       console.error(err);
     } finally {
       setLoading(false);
