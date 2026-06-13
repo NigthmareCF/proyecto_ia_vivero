@@ -29,6 +29,8 @@ class ImuSample:
     bus: int
     address: int
     timestamp: float
+    heading_deg: float
+    estimated_speed_mps: float
 
 
 _settings: Settings | None = None
@@ -36,12 +38,16 @@ _bus: SMBus | None = None
 _last_sample_at = 0.0
 _last_sample: ImuSample | None = None
 _available = False
+_heading_deg = 259.0
+_last_heading_update_at = 0.0
 
 
 def setup(settings: Settings) -> None:
-    global _settings, _bus, _available
+    global _settings, _bus, _available, _heading_deg, _last_heading_update_at
     _settings = settings
     _available = False
+    _heading_deg = 259.0
+    _last_heading_update_at = time.monotonic()
     if not settings.imu_enabled:
         LOGGER.info("IMU deshabilitada por configuracion")
         return
@@ -68,7 +74,7 @@ def _read_word_signed(register: int) -> int:
 
 
 def sample() -> ImuSample | None:
-    global _last_sample_at, _last_sample
+    global _last_sample_at, _last_sample, _heading_deg, _last_heading_update_at
     if not _available or _settings is None or _bus is None:
         return None
     now = time.monotonic()
@@ -83,6 +89,10 @@ def sample() -> ImuSample | None:
         gyro_x = _read_word_signed(MPU6050_GYRO_XOUT_H) / _settings.imu_gyro_scale
         gyro_y = _read_word_signed(MPU6050_GYRO_XOUT_H + 2) / _settings.imu_gyro_scale
         gyro_z = _read_word_signed(MPU6050_GYRO_XOUT_H + 4) / _settings.imu_gyro_scale
+        delta_seconds = max(now - _last_heading_update_at, 0.0)
+        _heading_deg = (_heading_deg + (gyro_z * delta_seconds)) % 360.0
+        _last_heading_update_at = now
+        estimated_speed_mps = round(max((abs(accel_x) + abs(accel_y)) * 0.25, 0.0), 4)
         _last_sample = ImuSample(
             accel_x_g=round(accel_x, 4),
             accel_y_g=round(accel_y, 4),
@@ -94,6 +104,8 @@ def sample() -> ImuSample | None:
             bus=_settings.imu_i2c_bus,
             address=_settings.imu_i2c_address,
             timestamp=time.time(),
+            heading_deg=round(_heading_deg, 2),
+            estimated_speed_mps=estimated_speed_mps,
         )
         _last_sample_at = now
         return _last_sample
@@ -118,6 +130,8 @@ def health_snapshot() -> dict[str, object]:
         "gyroYdps": sample_value.gyro_y_dps,
         "gyroZdps": sample_value.gyro_z_dps,
         "temperatureCelsius": sample_value.temperature_c,
+        "headingDeg": sample_value.heading_deg,
+        "estimatedSpeedMps": sample_value.estimated_speed_mps,
         "timestamp": sample_value.timestamp,
     }
 

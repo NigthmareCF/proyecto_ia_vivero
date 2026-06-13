@@ -58,6 +58,8 @@ const standardProfileSpeed: Record<"LOW" | "MEDIUM" | "HIGH" | "TURBO", number> 
   TURBO: 85,
 };
 
+const MAX_ESTIMATED_SPEED_MPS = 0.55;
+
 const orientationLabels: Record<SearchStartOrientation, string> = {
   FORWARD: "Mismo extremo",
   REVERSE: "Extremo opuesto",
@@ -347,6 +349,9 @@ export function RobotControlPage() {
   const connectionClass = connectionTone[robot.connectionQuality] ?? "bg-clay";
   const batteryWidth = Math.min(Math.max(robot.batteryLevel, 0), 100);
   const cpuWidth = Math.min(Math.max(robot.cpuUsage ?? 0, 0), 100);
+  const estimatedSpeedMps =
+    robot.estimatedSpeedMps ?? (activeSpeedPercent / 100) * MAX_ESTIMATED_SPEED_MPS;
+  const imuHeadingDeg = robot.imuHeadingDeg;
 
   return (
     <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
@@ -619,6 +624,8 @@ export function RobotControlPage() {
               ["Bateria", `${robot.batteryLevel}%`],
               ["Temperatura", formatMetric(robot.temperatureCelsius, "C")],
               ["CPU", formatMetric(robot.cpuUsage, "%")],
+              ["Velocidad", `${estimatedSpeedMps.toFixed(2)} m/s`],
+              ["Rumbo IMU", imuHeadingDeg === null ? "--" : `${imuHeadingDeg.toFixed(2)}°`],
             ].map(([title, value]) => (
               <article key={title} className="rounded-[1.5rem] border border-white/15 bg-white/5 p-4">
                 <p className="text-xs uppercase tracking-[0.18em] text-sand/70">{title}</p>

@@ -16,6 +16,8 @@ export type RobotState = {
   controlProfile: string;
   speedProfile: string;
   currentSpeedPercent: number | null;
+  estimatedSpeedMps: number | null;
+  imuHeadingDeg: number | null;
   currentPlantQr: string | null;
   rearObstacleDetected: boolean;
   lastWatchdogReason: string | null;
@@ -41,6 +43,8 @@ export const initialRobotState: Omit<RobotState, "setStatus"> = {
   controlProfile: "IDLE",
   speedProfile: "MEDIUM",
   currentSpeedPercent: null,
+  estimatedSpeedMps: null,
+  imuHeadingDeg: null,
   currentPlantQr: null,
   rearObstacleDetected: false,
   lastWatchdogReason: null,
@@ -172,6 +176,16 @@ export function normalizeRobotStatus(payload: unknown): Partial<RobotState> {
     toNumber(source.current_speed_percent) ??
     null;
 
+  const estimatedSpeedMps =
+    toNumber(source.estimatedSpeedMps) ??
+    toNumber(source.estimated_speed_mps) ??
+    null;
+
+  const imuHeadingDeg =
+    toNumber(source.imuHeadingDeg) ??
+    toNumber(source.imu_heading_deg) ??
+    null;
+
   const rearObstacleDetected =
     toBoolean(source.rearObstacleDetected) ??
     toBoolean(source.rear_obstacle_detected) ??
@@ -208,6 +222,8 @@ export function normalizeRobotStatus(payload: unknown): Partial<RobotState> {
     ...(controlProfile ? { controlProfile } : {}),
     ...(speedProfile ? { speedProfile } : {}),
     ...(currentSpeedPercent !== null ? { currentSpeedPercent } : {}),
+    ...(estimatedSpeedMps !== null ? { estimatedSpeedMps } : {}),
+    ...(imuHeadingDeg !== null ? { imuHeadingDeg } : {}),
     ...(currentPlantQr ? { currentPlantQr } : {}),
     ...(rearObstacleDetected !== undefined ? { rearObstacleDetected } : {}),
     ...(lastWatchdogReason ? { lastWatchdogReason } : {}),

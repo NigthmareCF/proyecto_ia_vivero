@@ -93,6 +93,18 @@ Requisitos de la VM:
 - NVIDIA Container Toolkit instalado
 - no exponer el puerto `8000` a internet; solo lo usa el backend dentro de la red Docker
 
+## 8.1 Gemini en laboratorio
+
+Para que el backend use Gemini en este equipo, levanta `release` con un `.env` local que tenga:
+
+```bash
+VISION_API_ENABLED=true
+VISION_API_PROVIDER=gemini
+GEMINI_API_KEY=tu_clave_local
+```
+
+El secreto no debe subirse al repositorio. El compose de `release` ya expone estas variables al backend.
+
 ## 9. SMTP Relay por IP
 
 Para Google Workspace SMTP Relay por IP, el backend debe levantarse con:

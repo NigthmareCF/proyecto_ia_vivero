@@ -88,6 +88,12 @@ public class RobotStatus extends BaseEntity {
     @Column(name = "current_speed_percent")
     private Integer currentSpeedPercent;
 
+    @Column(name = "estimated_speed_mps")
+    private Double estimatedSpeedMps;
+
+    @Column(name = "imu_heading_deg")
+    private Double imuHeadingDeg;
+
     @Column(name = "rear_obstacle_detected", nullable = false)
     @Builder.Default
     private boolean rearObstacleDetected = false;

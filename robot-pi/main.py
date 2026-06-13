@@ -6,6 +6,7 @@ import queue
 import signal
 import threading
 import time
+import math
 from datetime import datetime
 from typing import Any
 
@@ -114,6 +115,14 @@ def main() -> None:
         "window_mismatch_exact_qr_label": None,
         "window_mismatch_sequence": None,
         "awaiting_patrol_approval": False,
+        "line_follow_mode": "NORMAL",
+        "line_heading_target": None,
+        "line_turn_started_at": None,
+        "line_turn_target_deg": 180.0,
+        "line_cycle_started_at": None,
+        "line_pending_side": None,
+        "line_pending_since": None,
+        "line_pending_heading": None,
     }
     stream_sender = StreamSender(
         settings,
@@ -218,6 +227,45 @@ def main() -> None:
 
     def set_status_summary(message: str) -> None:
         runtime_context["status_summary"] = message
+
+    def get_imu_sample() -> dict[str, object] | None:
+        return imu.health_snapshot() if settings.imu_enabled else None
+
+    def get_current_heading_deg() -> float | None:
+        snapshot = imu.sample()
+        return None if snapshot is None else float(snapshot.heading_deg)
+
+    def get_estimated_speed_mps() -> float | None:
+        snapshot = imu.sample()
+        return None if snapshot is None else float(snapshot.estimated_speed_mps)
+
+    def heading_error_deg(target: float, current: float) -> float:
+        diff = (current - target + 540.0) % 360.0 - 180.0
+        return diff
+
+    def clamp_speed(value: float, minimum: int = 0, maximum: int = 100) -> int:
+        return max(minimum, min(int(round(value)), maximum))
+
+    def normalize_heading_target(heading: float | None) -> float | None:
+        if heading is None:
+            return None
+        return round(heading % 360.0, 2)
+
+    def set_line_heading_target_if_needed(current_heading: float | None) -> None:
+        if runtime_context["line_heading_target"] is None and current_heading is not None:
+            runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+
+    def reset_line_special_modes() -> None:
+        runtime_context["line_follow_mode"] = "NORMAL"
+        runtime_context["line_heading_target"] = None
+        runtime_context["line_turn_started_at"] = None
+        runtime_context["line_cycle_started_at"] = None
+        runtime_context["line_pending_side"] = None
+        runtime_context["line_pending_since"] = None
+        runtime_context["line_pending_heading"] = None
+
+    def estimate_patrol_speed_mps(speed_percent: int) -> float:
+        return round(max(speed_percent, 0) / 100.0 * 0.55, 2)
 
     def normalize_qr_value(value: str | None) -> str | None:
         if value is None:
@@ -328,6 +376,131 @@ def main() -> None:
             led_handler.set_danger()
         else:
             led_handler.set_attention()
+
+    def handle_line_follow_logic(patrol_speed: int) -> None:
+        pattern = line_follower.last_pattern()
+        left, center, right = pattern
+        current_heading = get_current_heading_deg()
+        target_heading = runtime_context["line_heading_target"]
+
+        if pattern == (1, 1, 1):
+            runtime_context["line_follow_mode"] = "TRIPLE_BLACK"
+            if runtime_context["line_cycle_started_at"] is None:
+                runtime_context["line_cycle_started_at"] = time.monotonic()
+            runtime_context["line_pending_side"] = None
+            runtime_context["line_pending_since"] = None
+            runtime_context["line_pending_heading"] = None
+            elapsed = time.monotonic() - float(runtime_context["line_cycle_started_at"])
+            if elapsed < 15.0:
+                motor_controller.move_forward(max(20, min(patrol_speed, 35)))
+                set_status_summary("Triple negro: avance inicial")
+            elif elapsed < 15.0 + settings.end_row_turn_seconds + 2.0:
+                motor_controller.stop()
+                if runtime_context["line_turn_started_at"] is None:
+                    runtime_context["line_turn_started_at"] = time.monotonic()
+                if time.monotonic() - float(runtime_context["line_turn_started_at"]) >= 0.25:
+                    motor_controller.turn_left(max(25, min(patrol_speed, 40)))
+                set_status_summary("Triple negro: giro 180")
+            elif elapsed < 30.0 + settings.end_row_turn_seconds + 2.0:
+                motor_controller.move_forward(max(20, min(patrol_speed, 35)))
+                set_status_summary("Triple negro: segundo avance")
+            else:
+                if pattern == (1, 1, 1):
+                    motor_controller.stop()
+                    set_status_summary("Nuevo recorrido listo")
+                    reset_line_special_modes()
+            return
+
+        if left == 1 or right == 1:
+            runtime_context["line_follow_mode"] = "CURVE"
+            detected_side = "LEFT" if left == 1 and right == 0 else "RIGHT" if right == 1 and left == 0 else "BOTH"
+            if runtime_context["line_pending_side"] is None:
+                runtime_context["line_pending_side"] = detected_side
+                runtime_context["line_pending_since"] = time.monotonic()
+                runtime_context["line_pending_heading"] = current_heading
+                if current_heading is not None:
+                    runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+                motor_controller.move_forward(max(18, patrol_speed - 8))
+                set_status_summary(f"Curva pendiente {detected_side}")
+                return
+
+            pending_side = runtime_context["line_pending_side"]
+            pending_since = runtime_context["line_pending_since"]
+            if pending_since is None:
+                pending_since = time.monotonic()
+                runtime_context["line_pending_since"] = pending_since
+            elapsed = time.monotonic() - float(pending_since)
+            opposite_detected = (
+                pending_side == "LEFT" and right == 1
+                or pending_side == "RIGHT" and left == 1
+            )
+            if opposite_detected:
+                runtime_context["line_follow_mode"] = "INVERT_PROTOCOL"
+                motor_controller.move_forward(max(18, patrol_speed - 8))
+                set_status_summary("Inversion detectada: sigue recto")
+                if elapsed >= 5.0:
+                    target = runtime_context["line_pending_heading"]
+                    if target is None and current_heading is not None:
+                        target = current_heading
+                    if target is not None:
+                        runtime_context["line_heading_target"] = normalize_heading_target(target)
+                    runtime_context["line_turn_started_at"] = time.monotonic()
+                    runtime_context["line_cycle_started_at"] = time.monotonic()
+                    motor_controller.stop()
+                    if pending_side == "LEFT":
+                        motor_controller.turn_left(max(25, min(patrol_speed, 40)))
+                    else:
+                        motor_controller.turn_right(max(25, min(patrol_speed, 40)))
+                    set_status_summary("Inversion: giro 180 relativo")
+                    runtime_context["line_pending_side"] = None
+                    runtime_context["line_pending_since"] = None
+                    runtime_context["line_pending_heading"] = None
+                return
+            if elapsed >= 5.0:
+                if pending_side == "LEFT":
+                    motor_controller.turn_left(max(20, patrol_speed - 8))
+                    set_status_summary("Curva izquierda confirmada")
+                elif pending_side == "RIGHT":
+                    motor_controller.turn_right(max(20, patrol_speed - 8))
+                    set_status_summary("Curva derecha confirmada")
+                else:
+                    motor_controller.move_forward(max(18, patrol_speed - 8))
+                runtime_context["line_pending_side"] = None
+                runtime_context["line_pending_since"] = None
+                runtime_context["line_pending_heading"] = None
+            else:
+                motor_controller.move_forward(max(18, patrol_speed - 8))
+                set_status_summary(f"Esperando confirmacion {elapsed:.1f}s")
+            return
+
+        if center == 1:
+            runtime_context["line_follow_mode"] = "CENTER"
+            runtime_context["line_pending_side"] = None
+            runtime_context["line_pending_since"] = None
+            runtime_context["line_pending_heading"] = None
+            if current_heading is not None and target_heading is None:
+                runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+            if target_heading is not None and current_heading is not None:
+                error = heading_error_deg(float(target_heading), float(current_heading))
+                if abs(error) <= 0.5:
+                    motor_controller.move_forward(patrol_speed)
+                    set_status_summary(f"Linea estable {target_heading:.2f}°")
+                    return
+                correction = clamp_speed(max(18.0, patrol_speed - min(abs(error) * 2.5, 18.0)))
+                if error > 0:
+                    motor_controller.turn_right(correction)
+                    set_status_summary(f"Corrigiendo a la derecha {error:.2f}°")
+                else:
+                    motor_controller.turn_left(correction)
+                    set_status_summary(f"Corrigiendo a la izquierda {error:.2f}°")
+                return
+            motor_controller.move_forward(patrol_speed)
+            set_status_summary("Linea central detectada")
+            return
+
+        motor_controller.stop()
+        set_status_summary("Linea perdida")
+        runtime_context["line_follow_mode"] = "LOST"
 
     def resolve_search_targets(raw_targets: Any, default_orientation: Any) -> list[dict[str, Any]]:
         if not isinstance(raw_targets, list):
@@ -535,6 +708,7 @@ def main() -> None:
             "manualDirection": snapshot.manual_direction,
             "manualSpeed": snapshot.manual_speed,
             "currentSpeedPercent": current_speed_percent(),
+            "estimatedSpeedMps": estimate_patrol_speed_mps(current_speed_percent()),
             "manualCommandAgeSeconds": manual_command_age_seconds,
             "manualCommandTimeoutSeconds": settings.manual_command_timeout_seconds,
             "lastWatchdogTriggeredAt": runtime_context["last_watchdog_triggered_at"],
@@ -1155,10 +1329,7 @@ def main() -> None:
                 else:
                     runtime_context["obstacle_count"] = 0
                     line_follower.follow_line(patrol_speed)
-                    if line_follower.is_all_white():
-                        finish_row_and_wait_for_patrol()
-                        time.sleep(0.1)
-                        continue
+                    handle_line_follow_logic(patrol_speed)
                     left_frame = camera.capture_frame("left")
                     right_frame = camera.capture_frame("right")
                     qr_candidate = select_qr_candidate(left_frame, right_frame)

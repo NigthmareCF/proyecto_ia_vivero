@@ -65,6 +65,10 @@ public class RobotHeartbeatRequestDto {
     @Max(value = 100, message = "Current speed must be at most 100")
     private Integer currentSpeedPercent;
 
+    private Double estimatedSpeedMps;
+
+    private Double imuHeadingDeg;
+
     private boolean rearObstacleDetected;
 
     @Size(max = 120, message = "Last watchdog reason must not exceed 120 characters")

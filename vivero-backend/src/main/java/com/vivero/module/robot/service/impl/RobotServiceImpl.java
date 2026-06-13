@@ -159,6 +159,8 @@ public class RobotServiceImpl implements RobotService {
         status.setControlProfile(normalizeToken(heartbeat.getControlProfile(), status.getControlProfile()));
         status.setSpeedProfile(normalizeToken(heartbeat.getSpeedProfile(), status.getSpeedProfile()));
         status.setCurrentSpeedPercent(heartbeat.getCurrentSpeedPercent());
+        status.setEstimatedSpeedMps(heartbeat.getEstimatedSpeedMps());
+        status.setImuHeadingDeg(heartbeat.getImuHeadingDeg());
         status.setRearObstacleDetected(heartbeat.isRearObstacleDetected());
         status.setLastWatchdogReason(normalizeBlank(heartbeat.getLastWatchdogReason()));
         status.setConnected(true);
@@ -417,6 +419,8 @@ public class RobotServiceImpl implements RobotService {
                 .controlProfile("IDLE")
                 .speedProfile("MEDIUM")
                 .currentSpeedPercent(null)
+                .estimatedSpeedMps(null)
+                .imuHeadingDeg(null)
                 .rearObstacleDetected(false)
                 .lastWatchdogReason(null)
                 .lastSeenAt(LocalDateTime.now())

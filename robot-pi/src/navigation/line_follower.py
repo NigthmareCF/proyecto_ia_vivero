@@ -17,6 +17,7 @@ except Exception:  # pragma: no cover
 
 _settings: Settings | None = None
 _last_line_seen = time.monotonic()
+_last_pattern: tuple[int, int, int] = (0, 0, 0)
 
 
 def setup(settings: Settings) -> None:
@@ -37,11 +38,13 @@ def _normalize(value: int) -> int:
 
 def read_sensors() -> tuple[int, int, int]:
     global _last_line_seen
+    global _last_pattern
     if GPIO is None:
         return (0, 1, 0)
     left = _normalize(GPIO.input(LINE_SENSOR_LEFT))
     center = _normalize(GPIO.input(LINE_SENSOR_CENTER))
     right = _normalize(GPIO.input(LINE_SENSOR_RIGHT))
+    _last_pattern = (left, center, right)
     if (left, center, right) not in {(1, 1, 1), (0, 0, 0)}:
         _last_line_seen = time.monotonic()
     return left, center, right
@@ -81,3 +84,7 @@ def is_all_white() -> bool:
 
 def has_black_detected() -> bool:
     return any(value == 1 for value in read_sensors())
+
+
+def last_pattern() -> tuple[int, int, int]:
+    return _last_pattern

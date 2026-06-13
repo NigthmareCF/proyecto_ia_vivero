@@ -32,6 +32,8 @@ public class RobotStatusResponseDto {
     private String controlProfile;
     private String speedProfile;
     private Integer currentSpeedPercent;
+    private Double estimatedSpeedMps;
+    private Double imuHeadingDeg;
     private boolean rearObstacleDetected;
     private String lastWatchdogReason;
     private LocalDateTime lastSeenAt;
