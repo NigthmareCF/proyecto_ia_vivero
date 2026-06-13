@@ -13,6 +13,7 @@ export function LoginForm() {
   const [lastName, setLastName] = useState("Castillo");
   const [email, setEmail] = useState("admin@vivero.com");
   const [password, setPassword] = useState("admin123");
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<PublicRole>("CONTROLLER");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -107,13 +108,26 @@ export function LoginForm() {
         onChange={(event) => setEmail(event.target.value)}
         placeholder="Correo"
       />
-      <input
-        className="w-full rounded-2xl border border-ink/10 px-4 py-3"
-        type="password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        placeholder="Contrasena"
-      />
+      <label className="block space-y-2">
+        <span className="text-sm font-medium text-ink">Contraseña</span>
+        <div className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-3">
+          <input
+            className="min-w-0 flex-1 bg-transparent outline-none"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Contrasena"
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((value) => !value)}
+            className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-ink"
+          >
+            {showPassword ? "Ocultar" : "Ver"}
+          </button>
+        </div>
+      </label>
 
       {mode === "register" && (
         <select

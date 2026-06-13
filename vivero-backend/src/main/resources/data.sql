@@ -40,6 +40,31 @@ WHERE NOT EXISTS (
     WHERE email = 'adminMov@vivero.com'
 );
 
+-- Usuarios de prueba no administradores para validar el CRUD de usuarios
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT 'Ana', 'Perez', 'controller1@vivero.com', '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG', 'CONTROLLER', true, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'controller1@vivero.com');
+
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT 'Luis', 'Morales', 'controller2@vivero.com', '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG', 'CONTROLLER', true, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'controller2@vivero.com');
+
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT 'Marta', 'Lopez', 'viewer1@vivero.com', '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG', 'VIEWER', true, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'viewer1@vivero.com');
+
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT 'Jose', 'Ruiz', 'viewer2@vivero.com', '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG', 'VIEWER', true, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'viewer2@vivero.com');
+
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT 'Claudia', 'Diaz', 'viewer3@vivero.com', '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG', 'VIEWER', true, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'viewer3@vivero.com');
+
+INSERT INTO users (first_name, last_name, email, password, role, active, created_at, updated_at)
+SELECT 'Pedro', 'Gomez', 'controller3@vivero.com', '$2a$12$D1X/i7fdMy33URjBbS1k6.8mN9S.YGAgsNNeqeN5KKtb3RGcb9REG', 'CONTROLLER', true, NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'controller3@vivero.com');
+
 -- Configuración base de notificación para pruebas manuales del módulo reports
 INSERT INTO notification_config (user_id, channel, contact_value, active, created_at, updated_at)
 SELECT

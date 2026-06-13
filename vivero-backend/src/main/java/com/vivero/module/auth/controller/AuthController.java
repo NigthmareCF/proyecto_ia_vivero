@@ -4,6 +4,7 @@ import com.vivero.module.auth.dto.AuthResponseDto;
 import com.vivero.module.auth.dto.LoginRequestDto;
 import com.vivero.module.auth.dto.RefreshTokenRequestDto;
 import com.vivero.module.auth.dto.RegisterRequestDto;
+import com.vivero.module.auth.dto.UpdateProfileRequestDto;
 import com.vivero.module.auth.service.AuthService;
 import com.vivero.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,5 +60,16 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok(ApiResponse.ok("User data retrieved", response));
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<AuthResponseDto>> updateProfile(
+            org.springframework.security.core.Authentication authentication,
+            @Valid @RequestBody UpdateProfileRequestDto request
+    ) {
+        com.vivero.module.auth.entity.User user =
+                (com.vivero.module.auth.entity.User) authentication.getPrincipal();
+        AuthResponseDto response = authService.updateProfile(user.getEmail(), request);
+        return ResponseEntity.ok(ApiResponse.ok("Profile updated", response));
     }
 }

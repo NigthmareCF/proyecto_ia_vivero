@@ -112,7 +112,18 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUserEmail));
 
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail().trim())
+                && userRepository.existsByEmail(request.getEmail().trim())) {
+            throw new BusinessException("Email already registered: " + request.getEmail(), "EMAIL_ALREADY_EXISTS");
+        }
+
+        user.setFirstName(request.getFirstName().trim());
+        user.setLastName(request.getLastName().trim());
+        user.setEmail(request.getEmail().trim());
         user.setPhoneNumber(normalizePhone(request.getPhoneNumber()));
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
         userRepository.save(user);
 
         log.info("Perfil actualizado para {}", user.getEmail());

@@ -12,3 +12,11 @@ export const register = (payload: {
 }) => api.post("/auth/register", payload).then((res) => res.data.data);
 
 export const getMe = () => api.get("/auth/me").then((res) => res.data.data);
+
+export const updateProfile = (payload: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string | null;
+  password?: string;
+}) => api.patch("/auth/me", payload).then((res) => res.data.data);
