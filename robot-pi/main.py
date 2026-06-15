@@ -240,7 +240,7 @@ def main() -> None:
                 time.sleep(0.1)
                 continue
             alert_obstacle_feedback()
-            time.sleep(0.15)
+            time.sleep(0.8)
 
     def normalize_qr_value(value: str | None) -> str | None:
         if value is None:
