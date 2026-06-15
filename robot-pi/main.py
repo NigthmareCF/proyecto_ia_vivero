@@ -66,6 +66,7 @@ def main() -> None:
         "last_capture_count": 0,
         "last_obstacle_distance_cm": None,
         "obstacle_detected": False,
+        "front_obstacle_latched": False,
         "obstacle_count": 0,
         "stream_active": False,
         "active_camera": "front",
@@ -197,6 +198,14 @@ def main() -> None:
             runtime_context["rear_obstacle_latched"] = False
         return rear_state
 
+    def refresh_front_obstacle_state() -> bool:
+        obstacle_distance = obstacle_detector.get_distance_cm()
+        runtime_context["last_obstacle_distance_cm"] = obstacle_distance
+        runtime_context["obstacle_detected"] = obstacle_distance < settings.obstacle_distance_cm
+        if not runtime_context["obstacle_detected"]:
+            runtime_context["front_obstacle_latched"] = False
+        return bool(runtime_context["obstacle_detected"])
+
     def normalize_speed_value(speed: int | float | None, fallback: int) -> int:
         if speed is None:
             return max(0, min(fallback, 100))
@@ -227,6 +236,33 @@ def main() -> None:
 
     def set_status_summary(message: str) -> None:
         runtime_context["status_summary"] = message
+
+    def alert_obstacle_feedback() -> None:
+        led_handler.pulse_blue_with(buzzer_handler.beep)
+
+    def run_obstacle_alert_cycle() -> None:
+        while not shutdown_event.is_set():
+            front_active = refresh_front_obstacle_state()
+            rear_state = refresh_rear_obstacle_state()
+            rear_active = bool(rear_state["left"] or rear_state["right"])
+            if not front_active and not rear_active:
+                time.sleep(0.1)
+                continue
+            alert_obstacle_feedback()
+            time.sleep(0.15)
+
+    def is_front_motion_blocked() -> bool:
+        if not refresh_front_obstacle_state():
+            return False
+        if not runtime_context["front_obstacle_latched"]:
+            runtime_context["front_obstacle_latched"] = True
+            runtime_context["obstacle_count"] += 1
+            runtime_context["last_watchdog_triggered_at"] = datetime.now().isoformat()
+            runtime_context["last_watchdog_reason"] = "FRONT_OBSTACLE_BLOCKED_FORWARD"
+            set_status_summary("Obstaculo frontal")
+            lcd_handler.show_temporary_message("Obstaculo", "Frontal", duration_seconds=3.0)
+        motor_controller.stop()
+        return True
 
     def get_imu_sample() -> dict[str, object] | None:
         return imu.health_snapshot() if settings.imu_enabled else None
@@ -1162,7 +1198,7 @@ def main() -> None:
             runtime_context["last_watchdog_reason"] = "REAR_OBSTACLE_BLOCKED_REVERSE"
             set_status_summary("Obstaculo trasero")
             lcd_handler.show_temporary_message("Obst trasero", "Retroceso no", duration_seconds=4.0)
-            buzzer_handler.alert()
+            led_handler.set_danger()
         motor_controller.stop()
         return True
 
@@ -1285,6 +1321,12 @@ def main() -> None:
     qr_resolution_thread.start()
     offline_thread.start()
     command_listener.start()
+    obstacle_alert_thread = threading.Thread(
+        target=run_obstacle_alert_cycle,
+        name="obstacle-alert-loop",
+        daemon=True,
+    )
+    obstacle_alert_thread.start()
 
     try:
         while not shutdown_event.is_set():
@@ -1304,6 +1346,8 @@ def main() -> None:
                 enforce_manual_watchdog(snapshot)
                 if snapshot.manual_direction == "backward" and is_reverse_motion_blocked():
                     state_machine.update_manual_move("stop", 0)
+                if snapshot.manual_direction in {"forward", "forward_left", "forward_right"} and is_front_motion_blocked():
+                    state_machine.update_manual_move("stop", 0)
 
             elif snapshot.state == RobotState.FOLLOW_LINE:
                 refresh_rear_obstacle_state()
@@ -1312,20 +1356,12 @@ def main() -> None:
                     motor_controller.stop()
                     time.sleep(0.1)
                     continue
-                obstacle_distance = obstacle_detector.get_distance_cm()
-                runtime_context["last_obstacle_distance_cm"] = obstacle_distance
-                runtime_context["obstacle_detected"] = obstacle_distance < settings.obstacle_distance_cm
                 patrol_speed = current_speed_percent()
-                if runtime_context["obstacle_detected"]:
-                    runtime_context["obstacle_count"] += 1
+                if is_front_motion_blocked():
                     motor_controller.stop()
                     set_status_summary("Obstaculo detectado")
                     lcd_handler.show_temporary_message("Obstaculo", "Detectado", duration_seconds=3.0)
-                    buzzer_handler.alert()
-                    time.sleep(1.5)
-                    motor_controller.turn_right(patrol_speed)
-                    time.sleep(0.5)
-                    motor_controller.stop()
+                    time.sleep(0.2)
                 else:
                     runtime_context["obstacle_count"] = 0
                     line_follower.follow_line(patrol_speed)

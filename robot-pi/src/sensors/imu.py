@@ -15,6 +15,7 @@ MPU6050_DEFAULT_POWER_MGMT = 0x6B
 MPU6050_ACCEL_XOUT_H = 0x3B
 MPU6050_GYRO_XOUT_H = 0x43
 MPU6050_TEMP_OUT_H = 0x41
+IMU_REFERENCE_AXIS = "Z"
 
 
 @dataclass(slots=True)
@@ -131,6 +132,7 @@ def health_snapshot() -> dict[str, object]:
         "gyroZdps": sample_value.gyro_z_dps,
         "temperatureCelsius": sample_value.temperature_c,
         "headingDeg": sample_value.heading_deg,
+        "referenceAxis": IMU_REFERENCE_AXIS,
         "estimatedSpeedMps": sample_value.estimated_speed_mps,
         "timestamp": sample_value.timestamp,
     }
