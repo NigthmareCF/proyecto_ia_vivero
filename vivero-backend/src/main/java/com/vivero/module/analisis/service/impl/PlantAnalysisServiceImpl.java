@@ -173,66 +173,60 @@ public class PlantAnalysisServiceImpl implements PlantAnalysisService {
                 .build();
 
         String prompt = """
-                Analiza esta imagen de una planta de chile pimiento en vivero y responde SOLO JSON valido.
-                Basa tu conclusion principalmente en la evidencia visual observable y usa las observaciones del operador solo como contexto secundario.
-
-                Objetivo del diagnostico:
-                - no responder demasiado largo
-                - pero si ser especifico, claro y util para operacion
-                - explicar por que tomas la decision
-                - indicar que signos se ven mas marcados
-                - mencionar posibles causas probables solo si son consistentes con lo visible
-
-                Reglas:
-                - estadoGeneral debe ser uno de: SANO, ATENCION, PELIGRO, REVISION_MANUAL
-                - urgencia debe ser una de: BAJA, MEDIA, ALTA, CRITICA
-                - confianza debe estar entre 0 y 1
-                - diagnostico debe tener entre 3 y 4 frases cortas o lineas breves, con tono tecnico y entendible
-                - diagnostico debe incluir: conclusion principal, evidencia visual mas relevante, por que esa evidencia soporta el estado elegido y posibles causas probables si aplica
-                - hallazgos debe tener entre 2 y 5 elementos concretos basados en lo visible
-                - recomendaciones debe tener entre 2 y 5 elementos accionables
-                - requiereRevisionManual debe ser true si la imagen no permite una conclusion confiable, si faltan detalles visuales clave o si hay ambiguedad
-                - si la evidencia visual no alcanza para afirmar una causa, dilo explicitamente y pide revision manual
-                - no inventes datos, sintomas ni causas que no esten respaldados por la imagen
-                - evita frases vacias o genericas como "requiere atencion" sin explicar por que
+                Analiza la imagen de una planta de chile pimiento en vivero.
+                Responde solo con JSON puro, sin comillas triples, sin bloques markdown y sin texto adicional.
+                Prioriza la evidencia visual. Usa las observaciones del operador solo como contexto secundario.
+                Si no hay evidencia suficiente, marca REVISION_MANUAL.
 
                 Observaciones del operador:
                 %s
                 """.formatted(normalizeOperatorNotes(request.getObservacionesOperador()));
 
         Map<String, Object> body = Map.of(
+                "systemInstruction", Map.of(
+                        "parts", List.of(
+                                Map.of("text", """
+                                        Eres un analizador tecnico de plantas. Devuelve un JSON con:
+                                        estadoGeneral, urgencia, confianza, diagnostico, hallazgos, recomendaciones, requiereRevisionManual.
+                                        Mantén el texto corto, tecnico y accionable.
+                                        No inventes sintomas.
+                                        """)
+                        )
+                ),
                 "contents", List.of(
                         Map.of(
+                                "role", "user",
                                 "parts", List.of(
                                         Map.of("text", prompt),
-                                        Map.of("inline_data", Map.of(
-                                                "mime_type", request.getMimeType(),
+                                        Map.of("inlineData", Map.of(
+                                                "mimeType", request.getMimeType(),
                                                 "data", request.getImagenBase64()
                                         ))
                                 )
                         )
                 ),
                 "generationConfig", Map.of(
-                        "temperature", 0.2,
-                        "responseMimeType", "application/json",
-                        "responseSchema", buildGeminiResponseSchema()
+                        "temperature", 0.2
                 )
         );
 
-        String endpoint = "%s/%s:generateContent"
-                .formatted(trimTrailingSlash(visionApiProperties.getGemini().getUrl()), visionApiProperties.getModel());
+        String endpoint = "%s/%s:generateContent?key=%s"
+                .formatted(
+                        trimTrailingSlash(visionApiProperties.getGemini().getUrl()),
+                        visionApiProperties.getModel(),
+                        visionApiProperties.getGemini().getKey()
+                );
 
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
                 .timeout(Duration.ofSeconds(visionApiProperties.getTimeoutSeconds()))
                 .header("Content-Type", "application/json")
-                .header("x-goog-api-key", visionApiProperties.getGemini().getKey())
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)))
                 .build();
 
         HttpResponse<String> httpResponse = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         if (httpResponse.statusCode() < 200 || httpResponse.statusCode() >= 300) {
-            throw new IOException("Gemini devolvio HTTP " + httpResponse.statusCode());
+            throw new IOException("Gemini devolvio HTTP " + httpResponse.statusCode() + ": " + httpResponse.body());
         }
 
         JsonNode root = objectMapper.readTree(httpResponse.body());
@@ -241,7 +235,7 @@ public class PlantAnalysisServiceImpl implements PlantAnalysisService {
             throw new IOException("Gemini no devolvio contenido interpretable.");
         }
 
-        return normalizeModelResponse(objectMapper.readTree(textPayload));
+        return normalizeModelResponse(objectMapper.readTree(stripMarkdownCodeFence(textPayload)));
     }
 
     private PlantAnalysisResponseDto normalizeModelResponse(JsonNode parsed) {
@@ -483,30 +477,6 @@ public class PlantAnalysisServiceImpl implements PlantAnalysisService {
                 .build();
     }
 
-    private Map<String, Object> buildGeminiResponseSchema() {
-        return Map.of(
-                "type", "OBJECT",
-                "properties", Map.of(
-                        "estadoGeneral", Map.of("type", "STRING", "enum", ALLOWED_STATES),
-                        "urgencia", Map.of("type", "STRING", "enum", ALLOWED_URGENCY),
-                        "confianza", Map.of("type", "NUMBER"),
-                        "diagnostico", Map.of("type", "STRING"),
-                        "hallazgos", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
-                        "recomendaciones", Map.of("type", "ARRAY", "items", Map.of("type", "STRING")),
-                        "requiereRevisionManual", Map.of("type", "BOOLEAN")
-                ),
-                "required", List.of(
-                        "estadoGeneral",
-                        "urgencia",
-                        "confianza",
-                        "diagnostico",
-                        "hallazgos",
-                        "recomendaciones",
-                        "requiereRevisionManual"
-                )
-        );
-    }
-
     private String extractGeminiText(JsonNode root) {
         JsonNode parts = root.path("candidates").path(0).path("content").path("parts");
         if (!parts.isArray()) {
@@ -642,6 +612,20 @@ public class PlantAnalysisServiceImpl implements PlantAnalysisService {
             return "";
         }
         return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
+    }
+
+    private String stripMarkdownCodeFence(String payload) {
+        String normalized = payload.trim();
+        if (normalized.startsWith("```")) {
+            int firstNewline = normalized.indexOf('\n');
+            if (firstNewline >= 0) {
+                normalized = normalized.substring(firstNewline + 1).trim();
+            }
+            if (normalized.endsWith("```")) {
+                normalized = normalized.substring(0, normalized.length() - 3).trim();
+            }
+        }
+        return normalized;
     }
 
     private double clamp(double value) {

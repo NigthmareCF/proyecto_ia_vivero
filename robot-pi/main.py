@@ -249,7 +249,7 @@ def main() -> None:
                 time.sleep(0.1)
                 continue
             alert_obstacle_feedback()
-            time.sleep(0.15)
+            time.sleep(0.8)
 
     def is_front_motion_blocked() -> bool:
         if not refresh_front_obstacle_state():
