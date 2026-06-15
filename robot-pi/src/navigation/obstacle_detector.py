@@ -23,6 +23,8 @@ def setup(settings: Settings) -> None:
     if GPIO is None:
         LOGGER.warning("RPi.GPIO no disponible; obstacle_detector en simulacion")
         return
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
     GPIO.setup(ULTRASONIC_TRIG, GPIO.OUT)
     GPIO.setup(ULTRASONIC_ECHO, GPIO.IN)
     GPIO.setup(IR_LEFT, GPIO.IN)

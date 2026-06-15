@@ -67,6 +67,7 @@ def main() -> None:
         "last_capture_count": 0,
         "last_obstacle_distance_cm": None,
         "obstacle_detected": False,
+        "front_obstacle_latched": False,
         "obstacle_count": 0,
         "stream_active": False,
         "active_camera": "front",
@@ -932,6 +933,9 @@ def main() -> None:
                 runtime_context["speed_profile"] = "CUSTOM"
             else:
                 runtime_context["speed_profile"] = raw_profile or "MEDIUM"
+        elif command == "BUZZER_TEST":
+            set_status_summary("Prueba buzzer")
+            buzzer_handler.alert_async()
         elif command == "ACRO":
             runtime_context["control_profile"] = "ACRO"
             runtime_context["last_manual_command_at"] = None
@@ -962,6 +966,9 @@ def main() -> None:
         }
         normalized_direction = direction_aliases.get(normalized_direction, normalized_direction)
         if normalized_direction == "forward":
+            if is_front_motion_blocked():
+                state_machine.update_manual_move("stop", 0)
+                return
             motor_controller.move_forward(speed)
         elif normalized_direction == "backward":
             if is_reverse_motion_blocked():
@@ -973,8 +980,14 @@ def main() -> None:
         elif normalized_direction == "right":
             motor_controller.turn_right(speed)
         elif normalized_direction == "forward_left":
+            if is_front_motion_blocked():
+                state_machine.update_manual_move("stop", 0)
+                return
             motor_controller.move_forward_left(speed)
         elif normalized_direction == "forward_right":
+            if is_front_motion_blocked():
+                state_machine.update_manual_move("stop", 0)
+                return
             motor_controller.move_forward_right(speed)
         elif normalized_direction == "backward_left":
             if is_reverse_motion_blocked():
@@ -1007,7 +1020,30 @@ def main() -> None:
         motor_controller.stop()
 
     def alert_obstacle_feedback() -> None:
-        led_handler.pulse_blue_with(buzzer_handler.beep)
+        led_handler.set_danger()
+        buzzer_handler.alert_async()
+
+    def refresh_front_obstacle_state() -> bool:
+        obstacle_distance = obstacle_detector.get_distance_cm()
+        runtime_context["last_obstacle_distance_cm"] = obstacle_distance
+        runtime_context["obstacle_detected"] = obstacle_distance < settings.obstacle_distance_cm
+        if not runtime_context["obstacle_detected"]:
+            runtime_context["front_obstacle_latched"] = False
+        return bool(runtime_context["obstacle_detected"])
+
+    def is_front_motion_blocked() -> bool:
+        if not refresh_front_obstacle_state():
+            return False
+        if not runtime_context["front_obstacle_latched"]:
+            runtime_context["front_obstacle_latched"] = True
+            runtime_context["obstacle_count"] += 1
+            runtime_context["last_watchdog_triggered_at"] = datetime.now().isoformat()
+            runtime_context["last_watchdog_reason"] = "FRONT_OBSTACLE_BLOCKED_FORWARD"
+            set_status_summary("Obstaculo frontal")
+            lcd_handler.show_temporary_message("Obstaculo", "Frontal", duration_seconds=3.0)
+            alert_obstacle_feedback()
+        motor_controller.stop()
+        return True
 
     def is_reverse_motion_blocked() -> bool:
         rear_state = refresh_rear_obstacle_state()
@@ -1196,6 +1232,16 @@ def main() -> None:
                     "right_reverse",
                 }
                 if manual_direction in reverse_directions and is_reverse_motion_blocked():
+                    state_machine.update_manual_move("stop", 0)
+                forward_directions = {
+                    "forward",
+                    "up",
+                    "forward_left",
+                    "left_forward",
+                    "forward_right",
+                    "right_forward",
+                }
+                if manual_direction in forward_directions and is_front_motion_blocked():
                     state_machine.update_manual_move("stop", 0)
 
             elif snapshot.state == RobotState.FOLLOW_LINE:

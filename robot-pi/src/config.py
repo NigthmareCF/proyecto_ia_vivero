@@ -86,6 +86,7 @@ class Settings:
     speed_profile_high: int
     speed_profile_turbo: int
     stream_fps: int
+    stream_send_fps: int
     stream_quality: int
     capture_count: int
     qr_capture_speed: int
@@ -167,6 +168,7 @@ class Settings:
             speed_profile_high=int(os.getenv("SPEED_PROFILE_HIGH", "65")),
             speed_profile_turbo=int(os.getenv("SPEED_PROFILE_TURBO", "85")),
             stream_fps=int(os.getenv("STREAM_FPS", "10")),
+            stream_send_fps=int(os.getenv("STREAM_SEND_FPS", os.getenv("STREAM_FPS", "10"))),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
             capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
             qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "25")),

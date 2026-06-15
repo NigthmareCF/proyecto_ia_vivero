@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zbar-tools \
     libzbar0 \
     libcamera-dev \
+    v4l-utils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

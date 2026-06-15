@@ -6,7 +6,7 @@ import time
 import RPi.GPIO as GPIO  # type: ignore
 
 
-PINS = {"L": 13, "C": 19, "R": 26}
+PINS = {"izquierda": 13, "centro": 19, "derecha": 16}
 
 
 def action_for(pattern: tuple[int, int, int]) -> str:
@@ -39,6 +39,10 @@ def main() -> None:
     print("TCRT5000 tiempo real - CTRL+C para salir", flush=True)
     print(f"LINE_ACTIVE_LOW={active_low} pins={PINS}", flush=True)
     print(
+        "identificacion: izquierda=GPIO13 pin33 | centro=GPIO19 pin35 | derecha=GPIO16 pin36",
+        flush=True,
+    )
+    print(
         "patrones: (0,1,0)=avance | (1,1,0)/(1,0,0)=izq | "
         "(0,1,1)/(0,0,1)=der | (0,0,0)=sin linea | (1,1,1)=todo activo",
         flush=True,
@@ -50,11 +54,11 @@ def main() -> None:
         while True:
             raw = {name: int(GPIO.input(pin)) for name, pin in PINS.items()}
             normalized = {name: normalize(value, active_low) for name, value in raw.items()}
-            pattern = (normalized["L"], normalized["C"], normalized["R"])
+            pattern = (normalized["izquierda"], normalized["centro"], normalized["derecha"])
             marker = "*" if pattern != last_pattern else " "
             last_pattern = pattern
             print(
-                f"{counter:05d}{marker} raw={raw} norm={normalized} "
+                f"{counter:05d}{marker} raw={raw} estado={normalized} "
                 f"pattern={pattern} action={action_for(pattern)}",
                 flush=True,
             )

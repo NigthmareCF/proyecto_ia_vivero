@@ -7,7 +7,7 @@ Wants=network-online.target docker.service
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/home/fer-dev/ROBOT-PI-EJECUTION
-ExecStart=/usr/bin/docker compose up -d --build
+ExecStart=/home/fer-dev/ROBOT-PI-EJECUTION/start-robot-at-boot.sh
 ExecStop=/usr/bin/docker compose down
 TimeoutStartSec=0
 

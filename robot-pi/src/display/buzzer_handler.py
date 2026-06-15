@@ -14,19 +14,32 @@ except Exception:  # pragma: no cover
 
 _enabled = False
 _play_lock = threading.Lock()
+_buzzer_pwm = None
 
 
 def setup(settings: Settings) -> None:
-    global _enabled
+    global _enabled, _buzzer_pwm
     _enabled = settings.buzzer_enabled and GPIO is not None
     if not _enabled:
         return
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
     GPIO.setup(BUZZER, GPIO.OUT)
     GPIO.output(BUZZER, GPIO.LOW)
+    try:
+        _buzzer_pwm = GPIO.PWM(BUZZER, 2200)
+        _buzzer_pwm.start(0)
+    except Exception:
+        _buzzer_pwm = None
 
 
 def beep(duration: float = 0.2) -> None:
     if not _enabled or GPIO is None:
+        return
+    if _buzzer_pwm is not None:
+        _buzzer_pwm.ChangeDutyCycle(70)
+        time.sleep(duration)
+        _buzzer_pwm.ChangeDutyCycle(0)
         return
     GPIO.output(BUZZER, GPIO.HIGH)
     time.sleep(duration)
@@ -34,9 +47,18 @@ def beep(duration: float = 0.2) -> None:
 
 
 def alert() -> None:
-    for _ in range(3):
-        beep(0.2)
-        time.sleep(0.15)
+    if not _enabled:
+        return
+    with _play_lock:
+        for _ in range(3):
+            beep(0.2)
+            time.sleep(0.15)
+
+
+def alert_async() -> None:
+    if not _enabled:
+        return
+    threading.Thread(target=alert, name="buzzer-alert", daemon=True).start()
 
 
 def jingle() -> None:
@@ -62,5 +84,10 @@ def countdown_go() -> None:
 
 
 def cleanup() -> None:
+    global _buzzer_pwm
     if _enabled and GPIO is not None:
+        if _buzzer_pwm is not None:
+            _buzzer_pwm.ChangeDutyCycle(0)
+            _buzzer_pwm.stop()
+            _buzzer_pwm = None
         GPIO.output(BUZZER, GPIO.LOW)

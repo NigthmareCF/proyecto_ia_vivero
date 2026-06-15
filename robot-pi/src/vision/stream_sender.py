@@ -52,7 +52,7 @@ class StreamSender:
                 while not self._stop_event.is_set():
                     frame = self.frame_provider()
                     self.send_frame(frame, ws)
-                    time.sleep(max(1 / max(self.settings.stream_fps, 1), 0.05))
+                    time.sleep(max(1 / max(self.settings.stream_send_fps, 1), 0.05))
             except Exception as exc:
                 LOGGER.warning("Stream sender disconnected: %s", exc)
                 time.sleep(2)

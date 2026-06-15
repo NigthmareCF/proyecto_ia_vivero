@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import logging
+import re
+import subprocess
 import threading
 import time
 from typing import Any
@@ -13,6 +15,7 @@ from src.config import Settings
 
 
 LOGGER = logging.getLogger(__name__)
+AUTO_FPS_FALLBACK = 30
 
 
 class CameraHandler:
@@ -20,6 +23,74 @@ class CameraHandler:
         self.settings = settings
         self._captures: dict[str, Any] = {}
         self._lock = threading.Lock()
+        self._auto_stream_fps = settings.stream_fps <= 0
+        self._effective_stream_fps = max(settings.stream_fps, 0)
+
+    def _max_supported_fps(self, index: int) -> int | None:
+        device_path = f"/dev/video{index}"
+        try:
+            result = subprocess.run(
+                ["v4l2-ctl", "--list-formats-ext", "-d", device_path],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=2,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return None
+        if result.returncode != 0:
+            return None
+
+        fps_values: list[float] = []
+        in_mjpg_format = False
+        in_target_size = False
+        size_pattern = re.compile(r"Size:\s+Discrete\s+(\d+)x(\d+)")
+        fps_pattern = re.compile(r"\(([\d.]+)\s+fps\)")
+        for raw_line in result.stdout.splitlines():
+            line = raw_line.strip()
+            if line.startswith("["):
+                in_mjpg_format = "'MJPG'" in line or '"MJPG"' in line
+                in_target_size = False
+                continue
+            size_match = size_pattern.search(line)
+            if size_match:
+                in_target_size = (
+                    in_mjpg_format
+                    and int(size_match.group(1)) == self.settings.camera_width
+                    and int(size_match.group(2)) == self.settings.camera_height
+                )
+                continue
+            if not in_target_size:
+                continue
+            fps_match = fps_pattern.search(line)
+            if fps_match:
+                fps_values.append(float(fps_match.group(1)))
+
+        if not fps_values:
+            return None
+        return max(1, int(round(max(fps_values))))
+
+    def _resolve_requested_fps(self, index: int) -> int:
+        if not self._auto_stream_fps and self.settings.stream_fps > 0:
+            return self.settings.stream_fps
+        max_supported_fps = self._max_supported_fps(index)
+        if max_supported_fps is None:
+            LOGGER.warning(
+                "No se pudo detectar FPS maximo para /dev/video%s a %sx%s; se usara %s FPS",
+                index,
+                self.settings.camera_width,
+                self.settings.camera_height,
+                AUTO_FPS_FALLBACK,
+            )
+            return AUTO_FPS_FALLBACK
+        LOGGER.info(
+            "Camara /dev/video%s configurada al maximo detectado: %s FPS en %sx%s",
+            index,
+            max_supported_fps,
+            self.settings.camera_width,
+            self.settings.camera_height,
+        )
+        return max_supported_fps
 
     def _open_camera(self, index: int) -> Any:
         if self.settings.camera_type == "csi":
@@ -29,8 +100,13 @@ class CameraHandler:
         if not capture or not capture.isOpened():
             LOGGER.warning("No se pudo abrir la camara con indice %s; se usara frame simulado", index)
             return None
+        capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
         capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.settings.camera_width)
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.settings.camera_height)
+        requested_fps = self._resolve_requested_fps(index)
+        capture.set(cv2.CAP_PROP_FPS, requested_fps)
+        self._effective_stream_fps = max(self._effective_stream_fps, requested_fps)
+        self.settings.stream_fps = max(self.settings.stream_fps, self._effective_stream_fps)
         return capture
 
     def setup(self) -> None:
