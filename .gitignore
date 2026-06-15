@@ -10,3 +10,4 @@ robot-pi/__pycache__/
 robot-pi/src/__pycache__/
 robot-pi/models/modelo_vivero.tflite
 robot-pi/models/*.log
+runtime-copies/
