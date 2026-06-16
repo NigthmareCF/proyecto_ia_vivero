@@ -12,6 +12,7 @@ import cv2
 import numpy as np
 from websocket import WebSocketConnectionClosedException, create_connection
 
+from src.communication.backend_endpoint_manager import BackendEndpointManager
 from src.config import Settings
 
 
@@ -22,14 +23,22 @@ class StreamSender:
     def __init__(
         self,
         settings: Settings,
+        endpoint_manager: BackendEndpointManager,
         frame_provider: Callable[[], object],
         camera_name_provider: Callable[[], str],
     ) -> None:
         self.settings = settings
+        self.endpoint_manager = endpoint_manager
         self.frame_provider = frame_provider
         self.camera_name_provider = camera_name_provider
         self._stop_event = threading.Event()
         self._thread: threading.Thread | None = None
+        self._stream_max_width = settings.camera_width
+        self._stream_max_height = settings.camera_height
+
+    def apply_stream_profile(self, profile: str, width: int, height: int) -> None:
+        self._stream_max_width = max(1, int(width))
+        self._stream_max_height = max(1, int(height))
 
     def start_stream(self) -> None:
         if self._thread and self._thread.is_alive():
@@ -43,8 +52,8 @@ class StreamSender:
 
     def _resize_frame_for_stream(self, frame: np.ndarray) -> np.ndarray:
         height, width = frame.shape[:2]
-        max_width = 640
-        max_height = 480
+        max_width = self._stream_max_width
+        max_height = self._stream_max_height
         scale = min(max_width / max(width, 1), max_height / max(height, 1), 1.0)
         if scale >= 1.0:
             return frame
@@ -54,11 +63,14 @@ class StreamSender:
     def _run(self) -> None:
         while not self._stop_event.is_set():
             ws = None
+            endpoint = self.endpoint_manager.current()
             try:
                 kwargs = {"timeout": 5}
                 if self.settings.backend_ws_origin:
                     kwargs["origin"] = self.settings.backend_ws_origin
-                ws = create_connection(self._resolve_stream_url(), **kwargs)
+                stream_url = self._resolve_stream_url()
+                ws = create_connection(stream_url, **kwargs)
+                self.endpoint_manager.mark_success(endpoint.base_url)
                 send_fps = max(1, min(self.settings.stream_fps, self.settings.stream_send_fps))
                 send_interval = max(1 / send_fps, 0.1)
                 while not self._stop_event.is_set():
@@ -67,6 +79,7 @@ class StreamSender:
                     time.sleep(send_interval)
             except Exception as exc:
                 LOGGER.warning("Stream sender disconnected: %s", exc)
+                self.endpoint_manager.mark_failure(endpoint.base_url)
                 time.sleep(2)
             finally:
                 if ws is not None:
@@ -99,7 +112,7 @@ class StreamSender:
             LOGGER.warning("WS de stream cerrado")
 
     def _resolve_stream_url(self) -> str:
-        split_url = urlsplit(self.settings.backend_ws_url)
+        split_url = urlsplit(self.endpoint_manager.current().ws_url)
         query = dict(parse_qsl(split_url.query, keep_blank_values=True))
         query.setdefault("role", "robot")
         query.setdefault("robotId", self.settings.robot_id)

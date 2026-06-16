@@ -25,6 +25,59 @@ class CameraHandler:
         self._lock = threading.Lock()
         self._auto_stream_fps = settings.stream_fps <= 0
         self._effective_stream_fps = max(settings.stream_fps, 0)
+        self._base_camera_width = settings.camera_width
+        self._base_camera_height = settings.camera_height
+        self._profile_name = "BALANCED"
+        self._stream_quality = settings.stream_quality
+        self._stream_max_width = min(settings.camera_width, 960)
+        self._stream_max_height = min(settings.camera_height, 540)
+
+    def _profile_dimensions(self, profile: str) -> tuple[int, int, int, int, int]:
+        normalized = str(profile or "BALANCED").strip().upper()
+        base_w = max(self._base_camera_width, 1)
+        base_h = max(self._base_camera_height, 1)
+        if normalized == "SPEED" or normalized == "VELOCIDAD":
+            return (
+                max(320, int(round(base_w * 0.5))),
+                max(180, int(round(base_h * 0.5))),
+                30,
+                30,
+                55,
+            )
+        if normalized == "HD":
+            return (
+                base_w,
+                base_h,
+                max(5, min(10, self._resolve_requested_fps(0))),
+                max(5, min(10, self._resolve_requested_fps(0))),
+                75,
+            )
+        return (
+            max(480, int(round(base_w * 0.75))),
+            max(270, int(round(base_h * 0.75))),
+            15,
+            15,
+            65,
+        )
+
+    def apply_stream_profile(self, profile: str) -> None:
+        width, height, stream_fps, send_fps, quality = self._profile_dimensions(profile)
+        self._profile_name = str(profile or "BALANCED").strip().upper()
+        self.settings.camera_width = width
+        self.settings.camera_height = height
+        self.settings.stream_fps = stream_fps
+        self.settings.stream_send_fps = send_fps
+        self.settings.stream_quality = quality
+        self._stream_quality = quality
+        self._stream_max_width = width
+        self._stream_max_height = height
+        self.setup()
+
+    def current_stream_profile(self) -> str:
+        return self._profile_name
+
+    def base_dimensions(self) -> tuple[int, int]:
+        return self._base_camera_width, self._base_camera_height
 
     def _max_supported_fps(self, index: int) -> int | None:
         device_path = f"/dev/video{index}"
@@ -110,11 +163,18 @@ class CameraHandler:
         return capture
 
     def setup(self) -> None:
-        self._captures = {
-            "front": self._open_camera(self.settings.camera_front_index),
-            "left": self._open_camera(self.settings.camera_left_index),
-            "right": self._open_camera(self.settings.camera_right_index),
-        }
+        with self._lock:
+            for capture in self._captures.values():
+                if capture is not None:
+                    try:
+                        capture.release()
+                    except Exception:
+                        pass
+            self._captures = {
+                "front": self._open_camera(self.settings.camera_front_index),
+                "left": self._open_camera(self.settings.camera_left_index),
+                "right": self._open_camera(self.settings.camera_right_index),
+            }
 
     def _simulated_frame(self) -> np.ndarray:
         return np.zeros((self.settings.camera_height, self.settings.camera_width, 3), dtype=np.uint8)
@@ -171,7 +231,7 @@ class CameraHandler:
         ok, encoded = cv2.imencode(
             ".jpg",
             frame,
-            [int(cv2.IMWRITE_JPEG_QUALITY), self.settings.stream_quality],
+            [int(cv2.IMWRITE_JPEG_QUALITY), self._stream_quality],
         )
         if not ok:
             return ""

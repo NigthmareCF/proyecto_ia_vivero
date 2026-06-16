@@ -14,6 +14,7 @@ import numpy as np
 from src.ai.classifier import classify_burst
 from src.ai.model_loader import load_model
 from src.communication.backend_client import BackendClient
+from src.communication.backend_endpoint_manager import BackendEndpointManager
 from src.communication.command_listener import CommandListener
 from src.communication.local_command_listener import LocalCommandListener
 from src.communication.offline_queue import OfflineObservationQueue
@@ -39,10 +40,11 @@ LOGGER = logging.getLogger("agrotech.robot")
 def main() -> None:
     settings = Settings.load()
     os.makedirs(settings.offline_queue_dir, exist_ok=True)
+    backend_endpoint_manager = BackendEndpointManager(list(settings.backend_base_urls))
 
     shutdown_event = threading.Event()
     state_machine = RobotStateMachine()
-    backend_client = BackendClient(settings)
+    backend_client = BackendClient(settings, backend_endpoint_manager)
     camera = CameraHandler(settings)
     offline_queue = OfflineObservationQueue(settings.offline_queue_dir)
     observation_events: queue.Queue[dict[str, Any]] = queue.Queue()
@@ -75,6 +77,7 @@ def main() -> None:
         "active_camera": "front",
         "control_profile": "AUTO_LINE",
         "speed_profile": "MEDIUM",
+        "stream_profile": "BALANCED",
         "custom_speed_percent": None,
         "started_at": time.monotonic(),
         "last_activity_at": time.monotonic(),
@@ -134,6 +137,7 @@ def main() -> None:
     }
     stream_sender = StreamSender(
         settings,
+        backend_endpoint_manager,
         lambda: camera.capture_frame(str(runtime_context["active_camera"])),
         lambda: str(runtime_context["active_camera"]),
     )
@@ -305,6 +309,29 @@ def main() -> None:
 
     def current_speed_percent() -> int:
         return resolve_speed_profile_percent(str(runtime_context["speed_profile"]))
+
+    def apply_stream_profile(profile: str) -> None:
+        normalized_profile = str(profile or "BALANCED").strip().upper()
+        base_width, base_height = camera.base_dimensions()
+        base_width = max(int(base_width), 1)
+        base_height = max(int(base_height), 1)
+        profile_map = {
+            "VELOCIDAD": (max(320, base_width // 2), max(180, base_height // 2), 30, 30, 55),
+            "SPEED": (max(320, base_width // 2), max(180, base_height // 2), 30, 30, 55),
+            "BALANCEADO": (max(480, int(round(base_width * 0.75))), max(270, int(round(base_height * 0.75))), 15, 15, 65),
+            "BALANCED": (max(480, int(round(base_width * 0.75))), max(270, int(round(base_height * 0.75))), 15, 15, 65),
+            "HD": (base_width, base_height, max(5, min(10, settings.stream_fps)), max(5, min(10, settings.stream_send_fps)), 75),
+        }
+        width, height, stream_fps, send_fps, quality = profile_map.get(normalized_profile, profile_map["BALANCED"])
+        settings.camera_width = width
+        settings.camera_height = height
+        settings.stream_fps = stream_fps
+        settings.stream_send_fps = send_fps
+        settings.stream_quality = quality
+        camera.apply_stream_profile(normalized_profile)
+        stream_sender.apply_stream_profile(normalized_profile, width, height)
+        runtime_context["stream_profile"] = normalized_profile
+        set_status_summary(f"Perfil de stream {normalized_profile}")
 
     def set_status_summary(message: str) -> None:
         runtime_context["status_summary"] = message
@@ -708,6 +735,7 @@ def main() -> None:
             "lastQrRoi": runtime_context["last_qr_roi"],
             "controlProfile": str(runtime_context["control_profile"]).upper(),
             "speedProfile": str(runtime_context["speed_profile"]).upper(),
+            "streamProfile": str(runtime_context["stream_profile"]).upper(),
         }
 
     def build_heartbeat(snapshot: Any) -> dict[str, Any]:
@@ -738,6 +766,7 @@ def main() -> None:
             "activeCamera": str(runtime_context["active_camera"]).upper(),
             "controlProfile": str(runtime_context["control_profile"]).upper(),
             "speedProfile": str(runtime_context["speed_profile"]).upper(),
+            "streamProfile": str(runtime_context["stream_profile"]).upper(),
         }
 
     def encode_observation_images(frames: list[np.ndarray]) -> list[str]:
@@ -1104,6 +1133,9 @@ def main() -> None:
                 runtime_context["speed_profile"] = "CUSTOM"
             else:
                 runtime_context["speed_profile"] = raw_profile or "MEDIUM"
+        elif command == "STREAM_PROFILE":
+            touch_activity("STREAM_PROFILE")
+            apply_stream_profile(str(data.get("profile", "BALANCED")))
         elif command == "BUZZER_TEST":
             touch_activity("BUZZER_TEST")
             set_status_summary("Prueba buzzer")
@@ -1412,7 +1444,7 @@ def main() -> None:
         lcd_handler.show_temporary_message("QR detectado", display_target_label(parse_qr_identity(plant_qr)["group"], plant_qr), duration_seconds=3.0)
         return selected_frames
 
-    command_listener = CommandListener(settings, on_command, shutdown_event)
+    command_listener = CommandListener(settings, backend_endpoint_manager, on_command, shutdown_event)
     local_command_listener = LocalCommandListener(settings.local_command_socket_path, process_command, shutdown_event)
 
     status_thread = threading.Thread(target=status_sender, name="status-sender", daemon=True)

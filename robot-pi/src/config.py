@@ -44,6 +44,7 @@ N_CAPTURES = 6
 
 @dataclass(slots=True)
 class Settings:
+    backend_base_urls: tuple[str, ...]
     backend_base_url: str
     backend_ws_url: str
     backend_ws_origin: str | None
@@ -131,10 +132,38 @@ class Settings:
         env_path = Path(__file__).resolve().parents[2] / ".env"
         if env_path.exists():
             load_dotenv(env_path)
-        backend_base_url = os.getenv("BACKEND_BASE_URL", "http://localhost:3000/api")
+        backend_candidates_raw = (
+            os.getenv("BACKEND_BASE_URLS")
+            or os.getenv("BACKEND_FALLBACK_URLS")
+            or ""
+        )
+        backend_candidates = [
+            candidate.strip()
+            for candidate in backend_candidates_raw.split(",")
+            if candidate.strip()
+        ]
+        for fallback in (
+            os.getenv("BACKEND_BASE_URL"),
+            os.getenv("BRIDGE_URL"),
+            "http://localhost:3000/api",
+        ):
+            if fallback and fallback.strip():
+                backend_candidates.append(fallback.strip())
+        deduped_candidates: list[str] = []
+        seen_candidates: set[str] = set()
+        for candidate in backend_candidates:
+            normalized = candidate.rstrip("/")
+            if normalized in seen_candidates:
+                continue
+            seen_candidates.add(normalized)
+            deduped_candidates.append(normalized)
+        backend_base_urls = tuple(deduped_candidates or ("http://localhost:3000/api",))
+        backend_base_url = backend_base_urls[0]
+        backend_ws_url = os.getenv("BACKEND_WS_URL", backend_base_url.replace("http://", "ws://").replace("https://", "wss://") + "/ws/robot-stream")
         return cls(
+            backend_base_urls=backend_base_urls,
             backend_base_url=backend_base_url,
-            backend_ws_url=os.getenv("BACKEND_WS_URL", "ws://localhost:3000/api/ws/robot-stream"),
+            backend_ws_url=backend_ws_url,
             backend_ws_origin=os.getenv("BACKEND_WS_ORIGIN"),
             heartbeat_path=os.getenv("HEARTBEAT_PATH", "/robot/heartbeat"),
             observation_path=os.getenv("OBSERVATION_PATH", "/robot/observations"),
