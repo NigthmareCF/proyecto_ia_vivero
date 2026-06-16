@@ -4,6 +4,8 @@ set -eu
 PROJECT_DIR="/home/fer-dev/ROBOT-PI-EJECUTION"
 LOG_DIR="/home/fer-dev/ROBOT-PI-EJECUTION/logs"
 LOG_FILE="$LOG_DIR/boot-start.log"
+REMOTE_NAME="origin"
+REMOTE_BRANCH="funcionalidad/robot-pi-runtime"
 
 mkdir -p "$LOG_DIR"
 
@@ -64,33 +66,6 @@ ensure_wifi_profiles() {
     nmcli connection up "CLARO_2.4GHz_FD7255" >/dev/null 2>&1 || true
 }
 
-enforce_max_camera_config() {
-  for env_file in .env .env.local-lab; do
-    [ -f "$env_file" ] || continue
-    tmp_file="${env_file}.tmp"
-    awk '
-      BEGIN {
-        seen_width=0
-        seen_height=0
-        seen_fps=0
-        seen_quality=0
-      }
-      /^CAMERA_WIDTH=/ { print "CAMERA_WIDTH=1920"; seen_width=1; next }
-      /^CAMERA_HEIGHT=/ { print "CAMERA_HEIGHT=1080"; seen_height=1; next }
-      /^STREAM_FPS=/ { print "STREAM_FPS=30"; seen_fps=1; next }
-      /^STREAM_QUALITY=/ { print "STREAM_QUALITY=100"; seen_quality=1; next }
-      { print }
-      END {
-        if (!seen_width) print "CAMERA_WIDTH=1920"
-        if (!seen_height) print "CAMERA_HEIGHT=1080"
-        if (!seen_fps) print "STREAM_FPS=30"
-        if (!seen_quality) print "STREAM_QUALITY=100"
-      }
-    ' "$env_file" > "$tmp_file"
-    mv "$tmp_file" "$env_file"
-  done
-}
-
 ensure_camera_mjpeg() {
   camera_handler="robot-pi/src/vision/camera_handler.py"
   [ -f "$camera_handler" ] || return 0
@@ -114,20 +89,33 @@ if old in text:
 PY
 }
 
-update_repo() {
-  branch="$(/usr/bin/git branch --show-current)"
-  [ -n "$branch" ] || branch="funcionalidad/robot-pi-runtime"
-  /usr/bin/git fetch origin "$branch"
-  /usr/bin/git merge -X theirs --no-edit "origin/$branch"
+wait_for_network() {
+  i=0
+  while [ "$i" -lt 24 ]; do
+    if /usr/bin/git -C "$PROJECT_DIR" ls-remote --exit-code "$REMOTE_NAME" "refs/heads/$REMOTE_BRANCH" >/dev/null 2>&1; then
+      return 0
+    fi
+    i=$((i + 1))
+    /bin/sleep 5
+  done
+  echo "network/git remote not reachable after retries"
+  return 1
+}
+
+force_remote_repo() {
+  wait_for_network
+  /usr/bin/git -C "$PROJECT_DIR" fetch "$REMOTE_NAME" "$REMOTE_BRANCH"
+  /usr/bin/git -C "$PROJECT_DIR" checkout -B "$REMOTE_BRANCH" "$REMOTE_NAME/$REMOTE_BRANCH"
+  /usr/bin/git -C "$PROJECT_DIR" reset --hard "$REMOTE_NAME/$REMOTE_BRANCH"
 }
 
 {
   echo "==== $(date -Is) starting robot runtime ===="
   cd "$PROJECT_DIR"
   ensure_wifi_profiles
-  update_repo
-  enforce_max_camera_config
+  force_remote_repo
   ensure_camera_mjpeg
-  /usr/bin/docker compose up -d --build
+  /usr/bin/docker rm -f agrotech-robot >/dev/null 2>&1 || true
+  /usr/bin/docker compose up -d --build --force-recreate
   /usr/bin/docker ps --filter name=agrotech-robot --format 'status={{.Status}}'
 } >> "$LOG_FILE" 2>&1
