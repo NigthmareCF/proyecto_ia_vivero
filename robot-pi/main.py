@@ -267,18 +267,15 @@ def main() -> None:
         ki = 0.010
         kd = 0.04
         correction = (kp * error) + (ki * integral) + (kd * derivative)
-        correction = max(min(correction, 18.0), -18.0)
+        correction = max(min(correction, 12.0), -12.0)
 
         base_speed = clamp_speed(max(16.0, min(patrol_speed, 55)))
-        reduction = clamp_speed(max(4.0, min(abs(correction) * 1.8, max(6.0, base_speed * 0.30))))
-        inner_speed = clamp_speed(max(10.0, base_speed - reduction))
-
         if correction > 0:
-            motor_controller.apply_raw(*motor_controller.MOTION_PATTERNS["forward"], base_speed, inner_speed)
-            set_status_summary(f"PID derecha {error:.2f}°")
+            motor_controller.apply_correction_drive(motor_controller.MOTION_PATTERNS["forward"], base_speed, True)
+            set_status_summary(f"PID derecha {error:.2f}??")
         else:
-            motor_controller.apply_raw(*motor_controller.MOTION_PATTERNS["forward"], inner_speed, base_speed)
-            set_status_summary(f"PID izquierda {error:.2f}°")
+            motor_controller.apply_correction_drive(motor_controller.MOTION_PATTERNS["forward"], base_speed, False)
+            set_status_summary(f"PID izquierda {error:.2f}??")
         return True
 
     def normalize_speed_value(speed: int | float | None, fallback: int) -> int:

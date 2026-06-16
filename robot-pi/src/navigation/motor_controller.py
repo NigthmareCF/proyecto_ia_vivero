@@ -20,6 +20,8 @@ LOW_POWER_START_DUTY = 25
 LOW_POWER_START_SECONDS = 0.12
 FULL_SPEED_MULTIPLIER = 3.5
 TURN_INNER_SPEED_MULTIPLIER = 0.25
+CORRECTION_OUTER_SPEED_MULTIPLIER = 2.0
+CORRECTION_INNER_SPEED_MULTIPLIER = 0.50
 
 MOTION_PATTERNS = {
     "backward": (0, 1, 1, 0),
@@ -111,6 +113,13 @@ def _apply_relative_drive(
         _relative_speed(speed, ena_multiplier),
         _relative_speed(speed, enb_multiplier),
     )
+
+
+def apply_correction_drive(pattern: tuple[int, int, int, int], speed: int, turn_right: bool) -> None:
+    if turn_right:
+        _apply_relative_drive(pattern, speed, CORRECTION_OUTER_SPEED_MULTIPLIER, CORRECTION_INNER_SPEED_MULTIPLIER)
+    else:
+        _apply_relative_drive(pattern, speed, CORRECTION_INNER_SPEED_MULTIPLIER, CORRECTION_OUTER_SPEED_MULTIPLIER)
 
 
 def pin_map() -> dict[str, int]:
