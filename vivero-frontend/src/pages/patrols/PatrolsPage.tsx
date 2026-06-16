@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPatrols } from "../../api/patrolsApi";
-import { getRobotStatus, startRobotPatrol } from "../../api/robotApi";
+import { finalizeRobotPatrolAnalysis, getRobotStatus, startRobotPatrol } from "../../api/robotApi";
 
 type PatrolRecord = {
   id?: string | number;
@@ -27,6 +27,7 @@ export function PatrolsPage() {
   const [robotStatus, setRobotStatus] = useState<RobotStatus | null>(null);
   const [targetPatrolId, setTargetPatrolId] = useState("");
   const [startingPatrol, setStartingPatrol] = useState(false);
+  const [finalizingPatrol, setFinalizingPatrol] = useState(false);
 
   useEffect(() => {
     getPatrols().then(setPatrols).catch(() => setPatrols([]));
@@ -46,6 +47,20 @@ export function PatrolsPage() {
       console.error("No se pudo iniciar el patrullaje", error);
     } finally {
       setStartingPatrol(false);
+    }
+  }
+
+  async function handleFinalizePatrol() {
+    if (!currentPatrolId || finalizingPatrol) return;
+    setFinalizingPatrol(true);
+    try {
+      await finalizeRobotPatrolAnalysis(currentPatrolId);
+      const refreshedStatus = await getRobotStatus();
+      setRobotStatus(refreshedStatus);
+    } catch (error) {
+      console.error("No se pudo finalizar el patrullaje activo", error);
+    } finally {
+      setFinalizingPatrol(false);
     }
   }
 
@@ -79,6 +94,14 @@ export function PatrolsPage() {
             className="rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white transition hover:bg-clay disabled:bg-moss/40"
           >
             {startingPatrol ? "Iniciando..." : "Iniciar patrullaje"}
+          </button>
+          <button
+            type="button"
+            onClick={handleFinalizePatrol}
+            disabled={finalizingPatrol || !currentPatrolId}
+            className="rounded-2xl border border-clay px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink disabled:border-moss/40 disabled:text-moss/40"
+          >
+            {finalizingPatrol ? "Finalizando..." : "Finalizar patrullaje"}
           </button>
           {currentPatrolId ? (
             <Link
