@@ -147,7 +147,7 @@ class Settings:
             stream_send_fps=int(os.getenv("STREAM_SEND_FPS", "10")),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
             capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
-            qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "22")),
+            qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "18")),
             burst_frame_interval_seconds=float(os.getenv("BURST_FRAME_INTERVAL_SECONDS", "0.08")),
             end_row_forward_seconds=float(os.getenv("END_ROW_FORWARD_SECONDS", "5.0")),
             end_row_turn_seconds=float(os.getenv("END_ROW_TURN_SECONDS", "1.0")),

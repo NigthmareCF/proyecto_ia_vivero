@@ -64,8 +64,24 @@ def move_forward(speed: int) -> None:
     _apply(True, True, speed, speed)
 
 
+def move_forward_left(outer_speed: int, inner_speed: int) -> None:
+    _apply(True, True, inner_speed, outer_speed)
+
+
+def move_forward_right(outer_speed: int, inner_speed: int) -> None:
+    _apply(True, True, outer_speed, inner_speed)
+
+
 def move_backward(speed: int) -> None:
     _apply(False, False, speed, speed)
+
+
+def move_backward_left(outer_speed: int, inner_speed: int) -> None:
+    _apply(False, False, inner_speed, outer_speed)
+
+
+def move_backward_right(outer_speed: int, inner_speed: int) -> None:
+    _apply(False, False, outer_speed, inner_speed)
 
 
 def turn_left(speed: int) -> None:
