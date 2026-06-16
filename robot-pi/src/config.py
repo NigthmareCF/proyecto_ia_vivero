@@ -64,12 +64,12 @@ class Settings:
     line_lost_timeout: float
     status_interval_seconds: float
     manual_default_speed: int
-    manual_command_timeout_seconds: float
     speed_profile_low: int
     speed_profile_medium: int
     speed_profile_high: int
     speed_profile_turbo: int
     stream_fps: int
+    stream_send_fps: int
     stream_quality: int
     capture_count: int
     qr_capture_speed: int
@@ -139,12 +139,12 @@ class Settings:
             line_lost_timeout=float(os.getenv("LINE_LOST_TIMEOUT", "3.0")),
             status_interval_seconds=float(os.getenv("STATUS_INTERVAL_SECONDS", "10")),
             manual_default_speed=int(os.getenv("MANUAL_DEFAULT_SPEED", "35")),
-            manual_command_timeout_seconds=float(os.getenv("MANUAL_COMMAND_TIMEOUT_SECONDS", "8.0")),
             speed_profile_low=int(os.getenv("SPEED_PROFILE_LOW", "30")),
             speed_profile_medium=int(os.getenv("SPEED_PROFILE_MEDIUM", "45")),
             speed_profile_high=int(os.getenv("SPEED_PROFILE_HIGH", "65")),
             speed_profile_turbo=int(os.getenv("SPEED_PROFILE_TURBO", "85")),
             stream_fps=int(os.getenv("STREAM_FPS", "10")),
+            stream_send_fps=int(os.getenv("STREAM_SEND_FPS", "10")),
             stream_quality=int(os.getenv("STREAM_QUALITY", "60")),
             capture_count=int(os.getenv("CAPTURE_COUNT", str(N_CAPTURES))),
             qr_capture_speed=int(os.getenv("QR_CAPTURE_SPEED", "22")),
@@ -152,7 +152,7 @@ class Settings:
             end_row_forward_seconds=float(os.getenv("END_ROW_FORWARD_SECONDS", "5.0")),
             end_row_turn_seconds=float(os.getenv("END_ROW_TURN_SECONDS", "1.0")),
             observation_retry_count=int(os.getenv("OBSERVATION_RETRY_COUNT", "3")),
-            command_poll_interval_seconds=float(os.getenv("COMMAND_POLL_INTERVAL_SECONDS", "1.0")),
+            command_poll_interval_seconds=float(os.getenv("COMMAND_POLL_INTERVAL_SECONDS", "0.2")),
             observation_flush_interval_seconds=float(os.getenv("OBSERVATION_FLUSH_INTERVAL_SECONDS", "5.0")),
             qr_detection_cooldown_seconds=float(os.getenv("QR_DETECTION_COOLDOWN_SECONDS", "12.0")),
             qr_label_cache_path=os.getenv("QR_LABEL_CACHE_PATH", "/app/data/qr-label-cache.db"),

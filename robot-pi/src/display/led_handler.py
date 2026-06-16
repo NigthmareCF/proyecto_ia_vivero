@@ -18,6 +18,8 @@ _blue_mode = "off"
 _blue_worker: threading.Thread | None = None
 _blue_lock = threading.Lock()
 _blue_stop_event = threading.Event()
+_rgb_mode = "static"
+_rgb_lock = threading.Lock()
 _settings: Settings | None = None
 
 
@@ -35,6 +37,8 @@ def setup(settings: Settings) -> None:
     if _blue_worker is None or not _blue_worker.is_alive():
         _blue_worker = threading.Thread(target=_run_blue_effect, name="blue-led-effect", daemon=True)
         _blue_worker.start()
+    rgb_worker = threading.Thread(target=_run_rgb_sequence_effect, name="rgb-sequence-effect", daemon=True)
+    rgb_worker.start()
     set_idle()
 
 
@@ -60,6 +64,18 @@ def set_danger() -> None:
 
 def set_idle() -> None:
     _set(False, False, False)
+
+
+def set_rgb_sequence_breathe() -> None:
+    global _rgb_mode
+    with _rgb_lock:
+        _rgb_mode = "sequence_breathe"
+
+
+def set_rgb_static() -> None:
+    global _rgb_mode
+    with _rgb_lock:
+        _rgb_mode = "static"
 
 
 def _set_blue_duty(duty_cycle: float) -> None:
@@ -135,9 +151,45 @@ def _run_blue_effect() -> None:
         time.sleep(max(_settings.heartbeat_led_breathe_step_seconds, 0.01))
 
 
+def _current_rgb_mode() -> str:
+    with _rgb_lock:
+        return _rgb_mode
+
+
+def _run_rgb_sequence_effect() -> None:
+    phase = 0
+    duty = 0.0
+    direction = 1.0
+    while not _blue_stop_event.is_set():
+        mode = _current_rgb_mode()
+        if _settings is None:
+            time.sleep(0.1)
+            continue
+        if mode != "sequence_breathe":
+            time.sleep(0.1)
+            continue
+        step = max(_settings.heartbeat_led_breathe_step_duty, 1.0)
+        duty += direction * step
+        if duty >= 100.0:
+            duty = 100.0
+            direction = -1.0
+        elif duty <= 0.0:
+            duty = 0.0
+            direction = 1.0
+            phase = (phase + 1) % 3
+        if phase == 0:
+            _set(True, False, False)
+        elif phase == 1:
+            _set(False, True, False)
+        else:
+            _set(False, False, True)
+        time.sleep(max(_settings.heartbeat_led_breathe_step_seconds, 0.01))
+
+
 def cleanup() -> None:
     _blue_stop_event.set()
     set_heartbeat_off()
+    set_rgb_static()
     _set_blue_duty(0.0)
     if _blue_pwm is not None:
         _blue_pwm.stop()
