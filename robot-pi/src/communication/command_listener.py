@@ -17,7 +17,7 @@ class CommandListener:
     def __init__(
         self,
         settings: Settings,
-        callback: Callable[[str, dict], None],
+        callback: Callable[[str, dict, int], None],
         shutdown_event: threading.Event,
     ) -> None:
         self.settings = settings
@@ -39,8 +39,7 @@ class CommandListener:
             try:
                 command = self._fetch_next_command()
                 if command is not None:
-                    self.callback(command["command"], command.get("data") or {})
-                    self._ack_command(int(command["id"]))
+                    self.callback(command["command"], command.get("data") or {}, int(command["id"]))
                 else:
                     self.shutdown_event.wait(self.settings.command_poll_interval_seconds)
             except Exception as exc:
@@ -60,7 +59,7 @@ class CommandListener:
         data = payload.get("data") if isinstance(payload, dict) else None
         return data if isinstance(data, dict) else None
 
-    def _ack_command(self, command_id: int) -> None:
+    def ack_command(self, command_id: int) -> None:
         path = self.settings.command_ack_path_template.format(commandId=command_id)
         response = requests.post(
             f"{self.settings.backend_base_url.rstrip('/')}{path}",
