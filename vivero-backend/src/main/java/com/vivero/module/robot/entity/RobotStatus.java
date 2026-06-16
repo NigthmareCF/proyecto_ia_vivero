@@ -85,6 +85,9 @@ public class RobotStatus extends BaseEntity {
     @Column(name = "speed_profile", length = 40)
     private String speedProfile;
 
+    @Column(name = "stream_profile", length = 40)
+    private String streamProfile;
+
     @Column(name = "current_speed_percent")
     private Integer currentSpeedPercent;
 

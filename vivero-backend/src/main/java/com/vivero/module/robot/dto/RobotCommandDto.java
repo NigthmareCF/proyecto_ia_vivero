@@ -37,6 +37,9 @@ public class RobotCommandDto {
     @Size(max = 40, message = "Speed profile must not exceed 40 characters")
     private String speedProfile;
 
+    @Size(max = 40, message = "Stream profile must not exceed 40 characters")
+    private String streamProfile;
+
     @Size(max = 80, message = "Sequence name must not exceed 80 characters")
     private String sequenceName;
 }

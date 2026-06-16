@@ -31,6 +31,7 @@ public class RobotStatusResponseDto {
     private String activeCamera;
     private String controlProfile;
     private String speedProfile;
+    private String streamProfile;
     private Integer currentSpeedPercent;
     private Double estimatedSpeedMps;
     private Double imuHeadingDeg;

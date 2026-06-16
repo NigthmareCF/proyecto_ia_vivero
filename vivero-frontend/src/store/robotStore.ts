@@ -15,6 +15,7 @@ export type RobotState = {
   activeCamera: string;
   controlProfile: string;
   speedProfile: string;
+  streamProfile: string;
   currentSpeedPercent: number | null;
   estimatedSpeedMps: number | null;
   imuHeadingDeg: number | null;
@@ -42,6 +43,7 @@ export const initialRobotState: Omit<RobotState, "setStatus"> = {
   activeCamera: "FRONT",
   controlProfile: "IDLE",
   speedProfile: "MEDIUM",
+  streamProfile: "BALANCED",
   currentSpeedPercent: null,
   estimatedSpeedMps: null,
   imuHeadingDeg: null,
@@ -164,6 +166,11 @@ export function normalizeRobotStatus(payload: unknown): Partial<RobotState> {
     toText(source.speed_profile) ??
     undefined;
 
+  const streamProfile =
+    toText(source.streamProfile) ??
+    toText(source.stream_profile) ??
+    undefined;
+
   const currentPlantQr =
     toText(source.currentPlantQr) ??
     toText(source.current_plant_qr) ??
@@ -221,6 +228,7 @@ export function normalizeRobotStatus(payload: unknown): Partial<RobotState> {
     ...(activeCamera ? { activeCamera } : {}),
     ...(controlProfile ? { controlProfile } : {}),
     ...(speedProfile ? { speedProfile } : {}),
+    ...(streamProfile ? { streamProfile } : {}),
     ...(currentSpeedPercent !== null ? { currentSpeedPercent } : {}),
     ...(estimatedSpeedMps !== null ? { estimatedSpeedMps } : {}),
     ...(imuHeadingDeg !== null ? { imuHeadingDeg } : {}),

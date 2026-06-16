@@ -105,6 +105,7 @@ public class RobotServiceImpl implements RobotService {
             }
             case SWITCH_CAMERA -> status.setActiveCamera(normalizeToken(command.getCameraName(), "FRONT"));
             case SET_SPEED_PROFILE -> status.setSpeedProfile(normalizeToken(command.getSpeedProfile(), status.getSpeedProfile()));
+            case SET_STREAM_PROFILE -> status.setStreamProfile(normalizeToken(command.getStreamProfile(), status.getStreamProfile()));
             case RUN_ACRO -> {
                 status.setMode(RobotMode.MANUAL);
                 status.setControlProfile("ACRO");
@@ -158,6 +159,7 @@ public class RobotServiceImpl implements RobotService {
         status.setActiveCamera(normalizeToken(heartbeat.getActiveCamera(), status.getActiveCamera()));
         status.setControlProfile(normalizeToken(heartbeat.getControlProfile(), status.getControlProfile()));
         status.setSpeedProfile(normalizeToken(heartbeat.getSpeedProfile(), status.getSpeedProfile()));
+        status.setStreamProfile(normalizeToken(heartbeat.getStreamProfile(), status.getStreamProfile()));
         status.setCurrentSpeedPercent(heartbeat.getCurrentSpeedPercent());
         status.setEstimatedSpeedMps(heartbeat.getEstimatedSpeedMps());
         status.setImuHeadingDeg(heartbeat.getImuHeadingDeg());
@@ -418,6 +420,7 @@ public class RobotServiceImpl implements RobotService {
                 .activeCamera("FRONT")
                 .controlProfile("IDLE")
                 .speedProfile("MEDIUM")
+                .streamProfile("BALANCED")
                 .currentSpeedPercent(null)
                 .estimatedSpeedMps(null)
                 .imuHeadingDeg(null)
@@ -545,6 +548,7 @@ public class RobotServiceImpl implements RobotService {
             case MANUAL_MOVE -> "MOVE";
             case SWITCH_CAMERA -> "CAMERA_SELECT";
             case SET_SPEED_PROFILE -> "SPEED_PROFILE";
+            case SET_STREAM_PROFILE -> "STREAM_PROFILE";
             case RUN_ACRO -> "ACRO";
             case HEARTBEAT -> "HEARTBEAT";
         };
@@ -562,6 +566,8 @@ public class RobotServiceImpl implements RobotService {
             payload.put("camera", normalizeBlank(command.getCameraName()));
         } else if (commandType == RobotCommandType.SET_SPEED_PROFILE) {
             payload.put("profile", normalizeToken(command.getSpeedProfile(), "MEDIUM"));
+        } else if (commandType == RobotCommandType.SET_STREAM_PROFILE) {
+            payload.put("profile", normalizeToken(command.getStreamProfile(), "BALANCED"));
         } else if (commandType == RobotCommandType.RUN_ACRO) {
             payload.put("sequence", normalizeToken(command.getSequenceName(), "SPIN"));
         }

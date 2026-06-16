@@ -61,6 +61,9 @@ public class RobotHeartbeatRequestDto {
     @Size(max = 40, message = "Speed profile must not exceed 40 characters")
     private String speedProfile;
 
+    @Size(max = 40, message = "Stream profile must not exceed 40 characters")
+    private String streamProfile;
+
     @Min(value = 0, message = "Current speed must be at least 0")
     @Max(value = 100, message = "Current speed must be at most 100")
     private Integer currentSpeedPercent;

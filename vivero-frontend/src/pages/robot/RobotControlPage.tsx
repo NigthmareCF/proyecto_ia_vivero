@@ -8,6 +8,7 @@ import {
   sendRobotCommand,
   setRobotMode,
   setRobotSpeedProfile,
+  setRobotStreamProfile,
   switchRobotCamera,
 } from "../../api/robotApi";
 import { useNotificationStore } from "../../store/notificationStore";
@@ -106,6 +107,7 @@ export function RobotControlPage() {
 
   const initialSpeed = robot.currentSpeedPercent ?? standardProfileSpeed.MEDIUM;
   const [selectedSpeedProfile, setSelectedSpeedProfile] = useState<string>(robot.speedProfile || "MEDIUM");
+  const [selectedStreamProfile, setSelectedStreamProfile] = useState<string>(robot.streamProfile || "BALANCEADO");
   const [customSpeedPercent, setCustomSpeedPercent] = useState<number>(initialSpeed);
   const [powerPanelOpen, setPowerPanelOpen] = useState(false);
   const [targetPlantQr, setTargetPlantQr] = useState("");
@@ -122,10 +124,13 @@ export function RobotControlPage() {
     if (robot.speedProfile && robot.speedProfile !== selectedSpeedProfile && !selectedSpeedProfile.startsWith("CUSTOM")) {
       setSelectedSpeedProfile(robot.speedProfile);
     }
+    if (robot.streamProfile && robot.streamProfile !== selectedStreamProfile) {
+      setSelectedStreamProfile(robot.streamProfile);
+    }
     if (robot.currentSpeedPercent !== null && selectedSpeedProfile !== "CUSTOM") {
       setCustomSpeedPercent(robot.currentSpeedPercent);
     }
-  }, [robot.speedProfile, robot.currentSpeedPercent, selectedSpeedProfile]);
+  }, [robot.speedProfile, robot.streamProfile, robot.currentSpeedPercent, selectedSpeedProfile, selectedStreamProfile]);
 
   useEffect(() => {
     return () => {
@@ -214,6 +219,12 @@ export function RobotControlPage() {
     setSelectedSpeedProfile("CUSTOM");
     void setRobotSpeedProfile(`CUSTOM_${customSpeedPercent}`);
     setPowerPanelOpen(false);
+  };
+
+  const applyStreamProfile = (profile: "VELOCIDAD" | "BALANCEADO" | "HD") => {
+    if (!ensureRobotReady("cambiar perfil de camara")) return;
+    setSelectedStreamProfile(profile);
+    void setRobotStreamProfile(profile);
   };
 
   const submitGotoPlant = () => {
@@ -349,6 +360,7 @@ export function RobotControlPage() {
           <span className="rounded-full bg-sand px-3 py-1">Modo {robot.mode}</span>
           <span className="rounded-full bg-sand px-3 py-1">Perfil {robot.controlProfile}</span>
           <span className="rounded-full bg-sand px-3 py-1">Camara {robot.activeCamera}</span>
+          <span className="rounded-full bg-sand px-3 py-1">Video {selectedStreamProfile}</span>
           <span className="rounded-full bg-sand px-3 py-1">Potencia {selectedSpeedProfile}</span>
           <span className="rounded-full bg-sand px-3 py-1">PWM {activeSpeedPercent}%</span>
           <span className="rounded-full bg-sand px-3 py-1">
@@ -498,6 +510,26 @@ export function RobotControlPage() {
                 {orientationLabels[orientation]}
               </button>
             ))}
+          </div>
+
+          <div className="mt-4">
+            <p className="text-xs uppercase tracking-[0.18em] text-moss">Perfil de camara</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(["VELOCIDAD", "BALANCEADO", "HD"] as const).map((profile) => (
+                <button
+                  key={profile}
+                  className={`rounded-full px-4 py-2 text-sm transition ${
+                    selectedStreamProfile === profile
+                      ? "bg-clay text-white"
+                      : "bg-sand text-ink hover:bg-clay hover:text-white"
+                  }`}
+                  disabled={!canOperateRobot}
+                  onClick={() => applyStreamProfile(profile)}
+                >
+                  {profile.toLowerCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_auto]">

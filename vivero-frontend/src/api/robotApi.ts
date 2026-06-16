@@ -109,6 +109,14 @@ export const setRobotSpeedProfile = (speedProfile: "LOW" | "MEDIUM" | "HIGH" | "
     })
     .then((res) => res.data.data);
 
+export const setRobotStreamProfile = (streamProfile: "VELOCIDAD" | "BALANCEADO" | "HD") =>
+  api
+    .post("/robot/command", {
+      commandType: "SET_STREAM_PROFILE",
+      streamProfile,
+    })
+    .then((res) => res.data.data);
+
 export const goToRobotPlant = (targetPlantQr: string, searchStartOrientation: SearchStartOrientation = "FORWARD") =>
   api
     .post("/robot/command", {
