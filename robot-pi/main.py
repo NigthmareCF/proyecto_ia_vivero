@@ -292,6 +292,11 @@ def main() -> None:
         if runtime_context["line_heading_target"] is None and current_heading is not None:
             runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
 
+    def refresh_line_heading_target(current_heading: float | None) -> None:
+        if current_heading is None:
+            return
+        runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+
     def reset_line_special_modes() -> None:
         runtime_context["line_follow_mode"] = "NORMAL"
         runtime_context["line_heading_target"] = None
@@ -515,8 +520,7 @@ def main() -> None:
             runtime_context["line_pending_side"] = None
             runtime_context["line_pending_since"] = None
             runtime_context["line_pending_heading"] = None
-            if current_heading is not None and target_heading is None:
-                runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+            refresh_line_heading_target(current_heading)
             if target_heading is not None and current_heading is not None:
                 error = heading_error_deg(float(target_heading), float(current_heading))
                 if abs(error) <= 0.5:
