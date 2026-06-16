@@ -7,6 +7,63 @@ LOG_FILE="$LOG_DIR/boot-start.log"
 
 mkdir -p "$LOG_DIR"
 
+ensure_wifi_profiles() {
+  if ! command -v nmcli >/dev/null 2>&1; then
+    return 0
+  fi
+
+  # The lab 5 GHz AP is on channel 153. Some Broadcom regulatory defaults hide
+  # high 5 GHz channels until the regdomain is set.
+  if command -v iw >/dev/null 2>&1; then
+    iw reg set US >/dev/null 2>&1 || true
+  fi
+
+  nmcli connection modify "Redmi Note 14" \
+    802-11-wireless.hidden yes \
+    connection.autoconnect yes \
+    connection.autoconnect-priority 100 \
+    connection.autoconnect-retries 0 \
+    ipv4.route-metric 40 \
+    ipv6.route-metric 40 >/dev/null 2>&1 || true
+
+  if ! nmcli -t -f NAME connection show | grep -Fxq "CLARO_5GHz_FD7255"; then
+    nmcli connection add type wifi ifname wlan0 con-name "CLARO_5GHz_FD7255" ssid "CLARO_5GHz_FD7255" >/dev/null 2>&1 || true
+  fi
+  nmcli connection modify "CLARO_5GHz_FD7255" \
+    802-11-wireless.ssid "CLARO_5GHz_FD7255" \
+    802-11-wireless.bssid "BA:85:7B:FD:72:60" \
+    802-11-wireless.band a \
+    802-11-wireless.channel 153 \
+    connection.autoconnect yes \
+    connection.autoconnect-priority 80 \
+    connection.autoconnect-retries 0 \
+    ipv4.route-metric 50 \
+    ipv6.route-metric 50 >/dev/null 2>&1 || true
+
+  if ! nmcli -t -f NAME connection show | grep -Fxq "CLARO_2.4GHz_FD7255"; then
+    nmcli connection add type wifi ifname wlan0 con-name "CLARO_2.4GHz_FD7255" ssid "CLARO_2.4GHz_FD7255" >/dev/null 2>&1 || true
+  fi
+  nmcli connection modify "CLARO_2.4GHz_FD7255" \
+    802-11-wireless.ssid "CLARO_2.4GHz_FD7255" \
+    802-11-wireless.bssid "BA:85:7B:FD:72:5C" \
+    802-11-wireless.band bg \
+    802-11-wireless.channel 1 \
+    connection.autoconnect yes \
+    connection.autoconnect-priority 70 \
+    connection.autoconnect-retries 0 \
+    ipv4.route-metric 60 \
+    ipv6.route-metric 60 >/dev/null 2>&1 || true
+
+  nmcli connection modify "Wired connection 1" \
+    connection.autoconnect yes \
+    connection.autoconnect-priority -999 \
+    ipv4.route-metric 700 \
+    ipv6.route-metric 700 >/dev/null 2>&1 || true
+
+  nmcli connection up "CLARO_5GHz_FD7255" >/dev/null 2>&1 || \
+    nmcli connection up "CLARO_2.4GHz_FD7255" >/dev/null 2>&1 || true
+}
+
 enforce_max_camera_config() {
   for env_file in .env .env.local-lab; do
     [ -f "$env_file" ] || continue
@@ -67,6 +124,7 @@ update_repo() {
 {
   echo "==== $(date -Is) starting robot runtime ===="
   cd "$PROJECT_DIR"
+  ensure_wifi_profiles
   update_repo
   enforce_max_camera_config
   ensure_camera_mjpeg

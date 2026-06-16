@@ -3353,3 +3353,58 @@ Already up to date.
 #14 DONE 0.1s
  Container agrotech-robot  Creating
 Error response from daemon: Conflict. The container name "/agrotech-robot" is already in use by container "c27cdcfb7150c2df03892bedcd16061e2ec8415991083ea03b5c426935ec5e1b". You have to remove (or rename) that container to be able to reuse that name.
+==== 2026-06-15T18:29:48-06:00 starting robot runtime ====
+From github.com:NigthmareCF/proyecto_ia_vivero
+ * branch            funcionalidad/robot-pi-runtime -> FETCH_HEAD
+Already up to date.
+#0 building with "default" instance using docker driver
+
+#1 [robot internal] load build definition from Dockerfile
+#1 transferring dockerfile: 646B done
+#1 DONE 0.0s
+
+#2 [robot internal] load metadata for docker.io/library/python:3.11-slim-bookworm
+#2 DONE 0.9s
+
+#3 [robot internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [robot 1/9] FROM docker.io/library/python:3.11-slim-bookworm@sha256:e2d3af735aff6eeee600b1933bedd99da6645fedf572cc12ef4cc1331f2ceebe
+#4 DONE 0.0s
+
+#5 [robot internal] load build context
+#5 transferring context: 3.54kB done
+#5 DONE 0.0s
+
+#6 [robot 2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     gcc     libgpiod2     libatlas-base-dev     libopenjp2-7     libtiff6     libgl1     libglib2.0-0     i2c-tools     zbar-tools     libzbar0     libcamera-dev     v4l-utils     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [robot 3/9] WORKDIR /app
+#7 CACHED
+
+#8 [robot 5/9] RUN pip install --no-cache-dir -r requirements.txt
+#8 CACHED
+
+#9 [robot 7/9] COPY src ./src
+#9 CACHED
+
+#10 [robot 6/9] COPY main.py .
+#10 CACHED
+
+#11 [robot 8/9] COPY models ./models
+#11 CACHED
+
+#12 [robot 4/9] COPY requirements.txt .
+#12 CACHED
+
+#13 [robot 9/9] RUN mkdir -p /app/models
+#13 CACHED
+
+#14 [robot] exporting to image
+#14 exporting layers done
+#14 writing image sha256:ca2934ccc35d22d25575c4813d9611233f636168626da4ce982e59a862f0e9e6 done
+#14 naming to docker.io/library/robot-pi-ejecution-robot done
+#14 DONE 0.0s
+ Container agrotech-robot  Running
+status=Up About a minute
