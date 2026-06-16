@@ -57,6 +57,9 @@ export function resolveBackendAssetUrl(assetPath: string) {
   if (assetPath.startsWith("http://") || assetPath.startsWith("https://")) {
     return assetPath;
   }
+  if (assetPath.startsWith("/api/")) {
+    return assetPath;
+  }
   const apiBaseUrl = resolveApiBaseUrl();
   if (apiBaseUrl.startsWith("/")) {
     return assetPath.startsWith("/") ? assetPath : `${apiBaseUrl}/${assetPath}`;
