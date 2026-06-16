@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getPatrols } from "../../api/patrolsApi";
 import { finalizeRobotPatrolAnalysis, getRobotStatus, startRobotPatrol } from "../../api/robotApi";
 
@@ -23,6 +23,7 @@ function patrolKey(patrol: PatrolRecord) {
 }
 
 export function PatrolsPage() {
+  const navigate = useNavigate();
   const [patrols, setPatrols] = useState<PatrolRecord[]>([]);
   const [robotStatus, setRobotStatus] = useState<RobotStatus | null>(null);
   const [targetPatrolId, setTargetPatrolId] = useState("");
@@ -57,6 +58,7 @@ export function PatrolsPage() {
       await finalizeRobotPatrolAnalysis(currentPatrolId);
       const refreshedStatus = await getRobotStatus();
       setRobotStatus(refreshedStatus);
+      navigate(`/patrols/${encodeURIComponent(currentPatrolId)}`);
     } catch (error) {
       console.error("No se pudo finalizar el patrullaje activo", error);
     } finally {

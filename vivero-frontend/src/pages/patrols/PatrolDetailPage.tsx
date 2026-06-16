@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { finalizeRobotPatrolAnalysis, getRobotPatrolAnalysis } from "../../api/robotApi";
 import { resolveBackendAssetUrl } from "../../utils/backendUrls";
 
@@ -165,6 +165,22 @@ export function PatrolDetailPage() {
             {finalizing ? "Finalizando..." : "Finalizar analisis"}
           </button>
         </div>
+        {isFinalized ? (
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              to="/reports"
+              className="rounded-2xl bg-clay px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink"
+            >
+              Ir a reportes
+            </Link>
+            <Link
+              to="/patrols"
+              className="rounded-2xl border border-sand px-5 py-3 text-sm font-semibold text-ink transition hover:border-clay"
+            >
+              Volver a patrullajes
+            </Link>
+          </div>
+        ) : null}
         {error ? <p className="mt-3 text-sm text-alert">{error}</p> : null}
         <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {[
