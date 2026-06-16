@@ -57,6 +57,7 @@ def main() -> None:
         interpreter, input_details, output_details = load_model(settings)
 
     command_listener: CommandListener | None = None
+    command_queue: queue.Queue[dict[str, Any]] = queue.Queue(maxsize=64)
     local_ai_available = all(item is not None for item in (interpreter, input_details, output_details))
     runtime_context: dict[str, Any] = {
         "last_local_analysis": None,
@@ -249,7 +250,7 @@ def main() -> None:
                 time.sleep(0.1)
                 continue
             alert_obstacle_feedback()
-            time.sleep(0.8)
+            time.sleep(1.0)
 
     def is_front_motion_blocked() -> bool:
         if not refresh_front_obstacle_state():
@@ -1021,6 +1022,7 @@ def main() -> None:
     led_handler.set_idle()
     led_handler.set_heartbeat_breathe()
     buzzer_handler.jingle()
+    set_stream_enabled(True)
 
     def status_sender() -> None:
         while not shutdown_event.is_set():
@@ -1034,7 +1036,13 @@ def main() -> None:
             update_heartbeat_led_mode(snapshot)
             shutdown_event.wait(settings.status_interval_seconds)
 
-    def on_command(command: str, data: dict[str, Any]) -> None:
+    def on_command(command: str, data: dict[str, Any], command_id: int) -> None:
+        try:
+            command_queue.put_nowait({"command": command, "data": data, "id": command_id})
+        except queue.Full:
+            LOGGER.warning("Command queue full; dropping command %s", command)
+
+    def process_command(command: str, data: dict[str, Any]) -> None:
         LOGGER.info("Received command %s with data %s", command, data)
         if command == "START_PATROL":
             state_machine.start_patrol(str(data.get("patrol_id") or "manual-patrol"))
@@ -1120,7 +1128,6 @@ def main() -> None:
             lcd_handler.show_temporary_message("Modo MANUAL", "Control remoto", duration_seconds=3.0)
         elif command == "AUTO":
             state_machine.enable_auto()
-            set_stream_enabled(False)
             runtime_context["control_profile"] = "AUTO_LINE"
             runtime_context["last_manual_command_at"] = None
             set_status_summary("Patrullaje ON")
@@ -1155,6 +1162,21 @@ def main() -> None:
             state = str(data.get("state", "ATENCION")).upper()
             resolve_state_signal(state)
             set_status_summary(f"Estado {state}")
+
+    def command_worker() -> None:
+        while not shutdown_event.is_set():
+            try:
+                command_item = command_queue.get(timeout=0.2)
+            except queue.Empty:
+                continue
+            try:
+                process_command(str(command_item["command"]), dict(command_item.get("data") or {}))
+                if command_listener is not None:
+                    command_listener.ack_command(int(command_item["id"]))
+            except Exception as exc:
+                LOGGER.exception("Command execution failed: %s", exc)
+            finally:
+                command_queue.task_done()
 
     def apply_manual_move(direction: str, speed: int) -> None:
         if direction == "forward":
@@ -1198,7 +1220,6 @@ def main() -> None:
             runtime_context["last_watchdog_reason"] = "REAR_OBSTACLE_BLOCKED_REVERSE"
             set_status_summary("Obstaculo trasero")
             lcd_handler.show_temporary_message("Obst trasero", "Retroceso no", duration_seconds=4.0)
-            led_handler.set_danger()
         motor_controller.stop()
         return True
 
@@ -1316,10 +1337,12 @@ def main() -> None:
     observation_thread = threading.Thread(target=observation_worker, name="observation-worker", daemon=True)
     qr_resolution_thread = threading.Thread(target=qr_resolution_worker, name="qr-resolution-worker", daemon=True)
     offline_thread = threading.Thread(target=offline_flush_worker, name="offline-flush-worker", daemon=True)
+    command_worker_thread = threading.Thread(target=command_worker, name="command-worker", daemon=True)
     status_thread.start()
     observation_thread.start()
     qr_resolution_thread.start()
     offline_thread.start()
+    command_worker_thread.start()
     command_listener.start()
     obstacle_alert_thread = threading.Thread(
         target=run_obstacle_alert_cycle,
@@ -1336,7 +1359,7 @@ def main() -> None:
             if snapshot.state == RobotState.IDLE:
                 refresh_rear_obstacle_state()
                 motor_controller.stop()
-                set_stream_enabled(False)
+                set_stream_enabled(True)
                 led_handler.set_idle()
                 update_heartbeat_led_mode(snapshot)
 
@@ -1351,7 +1374,7 @@ def main() -> None:
 
             elif snapshot.state == RobotState.FOLLOW_LINE:
                 refresh_rear_obstacle_state()
-                set_stream_enabled(False)
+                set_stream_enabled(True)
                 if runtime_context["awaiting_patrol_approval"]:
                     motor_controller.stop()
                     time.sleep(0.1)
