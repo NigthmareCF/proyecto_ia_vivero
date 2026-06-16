@@ -115,7 +115,6 @@ export function RobotControlPage() {
   const [activeKeyboardDirection, setActiveKeyboardDirection] = useState<Exclude<ManualDirection, "STOP"> | null>(null);
   const activeDirectionRef = useRef<Exclude<ManualDirection, "STOP"> | null>(null);
   const pressedMovementKeysRef = useRef<Set<string>>(new Set());
-  const commandIntervalRef = useRef<number | null>(null);
   const manualModeArmedRef = useRef(false);
   const streamContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -130,9 +129,7 @@ export function RobotControlPage() {
 
   useEffect(() => {
     return () => {
-      if (commandIntervalRef.current !== null) {
-        window.clearInterval(commandIntervalRef.current);
-      }
+      activeDirectionRef.current = null;
     };
   }, []);
 
@@ -179,10 +176,6 @@ export function RobotControlPage() {
     if (clearPressedKeys) {
       pressedMovementKeysRef.current.clear();
     }
-    if (commandIntervalRef.current !== null) {
-      window.clearInterval(commandIntervalRef.current);
-      commandIntervalRef.current = null;
-    }
     manualModeArmedRef.current = false;
     void sendRobotCommand("STOP", 0);
   };
@@ -202,17 +195,12 @@ export function RobotControlPage() {
 
   const startManualMotion = (direction: Exclude<ManualDirection, "STOP">) => {
     if (!ensureRobotReady("mover el robot")) return;
+    if (activeDirectionRef.current === direction) {
+      return;
+    }
     activeDirectionRef.current = direction;
     setActiveKeyboardDirection(direction);
-    if (commandIntervalRef.current !== null) {
-      window.clearInterval(commandIntervalRef.current);
-    }
     void dispatchManualMove(direction);
-    commandIntervalRef.current = window.setInterval(() => {
-      if (activeDirectionRef.current) {
-        void dispatchManualMove(activeDirectionRef.current);
-      }
-    }, 90);
   };
 
   const applyStandardProfile = (profile: "LOW" | "MEDIUM" | "HIGH" | "TURBO") => {

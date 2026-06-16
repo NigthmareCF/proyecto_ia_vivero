@@ -139,7 +139,7 @@ class Settings:
             line_lost_timeout=float(os.getenv("LINE_LOST_TIMEOUT", "3.0")),
             status_interval_seconds=float(os.getenv("STATUS_INTERVAL_SECONDS", "10")),
             manual_default_speed=int(os.getenv("MANUAL_DEFAULT_SPEED", "35")),
-            manual_command_timeout_seconds=float(os.getenv("MANUAL_COMMAND_TIMEOUT_SECONDS", "2.0")),
+            manual_command_timeout_seconds=float(os.getenv("MANUAL_COMMAND_TIMEOUT_SECONDS", "8.0")),
             speed_profile_low=int(os.getenv("SPEED_PROFILE_LOW", "30")),
             speed_profile_medium=int(os.getenv("SPEED_PROFILE_MEDIUM", "45")),
             speed_profile_high=int(os.getenv("SPEED_PROFILE_HIGH", "65")),
