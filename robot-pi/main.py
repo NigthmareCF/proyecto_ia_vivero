@@ -21,6 +21,7 @@ from src.communication.qr_label_resolver import QrLabelResolver
 from src.config import Settings
 from src.display import buzzer_handler, lcd_handler, led_handler
 from src.navigation import line_follower, motor_controller, obstacle_detector
+from src.sensors import imu
 from src.state_machine import RobotState, RobotStateMachine
 from src.vision.camera_handler import CameraHandler
 from src.vision.plant_roi import compute_plant_roi, crop_frames_to_roi
@@ -94,6 +95,16 @@ def main() -> None:
         "last_qr_camera": None,
         "last_qr_candidate_order": [],
         "last_qr_roi": None,
+        "line_follow_mode": "NORMAL",
+        "line_heading_target": None,
+        "line_pid_integral": 0.0,
+        "line_pid_previous_error": 0.0,
+        "line_pid_last_update_at": None,
+        "line_turn_started_at": None,
+        "line_cycle_started_at": None,
+        "line_pending_side": None,
+        "line_pending_since": None,
+        "line_pending_heading": None,
         "target_plant_qr": None,
         "target_group_key": None,
         "target_exact_qr_label": None,
@@ -201,6 +212,75 @@ def main() -> None:
             runtime_context["front_obstacle_latched"] = False
         return bool(runtime_context["obstacle_detected"])
 
+    def get_imu_sample() -> dict[str, object] | None:
+        return imu.health_snapshot() if settings.imu_enabled else None
+
+    def get_current_heading_deg() -> float | None:
+        snapshot = imu.sample()
+        return None if snapshot is None else float(snapshot.heading_deg)
+
+    def heading_error_deg(target: float, current: float) -> float:
+        return (current - target + 540.0) % 360.0 - 180.0
+
+    def clamp_speed(value: float, minimum: int = 0, maximum: int = 100) -> int:
+        return max(minimum, min(int(round(value)), maximum))
+
+    def normalize_heading_target(heading: float | None) -> float | None:
+        if heading is None:
+            return None
+        return round(heading % 360.0, 2)
+
+    def set_line_heading_target_if_needed(current_heading: float | None) -> None:
+        if runtime_context["line_heading_target"] is None and current_heading is not None:
+            runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+
+    def refresh_line_heading_target(current_heading: float | None) -> None:
+        if current_heading is None:
+            return
+        runtime_context["line_heading_target"] = normalize_heading_target(current_heading)
+
+    def reset_line_pid() -> None:
+        runtime_context["line_pid_integral"] = 0.0
+        runtime_context["line_pid_previous_error"] = 0.0
+        runtime_context["line_pid_last_update_at"] = None
+
+    def apply_line_pid(patrol_speed: int, current_heading: float, target_heading: float) -> bool:
+        error = heading_error_deg(target_heading, current_heading)
+        if abs(error) <= 0.5:
+            reset_line_pid()
+            motor_controller.move_forward(patrol_speed)
+            set_status_summary(f"Linea estable {target_heading:.2f}°")
+            return True
+
+        now = time.monotonic()
+        last_update_at = runtime_context["line_pid_last_update_at"]
+        delta_seconds = 0.05 if not isinstance(last_update_at, (int, float)) else max(now - float(last_update_at), 0.02)
+        runtime_context["line_pid_last_update_at"] = now
+
+        integral = float(runtime_context["line_pid_integral"]) + error * delta_seconds
+        integral = max(min(integral, 15.0), -15.0)
+        derivative = (error - float(runtime_context["line_pid_previous_error"])) / delta_seconds
+        runtime_context["line_pid_integral"] = integral
+        runtime_context["line_pid_previous_error"] = error
+
+        kp = 0.52
+        ki = 0.010
+        kd = 0.04
+        correction = (kp * error) + (ki * integral) + (kd * derivative)
+        correction = max(min(correction, 18.0), -18.0)
+
+        base_speed = clamp_speed(max(16.0, min(patrol_speed, 55)))
+        reduction = clamp_speed(max(4.0, min(abs(correction) * 1.8, max(6.0, base_speed * 0.30))))
+        inner_speed = clamp_speed(max(10.0, base_speed - reduction))
+
+        if correction > 0:
+            motor_controller.apply_raw(*motor_controller.MOTION_PATTERNS["forward"], base_speed, inner_speed)
+            set_status_summary(f"PID derecha {error:.2f}°")
+        else:
+            motor_controller.apply_raw(*motor_controller.MOTION_PATTERNS["forward"], inner_speed, base_speed)
+            set_status_summary(f"PID izquierda {error:.2f}°")
+        return True
+
     def normalize_speed_value(speed: int | float | None, fallback: int) -> int:
         if speed is None:
             return max(0, min(fallback, 100))
@@ -231,6 +311,13 @@ def main() -> None:
 
     def set_status_summary(message: str) -> None:
         runtime_context["status_summary"] = message
+
+    def normalize_acro_duration_seconds(raw_value: Any) -> float:
+        try:
+            requested = float(raw_value)
+        except (TypeError, ValueError):
+            requested = 15.0
+        return max(10.0, min(requested, 30.0))
 
     def run_obstacle_alert_cycle() -> None:
         while not shutdown_event.is_set():
@@ -386,7 +473,24 @@ def main() -> None:
         mode = f"Modo {map_state_to_mode(snapshot.state)}"
         screens: list[tuple[str, str]] = []
 
-        if snapshot.state == RobotState.IDLE:
+        if runtime_context["obstacle_detected"] or runtime_context["rear_obstacle_detected"]:
+            if runtime_context["obstacle_detected"] and runtime_context["rear_obstacle_detected"]:
+                obstacle_side = "Frontal+Trasero"
+            elif runtime_context["obstacle_detected"]:
+                obstacle_side = "Frontal"
+            elif runtime_context["rear_obstacle_left"] and runtime_context["rear_obstacle_right"]:
+                obstacle_side = "Trasero L+R"
+            elif runtime_context["rear_obstacle_left"]:
+                obstacle_side = "Trasero Izq"
+            elif runtime_context["rear_obstacle_right"]:
+                obstacle_side = "Trasero Der"
+            else:
+                obstacle_side = "Trasero"
+            screens = [
+                ("Obstaculo", obstacle_side),
+                ("Movimiento", "Bloqueado"),
+            ]
+        elif snapshot.state == RobotState.IDLE:
             screens = [
                 ("AgroBot listo", "Esperando orden"),
                 ("Modo reposo", "Sin patrullaje"),
@@ -582,6 +686,7 @@ def main() -> None:
                 "width": settings.camera_width,
                 "height": settings.camera_height,
             },
+            "imu": get_imu_sample(),
             "activeCamera": str(runtime_context["active_camera"]).upper(),
             "lastQrCamera": runtime_context["last_qr_camera"],
             "lastQrRoi": runtime_context["last_qr_roi"],
@@ -804,6 +909,7 @@ def main() -> None:
         lcd_handler.cleanup()
         led_handler.cleanup()
         buzzer_handler.cleanup()
+        imu.cleanup()
         motor_controller.cleanup()
 
     def handle_signal(signum: int, _frame: Any) -> None:
@@ -825,6 +931,7 @@ def main() -> None:
     led_handler.set_idle()
     led_handler.set_heartbeat_breathe()
     buzzer_handler.jingle()
+    imu.setup(settings)
     set_stream_enabled(True)
 
     def status_sender() -> None:
@@ -840,10 +947,23 @@ def main() -> None:
             shutdown_event.wait(settings.status_interval_seconds)
 
     def on_command(command: str, data: dict[str, Any], command_id: int) -> None:
+        if command in {"MOVE", "MANUAL_CONTROL", "STOP"}:
+            try:
+                process_command(command, data)
+                if command_listener is not None:
+                    command_listener.ack_command(command_id)
+            except Exception as exc:
+                LOGGER.exception("Immediate command execution failed: %s", exc)
+            return
         try:
             command_queue.put_nowait({"command": command, "data": data, "id": command_id})
         except queue.Full:
             LOGGER.warning("Command queue full; dropping command %s", command)
+            if command_listener is not None:
+                try:
+                    command_listener.ack_command(command_id)
+                except Exception as exc:
+                    LOGGER.warning("Failed to ack dropped command %s: %s", command, exc)
 
     def process_command(command: str, data: dict[str, Any]) -> None:
         LOGGER.info("Received command %s with data %s", command, data)
@@ -851,6 +971,7 @@ def main() -> None:
             state_machine.start_patrol(str(data.get("patrol_id") or "manual-patrol"))
             runtime_context["control_profile"] = "AUTO_LINE"
             reset_search_context()
+            reset_line_pid()
             runtime_context["awaiting_patrol_approval"] = False
             set_status_summary("Patrullaje ON")
             buzzer_handler.countdown_go()
@@ -862,6 +983,7 @@ def main() -> None:
             set_stream_enabled(False)
             runtime_context["control_profile"] = "SAFE_STOP"
             reset_search_context()
+            reset_line_pid()
             runtime_context["last_manual_command_at"] = None
             set_status_summary("AgroBot listo")
             lcd_handler.show_temporary_message("AgroBot listo", "Esperando orden", duration_seconds=3.0)
@@ -929,6 +1051,7 @@ def main() -> None:
             state_machine.enable_manual()
             runtime_context["control_profile"] = "MANUAL_FREE"
             runtime_context["last_manual_command_at"] = time.monotonic()
+            reset_line_pid()
             set_status_summary("Control manual activo")
             lcd_handler.show_temporary_message("Modo MANUAL", "Control remoto", duration_seconds=3.0)
         elif command == "AUTO":
@@ -936,6 +1059,7 @@ def main() -> None:
             state_machine.enable_auto()
             runtime_context["control_profile"] = "AUTO_LINE"
             runtime_context["last_manual_command_at"] = None
+            reset_line_pid()
             set_status_summary("Patrullaje ON")
             lcd_handler.show_temporary_message("Modo AUTO", "Patrullaje ON", duration_seconds=3.0)
         elif command == "MOVE":
@@ -963,10 +1087,21 @@ def main() -> None:
             set_status_summary("Prueba buzzer")
             buzzer_handler.alert_async()
         elif command == "ACRO":
+            previous_control_profile = str(runtime_context["control_profile"])
+            previous_status_summary = str(runtime_context["status_summary"])
             runtime_context["control_profile"] = "ACRO"
             runtime_context["last_manual_command_at"] = None
             set_status_summary("Acrobacia en ejecucion")
-            run_acro(str(data.get("sequence", "SPIN")).upper())
+            run_acro(
+                str(data.get("sequence", "SPIN")).upper(),
+                normalize_acro_duration_seconds(
+                    data.get("durationSeconds")
+                    or data.get("duration_seconds")
+                    or data.get("duration")
+                ),
+                previous_control_profile,
+                previous_status_summary,
+            )
         elif command == "PLANT_STATE_UPDATE":
             state = str(data.get("state", "ATENCION")).upper()
             resolve_state_signal(state)
@@ -1100,29 +1235,61 @@ def main() -> None:
         motor_controller.stop()
         return True
 
-    def run_acro(sequence: str) -> None:
+    def run_acro(
+        sequence: str,
+        duration_seconds: float,
+        previous_control_profile: str,
+        previous_status_summary: str,
+    ) -> None:
         active_speed = current_speed_percent()
-        if sequence in {"CHRISTMAS", "NAVIDAD", "XMAS", "LED_LOOP", "LIGHTS"}:
+        deadline = time.monotonic() + duration_seconds
+        try:
+            if sequence in {"CHRISTMAS", "NAVIDAD", "XMAS", "LED_LOOP", "LIGHTS"}:
+                motor_controller.stop()
+                led_handler.start_acro_christmas_loop()
+                lcd_handler.show_temporary_message("Acrobacia", "Luces loop", duration_seconds=min(duration_seconds, 4.0))
+                while not shutdown_event.is_set() and time.monotonic() < deadline:
+                    remaining = deadline - time.monotonic()
+                    if shutdown_event.wait(min(remaining, 0.25)):
+                        break
+                return
+
+            led_handler.stop_acro_sequence()
+            lcd_handler.show_temporary_message("Acrobacia", sequence[:16], duration_seconds=min(duration_seconds, 4.0))
+
+            if sequence == "SPIN":
+                while not shutdown_event.is_set() and time.monotonic() < deadline:
+                    motor_controller.turn_left(min(active_speed + 20, 100))
+                    if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.8)):
+                        break
+                    motor_controller.stop()
+                    if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.25)):
+                        break
+                    buzzer_handler.jingle()
+                    if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.15)):
+                        break
+                return
+
+            while not shutdown_event.is_set() and time.monotonic() < deadline:
+                motor_controller.move_forward(active_speed)
+                if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.25)):
+                    break
+                motor_controller.turn_right(active_speed)
+                if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.35)):
+                    break
+                if is_reverse_motion_blocked():
+                    break
+                motor_controller.move_backward(active_speed)
+                if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.25)):
+                    break
+                motor_controller.stop()
+                if shutdown_event.wait(min(max(deadline - time.monotonic(), 0.0), 0.2)):
+                    break
+        finally:
             motor_controller.stop()
-            led_handler.start_acro_christmas_loop()
-            lcd_handler.show_temporary_message("Acrobacia", "Luces loop", duration_seconds=3.0)
-            return
-        led_handler.stop_acro_sequence()
-        if sequence == "SPIN":
-            motor_controller.turn_left(min(active_speed + 20, 100))
-            time.sleep(0.8)
-            motor_controller.stop()
-            buzzer_handler.jingle()
-            return
-        motor_controller.move_forward(active_speed)
-        time.sleep(0.25)
-        motor_controller.turn_right(active_speed)
-        time.sleep(0.35)
-        if is_reverse_motion_blocked():
-            return
-        motor_controller.move_backward(active_speed)
-        time.sleep(0.25)
-        motor_controller.stop()
+            led_handler.stop_acro_sequence()
+            runtime_context["control_profile"] = previous_control_profile
+            set_status_summary(previous_status_summary)
 
     def finish_row_and_wait_for_patrol() -> None:
         runtime_context["awaiting_patrol_approval"] = True
@@ -1266,7 +1433,6 @@ def main() -> None:
             elif snapshot.state == RobotState.MANUAL:
                 refresh_rear_obstacle_state()
                 set_stream_enabled(True)
-                enforce_manual_watchdog(snapshot)
                 manual_direction = snapshot.manual_direction.strip().lower().replace("-", "_").replace(" ", "_")
                 reverse_directions = {
                     "backward",
@@ -1303,6 +1469,8 @@ def main() -> None:
                     time.sleep(0.1)
                     continue
                 patrol_speed = current_speed_percent()
+                current_heading = get_current_heading_deg()
+                target_heading = runtime_context["line_heading_target"]
                 if is_front_motion_blocked():
                     motor_controller.stop()
                     set_status_summary("Obstaculo detectado")
@@ -1311,7 +1479,19 @@ def main() -> None:
                 else:
                     runtime_context["obstacle_count"] = 0
                     line_follower.follow_line(patrol_speed)
+                    pattern = line_follower.last_pattern()
+                    left, center, right = pattern
+                    if left == 1 or right == 1:
+                        runtime_context["line_pending_heading"] = current_heading
+                        if current_heading is not None:
+                            refresh_line_heading_target(current_heading)
+                    if center == 1:
+                        set_line_heading_target_if_needed(current_heading)
+                        target_heading = runtime_context["line_heading_target"]
+                        if target_heading is not None and current_heading is not None:
+                            apply_line_pid(patrol_speed, float(current_heading), float(target_heading))
                     if line_follower.is_all_white():
+                        reset_line_pid()
                         finish_row_and_wait_for_patrol()
                         time.sleep(0.1)
                         continue
@@ -1348,6 +1528,7 @@ def main() -> None:
                             state_machine.resume_follow_line()
                     elif line_follower.is_line_lost():
                         motor_controller.stop()
+                        reset_line_pid()
                         set_status_summary("Linea perdida")
                         lcd_handler.show_temporary_message("Linea perdida", "Detenido", duration_seconds=2.5)
                         time.sleep(0.25)

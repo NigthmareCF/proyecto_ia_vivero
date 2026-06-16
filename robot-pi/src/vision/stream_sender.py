@@ -41,6 +41,16 @@ class StreamSender:
     def stop_stream(self) -> None:
         self._stop_event.set()
 
+    def _resize_frame_for_stream(self, frame: np.ndarray) -> np.ndarray:
+        height, width = frame.shape[:2]
+        max_width = 640
+        max_height = 480
+        scale = min(max_width / max(width, 1), max_height / max(height, 1), 1.0)
+        if scale >= 1.0:
+            return frame
+        target_size = (max(1, int(round(width * scale))), max(1, int(round(height * scale))))
+        return cv2.resize(frame, target_size, interpolation=cv2.INTER_AREA)
+
     def _run(self) -> None:
         while not self._stop_event.is_set():
             ws = None
@@ -49,10 +59,12 @@ class StreamSender:
                 if self.settings.backend_ws_origin:
                     kwargs["origin"] = self.settings.backend_ws_origin
                 ws = create_connection(self._resolve_stream_url(), **kwargs)
+                send_fps = max(1, min(self.settings.stream_fps, self.settings.stream_send_fps))
+                send_interval = max(1 / send_fps, 0.1)
                 while not self._stop_event.is_set():
                     frame = self.frame_provider()
                     self.send_frame(frame, ws)
-                    time.sleep(max(1 / max(self.settings.stream_send_fps, 1), 0.05))
+                    time.sleep(send_interval)
             except Exception as exc:
                 LOGGER.warning("Stream sender disconnected: %s", exc)
                 time.sleep(2)
@@ -67,9 +79,10 @@ class StreamSender:
         if not isinstance(frame, np.ndarray) or frame.size == 0:
             return
         try:
+            stream_frame = self._resize_frame_for_stream(frame)
             ok, encoded = cv2.imencode(
                 ".jpg",
-                frame,
+                stream_frame,
                 [int(cv2.IMWRITE_JPEG_QUALITY), self.settings.stream_quality],
             )
             if not ok:

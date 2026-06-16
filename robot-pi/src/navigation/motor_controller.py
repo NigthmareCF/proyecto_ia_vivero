@@ -18,6 +18,8 @@ LOGGER = logging.getLogger(__name__)
 LOW_POWER_THRESHOLD = 20
 LOW_POWER_START_DUTY = 25
 LOW_POWER_START_SECONDS = 0.12
+FULL_SPEED_MULTIPLIER = 1.0
+TURN_INNER_SPEED_MULTIPLIER = 0.25
 
 MOTION_PATTERNS = {
     "backward": (0, 1, 1, 0),
@@ -64,6 +66,10 @@ def _clamp_speed(speed: int) -> int:
     return max(0, min(speed, 100))
 
 
+def _relative_speed(speed: int, multiplier: float) -> int:
+    return _clamp_speed(int(round(speed * multiplier)))
+
+
 def _apply_pwm(left_speed: int, right_speed: int) -> None:
     left_speed = _clamp_speed(left_speed)
     right_speed = _clamp_speed(right_speed)
@@ -86,6 +92,25 @@ def _apply_pattern(pattern: tuple[int, int, int, int], speed: int) -> None:
     left_speed = speed if in1 or in2 else 0
     right_speed = speed if in3 or in4 else 0
     apply_raw(in1, in2, in3, in4, left_speed, right_speed)
+
+
+def _apply_relative_drive(
+    pattern: tuple[int, int, int, int],
+    speed: int,
+    ena_multiplier: float,
+    enb_multiplier: float,
+) -> None:
+    if GPIO is None or not _pwms_ready():
+        return
+    in1, in2, in3, in4 = pattern
+    apply_raw(
+        in1,
+        in2,
+        in3,
+        in4,
+        _relative_speed(speed, ena_multiplier),
+        _relative_speed(speed, enb_multiplier),
+    )
 
 
 def pin_map() -> dict[str, int]:
@@ -126,19 +151,19 @@ def turn_right(speed: int) -> None:
 
 
 def move_left_forward(speed: int) -> None:
-    _apply_pattern(MOTION_PATTERNS["forward_left"], speed)
+    _apply_relative_drive(MOTION_PATTERNS["forward"], speed, TURN_INNER_SPEED_MULTIPLIER, FULL_SPEED_MULTIPLIER)
 
 
 def move_left_backward(speed: int) -> None:
-    _apply_pattern(MOTION_PATTERNS["backward_left"], speed)
+    _apply_relative_drive(MOTION_PATTERNS["backward"], speed, TURN_INNER_SPEED_MULTIPLIER, FULL_SPEED_MULTIPLIER)
 
 
 def move_right_forward(speed: int) -> None:
-    _apply_pattern(MOTION_PATTERNS["forward_right"], speed)
+    _apply_relative_drive(MOTION_PATTERNS["forward"], speed, FULL_SPEED_MULTIPLIER, TURN_INNER_SPEED_MULTIPLIER)
 
 
 def move_right_backward(speed: int) -> None:
-    _apply_pattern(MOTION_PATTERNS["backward_right"], speed)
+    _apply_relative_drive(MOTION_PATTERNS["backward"], speed, FULL_SPEED_MULTIPLIER, TURN_INNER_SPEED_MULTIPLIER)
 
 
 def move_forward_left(speed: int) -> None:
