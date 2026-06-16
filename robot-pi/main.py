@@ -1391,7 +1391,8 @@ def main() -> None:
 
     def capture_observation_burst(plant_qr: str, qr_candidate: dict[str, Any]) -> list[np.ndarray]:
         touch_activity("QR_CAPTURE")
-        motor_controller.move_forward(settings.qr_capture_speed)
+        qr_burst_speed = max(0, min(int(round(settings.qr_capture_speed * 0.5)), 100))
+        motor_controller.move_forward(qr_burst_speed)
         camera_name = str(qr_candidate.get("camera") or "left").lower()
         if camera_name not in {"left", "right", "front"}:
             camera_name = "left"

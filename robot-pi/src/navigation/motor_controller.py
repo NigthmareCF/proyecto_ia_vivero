@@ -20,6 +20,7 @@ LOW_POWER_START_DUTY = 25
 LOW_POWER_START_SECONDS = 0.12
 FULL_SPEED_MULTIPLIER = 1.0
 TURN_INNER_SPEED_MULTIPLIER = 0.25
+COMBINED_OUTER_SPEED_MULTIPLIER = 3.5
 CORRECTION_OUTER_SPEED_MULTIPLIER = 2.0
 CORRECTION_INNER_SPEED_MULTIPLIER = 0.50
 
@@ -160,19 +161,19 @@ def turn_right(speed: int) -> None:
 
 
 def move_left_forward(speed: int) -> None:
-    _apply_relative_drive(MOTION_PATTERNS["forward"], speed, TURN_INNER_SPEED_MULTIPLIER, FULL_SPEED_MULTIPLIER)
+    _apply_relative_drive(MOTION_PATTERNS["forward"], speed, TURN_INNER_SPEED_MULTIPLIER, COMBINED_OUTER_SPEED_MULTIPLIER)
 
 
 def move_left_backward(speed: int) -> None:
-    _apply_relative_drive(MOTION_PATTERNS["backward"], speed, TURN_INNER_SPEED_MULTIPLIER, FULL_SPEED_MULTIPLIER)
+    _apply_relative_drive(MOTION_PATTERNS["backward"], speed, TURN_INNER_SPEED_MULTIPLIER, COMBINED_OUTER_SPEED_MULTIPLIER)
 
 
 def move_right_forward(speed: int) -> None:
-    _apply_relative_drive(MOTION_PATTERNS["forward"], speed, FULL_SPEED_MULTIPLIER, TURN_INNER_SPEED_MULTIPLIER)
+    _apply_relative_drive(MOTION_PATTERNS["forward"], speed, COMBINED_OUTER_SPEED_MULTIPLIER, TURN_INNER_SPEED_MULTIPLIER)
 
 
 def move_right_backward(speed: int) -> None:
-    _apply_relative_drive(MOTION_PATTERNS["backward"], speed, FULL_SPEED_MULTIPLIER, TURN_INNER_SPEED_MULTIPLIER)
+    _apply_relative_drive(MOTION_PATTERNS["backward"], speed, COMBINED_OUTER_SPEED_MULTIPLIER, TURN_INNER_SPEED_MULTIPLIER)
 
 
 def move_forward_left(speed: int) -> None:
