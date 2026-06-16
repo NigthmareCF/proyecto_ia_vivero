@@ -20,10 +20,22 @@ _blue_worker: threading.Thread | None = None
 _blue_lock = threading.Lock()
 _blue_stop_event = threading.Event()
 _blue_manual_event = threading.Event()
+_all_hold_event = threading.Event()
+_idle_cycle_stop_event = threading.Event()
+_idle_cycle_worker: threading.Thread | None = None
+_idle_cycle_lock = threading.Lock()
 _acro_stop_event = threading.Event()
 _acro_worker: threading.Thread | None = None
 _acro_lock = threading.Lock()
 _settings: Settings | None = None
+
+IDLE_CYCLE_FRAMES: tuple[tuple[float, tuple[bool, bool, bool, bool]], ...] = (
+    (0.34, (True, True, True, True)),
+    (0.22, (True, False, False, True)),
+    (0.22, (False, True, False, True)),
+    (0.22, (False, False, True, True)),
+    (0.26, (False, False, False, True)),
+)
 
 ACRO_CHRISTMAS_FRAMES: tuple[tuple[float, tuple[bool, bool, bool, bool]], ...] = (
     (0.12, (True, False, False, False)),
@@ -60,10 +72,12 @@ def setup(settings: Settings) -> None:
     _blue_pwm = GPIO.PWM(LED_BLUE, 100)
     _blue_pwm.start(0)
     _blue_stop_event.clear()
+    _idle_cycle_stop_event.clear()
     if _blue_worker is None or not _blue_worker.is_alive():
         _blue_worker = threading.Thread(target=_run_blue_effect, name="blue-led-effect", daemon=True)
         _blue_worker.start()
-    set_idle()
+    if _idle_cycle_worker is None or not _idle_cycle_worker.is_alive():
+        set_idle_cycle()
 
 
 def _set(green: bool, yellow: bool, red: bool) -> None:
@@ -95,6 +109,40 @@ def set_idle() -> None:
     _set(False, False, False)
 
 
+def _pause_background_effects() -> None:
+    _all_hold_event.set()
+
+
+def _resume_background_effects() -> None:
+    _all_hold_event.clear()
+
+
+def set_idle_cycle() -> None:
+    global _idle_cycle_worker
+    if not _enabled:
+        return
+    _blue_manual_event.set()
+    with _idle_cycle_lock:
+        _idle_cycle_stop_event.clear()
+        if _idle_cycle_worker is None or not _idle_cycle_worker.is_alive():
+            _idle_cycle_worker = threading.Thread(
+                target=_run_idle_cycle,
+                name="idle-led-cycle",
+                daemon=True,
+            )
+            _idle_cycle_worker.start()
+
+
+def stop_idle_cycle() -> None:
+    global _idle_cycle_worker
+    _idle_cycle_stop_event.set()
+    worker = _idle_cycle_worker
+    if worker is not None and worker.is_alive() and threading.current_thread() is not worker:
+        worker.join(timeout=1.0)
+    _idle_cycle_worker = None
+    _blue_manual_event.clear()
+
+
 def _set_blue_duty(duty_cycle: float) -> None:
     if not _enabled or GPIO is None or _blue_pwm is None:
         return
@@ -121,6 +169,7 @@ def pulse_blue_with(
     off_duration: float = 0.15,
 ) -> None:
     _blue_manual_event.set()
+    _pause_background_effects()
     pwm_was_running = False
     try:
         pwm_was_running = _stop_blue_pwm_for_manual_control()
@@ -141,6 +190,36 @@ def pulse_blue_with(
             _set_blue_duty(0.0)
         _restart_blue_pwm_after_manual_control(pwm_was_running)
         _blue_manual_event.clear()
+        _resume_background_effects()
+
+
+def pulse_all_with(
+    action: Callable[[float], None],
+    repeats: int = 3,
+    on_duration: float = 0.2,
+    off_duration: float = 0.15,
+) -> None:
+    _pause_background_effects()
+    pwm_was_running = False
+    try:
+        pwm_was_running = _stop_blue_pwm_for_manual_control()
+        time.sleep(0.04)
+        for _ in range(max(repeats, 0)):
+            if _enabled and GPIO is not None:
+                _set_all(True, True, True, True)
+            started_at = time.monotonic()
+            action(on_duration)
+            remaining = on_duration - (time.monotonic() - started_at)
+            if remaining > 0:
+                time.sleep(remaining)
+            if _enabled and GPIO is not None:
+                _set_all(False, False, False, False)
+            time.sleep(max(off_duration, 0.0))
+    finally:
+        if _enabled and GPIO is not None:
+            _set_all(False, False, False, False)
+        _restart_blue_pwm_after_manual_control(pwm_was_running)
+        _resume_background_effects()
 
 
 def play_acro_christmas_sequence(repeats: int = 1, stop_event: threading.Event | None = None) -> None:
@@ -194,24 +273,28 @@ def stop_acro_sequence() -> None:
 
 def set_heartbeat_off() -> None:
     global _blue_mode
+    stop_idle_cycle()
     with _blue_lock:
         _blue_mode = "off"
 
 
 def set_heartbeat_blink() -> None:
     global _blue_mode
+    stop_idle_cycle()
     with _blue_lock:
         _blue_mode = "blink"
 
 
 def set_heartbeat_fast_blink() -> None:
     global _blue_mode
+    stop_idle_cycle()
     with _blue_lock:
         _blue_mode = "fast_blink"
 
 
 def set_heartbeat_breathe() -> None:
     global _blue_mode
+    stop_idle_cycle()
     with _blue_lock:
         _blue_mode = "breathe"
 
@@ -225,6 +308,9 @@ def _run_blue_effect() -> None:
     brightness = 0.0
     direction = 1.0
     while not _blue_stop_event.is_set():
+        if _all_hold_event.is_set():
+            time.sleep(0.02)
+            continue
         mode = _current_blue_mode()
         if _settings is None:
             time.sleep(0.1)
@@ -262,10 +348,29 @@ def _run_blue_effect() -> None:
         time.sleep(max(_settings.heartbeat_led_breathe_step_seconds, 0.01))
 
 
+def _run_idle_cycle() -> None:
+    while not _idle_cycle_stop_event.is_set():
+        if _all_hold_event.is_set():
+            time.sleep(0.02)
+            continue
+        for duration, leds in IDLE_CYCLE_FRAMES:
+            if _idle_cycle_stop_event.is_set():
+                return
+            if _all_hold_event.is_set():
+                break
+            _set_all(*leds)
+            if _idle_cycle_stop_event.wait(duration):
+                return
+        if _all_hold_event.is_set():
+            continue
+
+
 def cleanup() -> None:
     stop_acro_sequence()
+    stop_idle_cycle()
     _blue_stop_event.set()
     set_heartbeat_off()
+    _resume_background_effects()
     _set_blue_duty(0.0)
     if _blue_pwm is not None:
         _blue_pwm.stop()

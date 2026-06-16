@@ -81,6 +81,7 @@ class Settings:
     status_interval_seconds: float
     manual_default_speed: int
     manual_command_timeout_seconds: float
+    idle_inactivity_seconds: float
     speed_profile_low: int
     speed_profile_medium: int
     speed_profile_high: int
@@ -169,6 +170,7 @@ class Settings:
             status_interval_seconds=float(os.getenv("STATUS_INTERVAL_SECONDS", "10")),
             manual_default_speed=int(os.getenv("MANUAL_DEFAULT_SPEED", "35")),
             manual_command_timeout_seconds=float(os.getenv("MANUAL_COMMAND_TIMEOUT_SECONDS", "8.0")),
+            idle_inactivity_seconds=float(os.getenv("IDLE_INACTIVITY_SECONDS", "60.0")),
             speed_profile_low=int(os.getenv("SPEED_PROFILE_LOW", "30")),
             speed_profile_medium=int(os.getenv("SPEED_PROFILE_MEDIUM", "45")),
             speed_profile_high=int(os.getenv("SPEED_PROFILE_HIGH", "65")),

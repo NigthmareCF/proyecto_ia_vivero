@@ -77,6 +77,7 @@ def main() -> None:
         "speed_profile": "MEDIUM",
         "custom_speed_percent": None,
         "started_at": time.monotonic(),
+        "last_activity_at": time.monotonic(),
         "last_manual_command_at": None,
         "last_watchdog_triggered_at": None,
         "last_watchdog_reason": None,
@@ -153,7 +154,6 @@ def main() -> None:
             led_handler.set_heartbeat_fast_blink()
             return
         if snapshot.state == RobotState.IDLE:
-            led_handler.set_heartbeat_breathe()
             return
         led_handler.set_heartbeat_blink()
 
@@ -311,6 +311,25 @@ def main() -> None:
 
     def set_status_summary(message: str) -> None:
         runtime_context["status_summary"] = message
+
+    def touch_activity(reason: str | None = None) -> None:
+        runtime_context["last_activity_at"] = time.monotonic()
+        if reason is not None:
+            runtime_context["last_watchdog_reason"] = reason
+
+    def enter_idle_mode(reason: str) -> None:
+        LOGGER.info("Entering idle mode due to %s", reason)
+        motor_controller.stop()
+        led_handler.stop_acro_sequence()
+        state_machine.stop()
+        runtime_context["control_profile"] = "REST"
+        runtime_context["awaiting_patrol_approval"] = False
+        reset_search_context()
+        reset_line_pid()
+        set_status_summary("Reposo")
+        led_handler.set_idle_cycle()
+        runtime_context["last_watchdog_reason"] = reason
+        runtime_context["last_watchdog_triggered_at"] = datetime.now().isoformat()
 
     def normalize_acro_duration_seconds(raw_value: Any) -> float:
         try:
@@ -928,8 +947,7 @@ def main() -> None:
     camera.setup()
 
     lcd_handler.set_rotation_screens([("AgroBot listo", "Esperando orden"), ("Modo reposo", "Sin patrullaje")], interval_seconds=settings.lcd_rotation_interval_seconds)
-    led_handler.set_idle()
-    led_handler.set_heartbeat_breathe()
+    led_handler.set_idle_cycle()
     buzzer_handler.jingle()
     imu.setup(settings)
     set_stream_enabled(True)
@@ -968,6 +986,7 @@ def main() -> None:
     def process_command(command: str, data: dict[str, Any]) -> None:
         LOGGER.info("Received command %s with data %s", command, data)
         if command == "START_PATROL":
+            touch_activity("START_PATROL")
             state_machine.start_patrol(str(data.get("patrol_id") or "manual-patrol"))
             runtime_context["control_profile"] = "AUTO_LINE"
             reset_search_context()
@@ -977,6 +996,7 @@ def main() -> None:
             buzzer_handler.countdown_go()
             lcd_handler.show_temporary_message("AgroBot listo", "Patrullaje ON", duration_seconds=3.0)
         elif command == "STOP":
+            touch_activity("STOP")
             led_handler.stop_acro_sequence()
             state_machine.stop()
             motor_controller.stop()
@@ -987,9 +1007,9 @@ def main() -> None:
             runtime_context["last_manual_command_at"] = None
             set_status_summary("AgroBot listo")
             lcd_handler.show_temporary_message("AgroBot listo", "Esperando orden", duration_seconds=3.0)
-            led_handler.set_idle()
-            led_handler.set_heartbeat_breathe()
+            led_handler.set_idle_cycle()
         elif command == "GOTO_PLANT":
+            touch_activity("GOTO_PLANT")
             state_machine.start_patrol(str(data.get("patrol_id") or "manual-patrol"))
             runtime_context["control_profile"] = "GOTO"
             target_value = normalize_qr_value(data.get("groupKey") or data.get("plantQr") or data.get("targetPlantQr"))
@@ -1033,6 +1053,7 @@ def main() -> None:
             buzzer_handler.countdown_go()
             lcd_handler.show_temporary_message("Buscando planta", display_target_label(runtime_context["target_group_key"], runtime_context["target_exact_qr_label"]), duration_seconds=4.0)
         elif command == "SEARCH_BY_STATE":
+            touch_activity("SEARCH_BY_STATE")
             state_machine.start_patrol(str(data.get("patrol_id") or "manual-patrol"))
             runtime_context["control_profile"] = "SEARCH_BY_STATE"
             runtime_context["search_mode"] = "STATE"
@@ -1047,6 +1068,7 @@ def main() -> None:
             buzzer_handler.countdown_go()
             lcd_handler.show_temporary_message(f"{runtime_context['search_state']} buscando", f"Pend: {len(runtime_context['search_targets']):02d}", duration_seconds=4.0)
         elif command == "MANUAL_CONTROL":
+            touch_activity("MANUAL_CONTROL")
             led_handler.stop_acro_sequence()
             state_machine.enable_manual()
             runtime_context["control_profile"] = "MANUAL_FREE"
@@ -1055,6 +1077,7 @@ def main() -> None:
             set_status_summary("Control manual activo")
             lcd_handler.show_temporary_message("Modo MANUAL", "Control remoto", duration_seconds=3.0)
         elif command == "AUTO":
+            touch_activity("AUTO")
             led_handler.stop_acro_sequence()
             state_machine.enable_auto()
             runtime_context["control_profile"] = "AUTO_LINE"
@@ -1063,6 +1086,7 @@ def main() -> None:
             set_status_summary("Patrullaje ON")
             lcd_handler.show_temporary_message("Modo AUTO", "Patrullaje ON", duration_seconds=3.0)
         elif command == "MOVE":
+            touch_activity("MOVE")
             requested_speed = normalize_speed_value(data.get("speed"), current_speed_percent())
             if state_machine.snapshot().state != RobotState.MANUAL:
                 state_machine.enable_manual()
@@ -1084,9 +1108,11 @@ def main() -> None:
             else:
                 runtime_context["speed_profile"] = raw_profile or "MEDIUM"
         elif command == "BUZZER_TEST":
+            touch_activity("BUZZER_TEST")
             set_status_summary("Prueba buzzer")
             buzzer_handler.alert_async()
         elif command == "ACRO":
+            touch_activity("ACRO")
             previous_control_profile = str(runtime_context["control_profile"])
             previous_status_summary = str(runtime_context["status_summary"])
             runtime_context["control_profile"] = "ACRO"
@@ -1103,6 +1129,7 @@ def main() -> None:
                 previous_status_summary,
             )
         elif command == "PLANT_STATE_UPDATE":
+            touch_activity("PLANT_STATE_UPDATE")
             state = str(data.get("state", "ATENCION")).upper()
             resolve_state_signal(state)
             set_status_summary(f"Estado {state}")
@@ -1142,35 +1169,43 @@ def main() -> None:
         }
         normalized_direction = direction_aliases.get(normalized_direction, normalized_direction)
         if normalized_direction == "forward":
+            touch_activity("MANUAL_FORWARD")
             if is_front_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
             motor_controller.move_forward(speed)
         elif normalized_direction == "backward":
+            touch_activity("MANUAL_BACKWARD")
             if is_reverse_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
             motor_controller.move_backward(speed)
         elif normalized_direction == "left":
+            touch_activity("MANUAL_LEFT")
             motor_controller.turn_left(speed)
         elif normalized_direction == "right":
+            touch_activity("MANUAL_RIGHT")
             motor_controller.turn_right(speed)
         elif normalized_direction == "forward_left":
+            touch_activity("MANUAL_FORWARD_LEFT")
             if is_front_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
             motor_controller.move_forward_left(speed)
         elif normalized_direction == "forward_right":
+            touch_activity("MANUAL_FORWARD_RIGHT")
             if is_front_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
             motor_controller.move_forward_right(speed)
         elif normalized_direction == "backward_left":
+            touch_activity("MANUAL_BACKWARD_LEFT")
             if is_reverse_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
             motor_controller.move_backward_left(speed)
         elif normalized_direction == "backward_right":
+            touch_activity("MANUAL_BACKWARD_RIGHT")
             if is_reverse_motion_blocked():
                 state_machine.update_manual_move("stop", 0)
                 return
@@ -1178,26 +1213,8 @@ def main() -> None:
         else:
             motor_controller.stop()
 
-    def enforce_manual_watchdog(snapshot: Any) -> None:
-        last_manual_command_at = runtime_context["last_manual_command_at"]
-        if not isinstance(last_manual_command_at, (int, float)):
-            motor_controller.stop()
-            return
-        if (time.monotonic() - last_manual_command_at) <= settings.manual_command_timeout_seconds:
-            return
-        if snapshot.manual_direction != "stop" or snapshot.manual_speed != 0:
-            LOGGER.warning(
-                "Manual watchdog timeout reached after %.2fs; stopping robot",
-                settings.manual_command_timeout_seconds,
-            )
-            state_machine.update_manual_move("stop", 0)
-            runtime_context["last_watchdog_triggered_at"] = datetime.now().isoformat()
-            runtime_context["last_watchdog_reason"] = "MANUAL_COMMAND_TIMEOUT"
-        motor_controller.stop()
-
     def alert_obstacle_feedback() -> None:
-        led_handler.set_danger()
-        buzzer_handler.alert_async()
+        led_handler.pulse_all_with(buzzer_handler.beep, repeats=3, on_duration=0.2, off_duration=0.12)
 
     def refresh_front_obstacle_state() -> bool:
         obstacle_distance = obstacle_detector.get_distance_cm()
@@ -1376,6 +1393,7 @@ def main() -> None:
         return None
 
     def capture_observation_burst(plant_qr: str, qr_candidate: dict[str, Any]) -> list[np.ndarray]:
+        touch_activity("QR_CAPTURE")
         motor_controller.move_forward(settings.qr_capture_speed)
         camera_name = str(qr_candidate.get("camera") or "left").lower()
         if camera_name not in {"left", "right", "front"}:
@@ -1422,12 +1440,19 @@ def main() -> None:
         while not shutdown_event.is_set():
             snapshot = state_machine.snapshot()
             refresh_lcd_rotation(snapshot)
+            last_activity_at = runtime_context["last_activity_at"]
+            if isinstance(last_activity_at, (int, float)):
+                inactivity_seconds = time.monotonic() - float(last_activity_at)
+                if snapshot.state != RobotState.IDLE and inactivity_seconds >= settings.idle_inactivity_seconds:
+                    enter_idle_mode("INACTIVITY_TIMEOUT")
+                    time.sleep(0.05)
+                    continue
 
             if snapshot.state == RobotState.IDLE:
                 refresh_rear_obstacle_state()
                 motor_controller.stop()
                 set_stream_enabled(True)
-                led_handler.set_idle()
+                led_handler.set_idle_cycle()
                 update_heartbeat_led_mode(snapshot)
 
             elif snapshot.state == RobotState.MANUAL:
@@ -1479,6 +1504,7 @@ def main() -> None:
                 else:
                     runtime_context["obstacle_count"] = 0
                     line_follower.follow_line(patrol_speed)
+                    touch_activity("FOLLOW_LINE")
                     pattern = line_follower.last_pattern()
                     left, center, right = pattern
                     if left == 1 or right == 1:
