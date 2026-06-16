@@ -10,6 +10,30 @@ export const getRobotPatrolObservations = (patrolId: string) =>
 export const finalizeRobotPatrolAnalysis = (patrolId: string, robotId = "ROBOT-001") =>
   api.post(`/robot/patrols/${patrolId}/analysis/finalize`, null, { params: { robotId } }).then((res) => res.data.data);
 
+export type GenerateReportRequest = {
+  patrolId: number;
+  title: string;
+  summary?: string;
+  observationsCount: number;
+  healthyCount: number;
+  attentionCount: number;
+  dangerCount: number;
+  manualReviewCount: number;
+  inconclusiveCount: number;
+  plantDetails: Array<{
+    plantGroupCode: string;
+    finalState: string;
+    summary?: string;
+    findings: Array<{ side: string; note?: string }>;
+  }>;
+  analysisProvider?: string;
+  analysisModel?: string;
+  analysisNotes?: string;
+};
+
+export const createReport = (request: GenerateReportRequest) =>
+  api.post("/reports", request).then((res) => res.data.data);
+
 export type SearchStartOrientation = "FORWARD" | "REVERSE";
 export type RobotSearchState = "SANO" | "ATENCION" | "PELIGRO" | "INCONCLUSA";
 export type ManualDirection =

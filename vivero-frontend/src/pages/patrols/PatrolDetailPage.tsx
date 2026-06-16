@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { finalizeRobotPatrolAnalysis, getRobotPatrolAnalysis } from "../../api/robotApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { createReport, finalizeRobotPatrolAnalysis, getRobotPatrolAnalysis } from "../../api/robotApi";
 import { resolveBackendAssetUrl } from "../../utils/backendUrls";
 
 type PatrolEvidenceImage = {
@@ -73,9 +73,11 @@ function stateClassName(state?: string | null) {
 
 export function PatrolDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [analysis, setAnalysis] = useState<PatrolAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
   const [finalizing, setFinalizing] = useState(false);
+  const [generatingReport, setGeneratingReport] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadPatrolAnalysis = () => {
@@ -133,6 +135,48 @@ export function PatrolDetailPage() {
     }
   }
 
+  async function handleGenerateReport() {
+    if (!analysis || generatingReport || !id) return;
+    setGeneratingReport(true);
+    setError(null);
+    try {
+      const patrolNumericId = Number(id);
+      if (!Number.isFinite(patrolNumericId)) {
+        throw new Error("Patrol ID must be numeric to generate a report");
+      }
+      const report = await createReport({
+        patrolId: patrolNumericId,
+        title: `Reporte de patrullaje ${analysis.patrolId}`,
+        summary: `Consolidado del patrullaje ${analysis.patrolId}.`,
+        observationsCount: analysis.totalGroups,
+        healthyCount: analysis.healthyCount,
+        attentionCount: analysis.attentionCount,
+        dangerCount: analysis.dangerCount,
+        manualReviewCount: analysis.manualReviewCount,
+        inconclusiveCount: analysis.inconclusiveCount,
+        plantDetails: (analysis.plants ?? []).map((plant) => ({
+          plantGroupCode: plant.plantGroupCode,
+          finalState: plant.finalState,
+          summary: plant.summary,
+          findings: (plant.observations ?? []).map((observation) => ({
+            side: observation.plantSide || "NA",
+            note: observation.analysisNotes || observation.statusHint || observation.finalState || "Sin detalle",
+          })),
+        })),
+        analysisProvider: "robot",
+        analysisModel: "patrullaje-consolidado",
+        analysisNotes: "Reporte generado desde el cierre de patrullaje consolidado.",
+      });
+      navigate(`/reports`, { replace: false });
+      console.info("Reporte generado", report);
+    } catch (requestError) {
+      console.error("No se pudo generar el reporte del patrullaje", requestError);
+      setError("No se pudo generar el reporte del patrullaje.");
+    } finally {
+      setGeneratingReport(false);
+    }
+  }
+
   if (loading) {
     return <section className="rounded-[2rem] bg-white p-6 shadow-sm">Cargando detalle del patrullaje...</section>;
   }
@@ -167,6 +211,14 @@ export function PatrolDetailPage() {
         </div>
         {isFinalized ? (
           <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleGenerateReport}
+              disabled={generatingReport}
+              className="rounded-2xl bg-ink px-5 py-3 text-sm font-semibold text-white transition hover:bg-clay disabled:bg-moss/40"
+            >
+              {generatingReport ? "Generando reporte..." : "Generar reporte"}
+            </button>
             <Link
               to="/reports"
               className="rounded-2xl bg-clay px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink"
