@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { createReport, finalizeRobotPatrolAnalysis, getRobotPatrolAnalysis } from "../../api/robotApi";
+import { getReports } from "../../api/reportsApi";
 import { resolveBackendAssetUrl } from "../../utils/backendUrls";
 
 type PatrolEvidenceImage = {
@@ -78,6 +79,8 @@ export function PatrolDetailPage() {
   const [loading, setLoading] = useState(true);
   const [finalizing, setFinalizing] = useState(false);
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [openingReport, setOpeningReport] = useState(false);
+  const [previewImage, setPreviewImage] = useState<{ src: string; alt: string; caption: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const loadPatrolAnalysis = () => {
@@ -177,6 +180,56 @@ export function PatrolDetailPage() {
     }
   }
 
+  async function handleOpenReports() {
+    if (!analysis || openingReport || !id) return;
+    setOpeningReport(true);
+    setError(null);
+    try {
+      const patrolNumericId = Number(id);
+      if (!Number.isFinite(patrolNumericId)) {
+        throw new Error("Patrol ID must be numeric to open reports");
+      }
+
+      const reports = await getReports();
+      const existingReport = Array.isArray(reports)
+        ? reports.find((report) => Number(report.patrolId) === patrolNumericId)
+        : null;
+
+      if (!existingReport) {
+        await createReport({
+          patrolId: patrolNumericId,
+          title: `Reporte de patrullaje ${analysis.patrolId}`,
+          summary: `Consolidado del patrullaje ${analysis.patrolId}.`,
+          observationsCount: analysis.totalGroups,
+          healthyCount: analysis.healthyCount,
+          attentionCount: analysis.attentionCount,
+          dangerCount: analysis.dangerCount,
+          manualReviewCount: analysis.manualReviewCount,
+          inconclusiveCount: analysis.inconclusiveCount,
+          plantDetails: (analysis.plants ?? []).map((plant) => ({
+            plantGroupCode: plant.plantGroupCode,
+            finalState: plant.finalState,
+            summary: plant.summary,
+            findings: (plant.observations ?? []).map((observation) => ({
+              side: observation.plantSide || "NA",
+              note: observation.analysisNotes || observation.statusHint || observation.finalState || "Sin detalle",
+            })),
+          })),
+          analysisProvider: "robot",
+          analysisModel: "patrullaje-consolidado",
+          analysisNotes: "Reporte generado automaticamente desde el acceso a reportes.",
+        });
+      }
+
+      navigate("/reports", { replace: false });
+    } catch (requestError) {
+      console.error("No se pudo preparar el reporte del patrullaje", requestError);
+      setError("No se pudo preparar el reporte del patrullaje.");
+    } finally {
+      setOpeningReport(false);
+    }
+  }
+
   if (loading) {
     return <section className="rounded-[2rem] bg-white p-6 shadow-sm">Cargando detalle del patrullaje...</section>;
   }
@@ -219,12 +272,14 @@ export function PatrolDetailPage() {
             >
               {generatingReport ? "Generando reporte..." : "Generar reporte"}
             </button>
-            <Link
-              to="/reports"
-              className="rounded-2xl bg-clay px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink"
+            <button
+              type="button"
+              onClick={handleOpenReports}
+              disabled={openingReport}
+              className="rounded-2xl bg-clay px-5 py-3 text-sm font-semibold text-white transition hover:bg-ink disabled:bg-moss/40"
             >
-              Ir a reportes
-            </Link>
+              {openingReport ? "Abriendo reportes..." : "Ir a reportes"}
+            </button>
             <Link
               to="/patrols"
               className="rounded-2xl border border-sand px-5 py-3 text-sm font-semibold text-ink transition hover:border-clay"
@@ -304,11 +359,23 @@ export function PatrolDetailPage() {
                     </div>
                     <p className="mt-3 text-sm text-moss">{image.plantSummary}</p>
                     <figure className="mt-4 overflow-hidden rounded-[1.25rem] bg-sand">
-                      <img
-                        src={resolveImageUrl(image.imageUrl)}
-                        alt={`Evidencia ${image.imageId}`}
-                        className="h-56 w-full object-cover"
-                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPreviewImage({
+                            src: resolveImageUrl(image.imageUrl),
+                            alt: `Evidencia ${image.imageId}`,
+                            caption: `Imagen relevante - lado ${image.plantSide || "NA"}`
+                          })
+                        }
+                        className="block w-full"
+                      >
+                        <img
+                          src={resolveImageUrl(image.imageUrl)}
+                          alt={`Evidencia ${image.imageId}`}
+                          className="h-56 w-full object-cover transition duration-200 hover:scale-[1.02]"
+                        />
+                      </button>
                       <figcaption className="px-3 py-2 text-xs uppercase tracking-[0.18em] text-moss">
                         Imagen relevante - lado {image.plantSide || "NA"}
                       </figcaption>
@@ -321,6 +388,43 @@ export function PatrolDetailPage() {
             </div>
           </article>
         </>
+      ) : null}
+
+      {previewImage ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={previewImage.alt}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-4 border-b border-sand px-5 py-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-moss">Vista ampliada</p>
+                <h3 className="font-display text-xl text-ink">{previewImage.alt}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-clay"
+              >
+                Cerrar
+              </button>
+            </div>
+            <div className="bg-black">
+              <img
+                src={previewImage.src}
+                alt={previewImage.alt}
+                className="max-h-[78vh] w-full object-contain"
+              />
+            </div>
+            <div className="px-5 py-4 text-sm text-moss">{previewImage.caption}</div>
+          </div>
+        </div>
       ) : null}
     </section>
   );
