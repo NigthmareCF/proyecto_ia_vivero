@@ -72,6 +72,57 @@ function stateClassName(state?: string | null) {
   return "bg-sand text-ink";
 }
 
+function extractApiErrorMessage(requestError: unknown, fallback: string) {
+  if (requestError && typeof requestError === "object") {
+    const candidate = requestError as {
+      response?: { data?: { message?: string; error?: string }; status?: number };
+      message?: string;
+    };
+    const backendMessage = candidate.response?.data?.message || candidate.response?.data?.error;
+    if (backendMessage) {
+      return `${fallback} Detalle: ${backendMessage}`;
+    }
+    if (candidate.response?.status) {
+      return `${fallback} HTTP ${candidate.response.status}.`;
+    }
+    if (candidate.message) {
+      return `${fallback} Detalle: ${candidate.message}`;
+    }
+  }
+  return fallback;
+}
+
+function buildReportRequest(analysis: PatrolAnalysis, patrolId: string, reportTitlePrefix = "Reporte de patrullaje") {
+  const patrolNumericId = Number(patrolId);
+  if (!Number.isFinite(patrolNumericId)) {
+    throw new Error("Patrol ID must be numeric to generate a report");
+  }
+
+  return {
+    patrolId: patrolNumericId,
+    title: `${reportTitlePrefix} ${analysis.patrolId}`,
+    summary: `Consolidado del patrullaje ${analysis.patrolId}.`,
+    observationsCount: analysis.totalGroups,
+    healthyCount: analysis.healthyCount,
+    attentionCount: analysis.attentionCount,
+    dangerCount: analysis.dangerCount,
+    manualReviewCount: analysis.manualReviewCount,
+    inconclusiveCount: analysis.inconclusiveCount,
+    plantDetails: (analysis.plants ?? []).map((plant) => ({
+      plantGroupCode: plant.plantGroupCode,
+      finalState: plant.finalState,
+      summary: plant.summary,
+      findings: (plant.observations ?? []).map((observation) => ({
+        side: observation.plantSide || "NA",
+        note: observation.analysisNotes || observation.statusHint || observation.finalState || "Sin detalle",
+      })),
+    })),
+    analysisProvider: "robot",
+    analysisModel: "patrullaje-consolidado",
+    analysisNotes: "Reporte generado desde el cierre de patrullaje consolidado.",
+  };
+}
+
 export function PatrolDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -143,38 +194,12 @@ export function PatrolDetailPage() {
     setGeneratingReport(true);
     setError(null);
     try {
-      const patrolNumericId = Number(id);
-      if (!Number.isFinite(patrolNumericId)) {
-        throw new Error("Patrol ID must be numeric to generate a report");
-      }
-      const report = await createReport({
-        patrolId: patrolNumericId,
-        title: `Reporte de patrullaje ${analysis.patrolId}`,
-        summary: `Consolidado del patrullaje ${analysis.patrolId}.`,
-        observationsCount: analysis.totalGroups,
-        healthyCount: analysis.healthyCount,
-        attentionCount: analysis.attentionCount,
-        dangerCount: analysis.dangerCount,
-        manualReviewCount: analysis.manualReviewCount,
-        inconclusiveCount: analysis.inconclusiveCount,
-        plantDetails: (analysis.plants ?? []).map((plant) => ({
-          plantGroupCode: plant.plantGroupCode,
-          finalState: plant.finalState,
-          summary: plant.summary,
-          findings: (plant.observations ?? []).map((observation) => ({
-            side: observation.plantSide || "NA",
-            note: observation.analysisNotes || observation.statusHint || observation.finalState || "Sin detalle",
-          })),
-        })),
-        analysisProvider: "robot",
-        analysisModel: "patrullaje-consolidado",
-        analysisNotes: "Reporte generado desde el cierre de patrullaje consolidado.",
-      });
+      const report = await createReport(buildReportRequest(analysis, id));
       navigate(`/reports`, { replace: false });
       console.info("Reporte generado", report);
     } catch (requestError) {
       console.error("No se pudo generar el reporte del patrullaje", requestError);
-      setError("No se pudo generar el reporte del patrullaje.");
+      setError(extractApiErrorMessage(requestError, "No se pudo generar el reporte del patrullaje."));
     } finally {
       setGeneratingReport(false);
     }
@@ -197,26 +222,7 @@ export function PatrolDetailPage() {
 
       if (!existingReport) {
         await createReport({
-          patrolId: patrolNumericId,
-          title: `Reporte de patrullaje ${analysis.patrolId}`,
-          summary: `Consolidado del patrullaje ${analysis.patrolId}.`,
-          observationsCount: analysis.totalGroups,
-          healthyCount: analysis.healthyCount,
-          attentionCount: analysis.attentionCount,
-          dangerCount: analysis.dangerCount,
-          manualReviewCount: analysis.manualReviewCount,
-          inconclusiveCount: analysis.inconclusiveCount,
-          plantDetails: (analysis.plants ?? []).map((plant) => ({
-            plantGroupCode: plant.plantGroupCode,
-            finalState: plant.finalState,
-            summary: plant.summary,
-            findings: (plant.observations ?? []).map((observation) => ({
-              side: observation.plantSide || "NA",
-              note: observation.analysisNotes || observation.statusHint || observation.finalState || "Sin detalle",
-            })),
-          })),
-          analysisProvider: "robot",
-          analysisModel: "patrullaje-consolidado",
+          ...buildReportRequest(analysis, id, "Reporte automatico de patrullaje"),
           analysisNotes: "Reporte generado automaticamente desde el acceso a reportes.",
         });
       }
@@ -224,7 +230,7 @@ export function PatrolDetailPage() {
       navigate("/reports", { replace: false });
     } catch (requestError) {
       console.error("No se pudo preparar el reporte del patrullaje", requestError);
-      setError("No se pudo preparar el reporte del patrullaje.");
+      setError(extractApiErrorMessage(requestError, "No se pudo preparar el reporte del patrullaje."));
     } finally {
       setOpeningReport(false);
     }
