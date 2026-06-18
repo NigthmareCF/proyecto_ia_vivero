@@ -54,7 +54,13 @@ La referencia actual ya no es `Pi -> bridge -> backend` como camino obligatorio.
 Pi -> backend -> frontend
 ```
 
-La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` para WebSocket. El runtime conserva compatibilidad con `BRIDGE_URL` solo como fallback legado.
+La configuracion vigente usa `BACKEND_BASE_URL` para HTTP y `BACKEND_WS_URL` para WebSocket. El runtime conserva compatibilidad con `BRIDGE_URL` solo como fallback legado. Para operar sin andar cambiando IPs, lo recomendable es que el backend se publique detras de un front door Nginx por dominio, por ejemplo `https://agrotechnologyrobotics.com/api`.
+
+Preset recomendado para failover dinamico:
+
+```env
+BACKEND_BASE_URLS=https://agrotechnologyrobotics.com/api,https://www.agrotechnologyrobotics.com/api,http://192.168.1.47:3000/api,http://localhost:3000/api
+```
 
 ## Roles de camaras acordados
 

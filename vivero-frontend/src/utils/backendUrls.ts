@@ -1,4 +1,10 @@
 const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+const PUBLIC_FRONT_DOOR_HOSTS = new Set([
+  "agrotechnologyrobotics.com",
+  "www.agrotechnologyrobotics.com",
+  "agrotechnologyrobtics.com",
+  "www.agrotechnologyrobtics.com",
+]);
 
 function trimTrailingSlash(value: string) {
   return value.replace(/\/+$/, "");
@@ -15,6 +21,9 @@ function shouldUseSameOriginProxy(configuredUrl?: string) {
   const browserHost = window.location.hostname;
   if (!browserHost || LOOPBACK_HOSTS.has(browserHost)) {
     return false;
+  }
+  if (PUBLIC_FRONT_DOOR_HOSTS.has(browserHost)) {
+    return true;
   }
   if (!configuredUrl) {
     return true;

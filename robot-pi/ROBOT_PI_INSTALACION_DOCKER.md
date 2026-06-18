@@ -41,6 +41,7 @@ nano .env
 
 Variables clave:
 
+- `BACKEND_BASE_URLS=https://agrotechnologyrobotics.com/api,https://www.agrotechnologyrobotics.com/api,http://IP_O_DOMINIO_BACKEND:3000/api`
 - `BACKEND_BASE_URL=http://IP_O_DOMINIO_BACKEND:3000/api`
 - `BACKEND_WS_URL=ws://IP_O_DOMINIO_BACKEND:3000/api/ws/robot-stream?role=robot&robotId=ROBOT-001`
 - `ROBOT_ID=ROBOT-001`
@@ -94,3 +95,4 @@ Al iniciar correctamente, el runtime:
 - El backend puede cambiar la camara activa de stream con el comando `SWITCH_CAMERA`.
 - Si el backend cae, las observaciones se quedan en cola local y se reintentan despues.
 - La IMU usa un bus I2C independiente del LCD para evitar contencion de datos.
+- Si publicas el stack por dominio con Nginx, el robot puede seguir usando el mismo `BACKEND_BASE_URLS` y solo conmutar automaticamente entre dominio, VM o lab.

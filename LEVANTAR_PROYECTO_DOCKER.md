@@ -23,7 +23,7 @@ Ajusta como mínimo:
 docker compose up --build -d
 ```
 
-El frontend se compila y se sirve desde Nginx. La entrada local queda en `http://localhost:3000`; Nginx proxyea `/api` y `/api/ws` al backend interno.
+El frontend se compila y se sirve desde Nginx. La entrada local queda en `http://localhost:3000`; Nginx proxyea `/api` y `/api/ws` al backend interno. En despliegues con dominio, el mismo Nginx puede atender `agrotechnologyrobotics.com` y `www.agrotechnologyrobotics.com` como front door unico.
 
 ## 3. Revisar estado
 
@@ -40,6 +40,12 @@ docker compose logs -f frontend
 - Backend directo para depuracion: `http://localhost:8080/api`
 - Healthcheck por Nginx: `http://localhost:3000/health`
 - Healthcheck backend: `http://localhost:8080/api/actuator/health`
+
+Para dominio publico:
+
+- Frontend: `https://agrotechnologyrobotics.com`
+- API por Nginx: `https://agrotechnologyrobotics.com/api`
+- WebSocket por Nginx: `wss://agrotechnologyrobotics.com/api/ws`
 
 ## 5. Reconstruir si cambian dependencias o Dockerfiles
 
